@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="AppTheme" parent="android:Theme.Material.Light">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="SailorCast.DrawerActivity" parent="Calypso.NoActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 </resources>
