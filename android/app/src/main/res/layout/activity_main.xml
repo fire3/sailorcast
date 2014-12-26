@@ -1,31 +1,7 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:gravity="center"
-    tools:context=".MainActivity">
+    android:background="@color/white">
 
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:weightSum="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/home_search_text"
-            android:layout_weight="8"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/home_search_ok"
-            android:text="@string/search_button_text"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-</RelativeLayout>
+</FrameLayout>

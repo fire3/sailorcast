@@ -28,4 +28,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.+'
 
+    releaseCompile project(path:':libs:utils:SailorCastUtils', configuration: 'release')
+    debugCompile project(path:':libs:utils:SailorCastUtils', configuration: 'debug')
+
 }
