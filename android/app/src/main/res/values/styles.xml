@@ -18,6 +18,7 @@
         <item name="android:actionBarTabTextStyle">@style/TabTextStyle.SailorCast</item>
         <item name="android:actionBarTabBarStyle">@style/TabBarStyle.SailorCast</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
 
         <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.SailorCast.Widget</item>

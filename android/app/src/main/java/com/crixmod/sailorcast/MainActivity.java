@@ -1,17 +1,27 @@
 package com.crixmod.sailorcast;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crixmod.sailorcast.ui.SCDrawerActivity;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends SCDrawerActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        createMenuDrawer(R.layout.activity_main);
+        setSupportActionBar(getToolbar());
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(getString(R.string.hello_world));
+        }
     }
 
 

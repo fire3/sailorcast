@@ -5,5 +5,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="search_button_text">搜索</string>
+    <string name="reader">阅读器</string>
+    <string name="notifications">通知</string>
+    <string name="open_drawer">打开抽屉菜单</string>
+    <string name="close_drawer">关闭抽屉菜单</string>
+    <string name="reader_toast_err_generic">打开阅读器错误</string>
+    <string name="settings">设置</string>
 
 </resources>
