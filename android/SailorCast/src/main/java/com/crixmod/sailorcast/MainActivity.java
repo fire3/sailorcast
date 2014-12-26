@@ -6,10 +6,16 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
+import com.crixmod.sailorcast.siteapi.SohuApi;
 import com.crixmod.sailorcast.ui.SCDrawerActivity;
 
+import java.util.ArrayList;
 
-public class MainActivity extends SCDrawerActivity {
+
+public class MainActivity extends SCDrawerActivity implements OnSearchRequestListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +27,13 @@ public class MainActivity extends SCDrawerActivity {
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(getString(R.string.hello_world));
+        }
+
+        SohuApi api = new SohuApi();
+        try {
+            api.doSearch("神雕侠侣",this);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -35,5 +48,15 @@ public class MainActivity extends SCDrawerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSearchSuccess(SCAlbums albums) {
+        albums.debugLog();
+    }
+
+    @Override
+    public void onSearchFailed() {
+
     }
 }

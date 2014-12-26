@@ -11,11 +11,6 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
-repositories {
-    mavenCentral()
-    maven { url 'http://wordpress-mobile.github.io/WordPress-Android' }
-}
-
 dependencies {
     compile 'commons-lang:commons-lang:2.6'
     compile 'com.mcxiaoke.volley:library:1.0.+'
@@ -32,20 +27,5 @@ android {
         versionName "1.2.0"
         minSdkVersion 14
         targetSdkVersion 19
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            def repo_url = ""
-            if (project.hasProperty("repository")) {
-                repo_url = project.repository
-            }
-            repository(url: repo_url)
-            pom.version = android.defaultConfig.versionName
-            pom.groupId = "com.sailorcast"
-            pom.artifactId = "wordpress-utils"
-        }
     }
 }
