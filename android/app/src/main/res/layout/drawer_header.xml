@@ -11,17 +11,6 @@
         android:scaleType="centerCrop"
         android:src="@drawable/drawer_header_bg" />
 
-    <Spinner
-        android:id="@+id/blog_spinner"
-        style="@style/DropDownNav.SailorCast"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/margin_large"
-        android:layout_marginLeft="@dimen/drawer_row_keyline"
-        android:layout_marginRight="@dimen/drawer_row_keyline"
-        tools:listitem="@layout/spinner_textview_drawer"/>
-
     <com.crixmod.sailorcast.widgets.WPTextView
         android:id="@+id/text_header_blog_name"
         android:layout_width="match_parent"

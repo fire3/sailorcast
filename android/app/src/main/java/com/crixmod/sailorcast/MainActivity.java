@@ -13,7 +13,7 @@ public class MainActivity extends SCDrawerActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         createMenuDrawer(R.layout.activity_main);
         setSupportActionBar(getToolbar());
 

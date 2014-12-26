@@ -212,7 +212,6 @@ public abstract class SCDrawerActivity extends ActionBarActivity {
         }
 
         // add listVew header containing spinner if it hasn't already been added - note that
-        // initBlogSpinner() will setup the spinner
         mDrawerListView = (ListView) findViewById(R.id.drawer_list);
         if (mDrawerListView.getHeaderViewsCount() == 0) {
             View view = getLayoutInflater().inflate(R.layout.drawer_header, mDrawerListView, false);
@@ -237,35 +236,7 @@ public abstract class SCDrawerActivity extends ActionBarActivity {
             }
         });
 
-        initBlogSpinner();
         updateMenuDrawer();
-    }
-
-    /*
-     * setup the spinner in the drawer header which shows a list of the user's blogs
-     */
-    private void initBlogSpinner() {
-        TextView txtBlogName = (TextView) findViewById(R.id.text_header_blog_name);
-        mBlogSpinner = (Spinner) findViewById(R.id.blog_spinner);
-        String[] blogNames = getBlogNames();
-        if (blogNames.length > 1) {
-            // more than one blog so show spinner enabling user to choose
-            txtBlogName.setVisibility(View.GONE);
-            mBlogSpinner.setVisibility(View.VISIBLE);
-            mBlogSpinner.setOnItemSelectedListener(mItemSelectedListener);
-            populateBlogSpinner(blogNames);
-        } else if (blogNames.length == 1) {
-            // only one blog so hide spinner and show name of blog
-            txtBlogName.setVisibility(View.VISIBLE);
-            txtBlogName.setText(blogNames[0]);
-            mBlogSpinner.setVisibility(View.GONE);
-            mBlogSpinner.setOnItemSelectedListener(null);
-        } else {
-            // no blogs so hide spinner and blog name
-            txtBlogName.setVisibility(View.GONE);
-            mBlogSpinner.setVisibility(View.GONE);
-            mBlogSpinner.setOnItemSelectedListener(null);
-        }
     }
 
     private void closeDrawer() {
@@ -362,96 +333,6 @@ public abstract class SCDrawerActivity extends ActionBarActivity {
         return mDrawerToggle;
     }
 
-    /*
-     * sets the adapter for the blog spinner and populates it with the passed array of blog names
-     */
-    private void populateBlogSpinner(String[] blogNames) {
-        if (mBlogSpinner == null) {
-            return;
-        }
-        mBlogSpinnerInitialized = false;
-        Context context = SCActivityUtils.getThemedContext(this);
-        mBlogSpinner.setAdapter(new BlogSpinnerAdapter(context, blogNames));
-    }
-
-    /*
-     * update the blog names shown by the blog spinner
-     */
-    void refreshBlogSpinner(String[] blogNames) {
-        // spinner will be null if it's not supposed to be shown
-        if (mBlogSpinner == null || mBlogSpinner.getAdapter() == null) {
-            return;
-        }
-
-        ((BlogSpinnerAdapter) mBlogSpinner.getAdapter()).setBlogNames(blogNames);
-    }
-
-    /*
-     * adapter used by the blog spinner - shows the name of each blog
-     */
-    private class BlogSpinnerAdapter extends BaseAdapter {
-        private String[] mBlogNames;
-        private final LayoutInflater mInflater;
-
-        BlogSpinnerAdapter(Context context, String[] blogNames) {
-            super();
-            mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            mBlogNames = blogNames;
-        }
-
-        void setBlogNames(String[] blogNames) {
-            mBlogNames = blogNames;
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getCount() {
-            return (mBlogNames != null ? mBlogNames.length : 0);
-        }
-
-        @Override
-        public Object getItem(int position) {
-            if (position < 0 || position >= getCount())
-                return "";
-            return mBlogNames[position];
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            final View view;
-            if (convertView == null) {
-                view = mInflater.inflate(R.layout.spinner_textview_drawer, parent, false);
-            } else {
-                view = convertView;
-            }
-
-            final TextView text = (TextView) view.findViewById(android.R.id.text1);
-            text.setText((String) getItem(position));
-
-            return view;
-        }
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            final View view;
-            if (convertView == null) {
-                view = mInflater.inflate(R.layout.spinner_menu_dropdown_item, parent, false);
-            } else {
-                view = convertView;
-            }
-
-            final TextView text = (TextView) view.findViewById(R.id.menu_text_dropdown);
-            text.setText((String) getItem(position));
-
-            return view;
-        }
-    }
-
     /**
      * Update all of the items in the menu drawer based on the current active blog.
      */
@@ -524,9 +405,6 @@ public abstract class SCDrawerActivity extends ActionBarActivity {
                     // new blog has been added, so rebuild cache of blogs and setup current blog
                     getBlogNames();
                     setupCurrentBlog();
-                    if (mDrawerListView != null) {
-                        initBlogSpinner();
-                    }
                     // If logged in without blog, redirect to the Reader view
                     showReaderIfNoBlog();
                 } else {
