@@ -1,2 +1,2 @@
-include ':app'
+include ':SailorCast'
 include ':libs:utils:SailorCastUtils'
