@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="translucent">#80000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- material colors -->
+    <!--
+        colorPrimary            app branding color for the app bar
+        colorPrimaryDark        status bar and contextual app bars
+        colorControlNormal      (unused here) controls in their normal state (spinner arrow, scrollbars, unchecked checkboxes)
+        colorControlActivated   controls in their activated/checked state (search highlight, checked checkboxes)
+        colorControlHighlight   control highlights (ripples, list selectors)
+    -->
+    <color name="color_primary">@color/blue_medium</color>
+    <color name="color_primary_dark">@color/blue_extra_dark</color>
+    <color name="color_accent">@color/orange_medium</color>
+    <color name="color_control_activated">@color/blue_light</color>
+    <color name="color_control_highlight">@color/blue_extra_light</color>
+
+    <color name="fab_color">@color/color_accent</color>
+    <color name="list_selected">@color/semi_transparent_blue_extra_light</color>
+
+    <!-- Default colors -->
+    <color name="light_gray">#E5E5E5</color>
+    <color name="gray">#CCC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="default_background">@color/grey_extra_light</color>
+
+    <color name="image_options_label">#CCCCCC</color>
+    <color name="pressed_wordpress">#CC78C8E6</color>
+    <color name="background_grey">@color/grey_extra_light</color>
+
+    <!-- Colors for menu drawer. -->
+    <color name="drawer_background">@color/white</color>
+    <color name="drawer_background_selected">@color/translucent_grey_light</color>
+    <color name="drawer_icon_tint">@color/grey_medium_dark</color>
+    <color name="drawer_text">@color/grey_extra_dark</color>
+    <color name="drawer_divider">@color/grey_light</color>
+
+    <color name="wordpress_blue">#21759B</color>
+
+    <!-- Media Gallery colors -->
+    <color name="media_gallery_grid_label_bg">#B3000000</color>
+    <color name="media_gallery_grid_label">#FFFFFF</color>
+    <color name="media_gallery_bg">#75797C</color>
+    <color name="media_gallery_option_selected">#333333</color>
+    <color name="media_gallery_option_default">#EEEEEE</color>
+
+    <!-- Theme Details colors -->
+    <color name="theme_details_name">@color/black</color>
+    <color name="theme_details_button">#FFFFFF</color>
+    <color name="theme_details_premium">#B0710E</color>
+    <color name="theme_feature_text">#555555</color>
+
+    <!-- Tab Strip colors -->
+    <color name="tab_background">@color/color_primary</color>
+    <color name="tab_text_normal">@color/blue_light</color>
+    <color name="tab_text_selected">@color/white</color>
+    <color name="tab_indicator">@color/blue_light</color>
+
+    <!-- Stats -->
+    <color name="stats_text_color">#404040</color>
+    <color name="stats_link_text_color">@color/wordpress_blue</color>
+    <color name="stats_module_content_list_header">#93A6C0</color>
+    <color name="stats_bar_graph_views">#0085BF</color>
+    <color name="stats_bar_graph_grid">#D9D9D9</color>
+    <color name="stats_bar_graph_vertical_label">#93a6c0</color>
+    <color name="stats_div_color">#B7B7B7</color>
+    <color name="stats_views_hover_color">#f0821e</color>
+    <color name="stats_lists_background_color">#f4f8fA</color>
+
+    <color name="blue_extra_light">#c8eefc</color>
+    <color name="blue_light">#78dcfa</color>
+    <color name="blue_new_kid">#2EA2CC</color>
+    <color name="blue_medium">#0087be</color>
+    <color name="blue_dark">#0074a2</color>
+    <color name="blue_extra_dark">#005082</color>
+    <color name="orange_medium">#f1831e</color>
+    <color name="orange_dark">#d54e21</color>
+    <color name="grey_extra_light">#eeeeee</color>
+    <color name="grey_light">#dddddd</color>
+    <color name="grey_medium_light">#bbbbbb</color>
+    <color name="grey_medium">#999999</color>
+    <color name="grey_medium_dark">#666666</color>
+    <color name="grey_dark">#333333</color>
+    <color name="grey_extra_dark">#222222</color>
+
+    <color name="semi_transparent_blue_extra_light">#ccc8eefc</color>
+    <color name="translucent_grey_extra_dark">#80222222</color>
+    <color name="translucent_grey_light">#80dddddd</color>
+    <color name="translucent_grey_extra_light">#80eeeeee</color>
+    <color name="translucent_grey_medium_light">#80bbbbbb</color>
+
+    <!-- native reader colors -->
+    <color name="reader_divider_grey">@color/grey_extra_light</color>
+    <color name="reader_hyperlink">@color/blue_medium</color>
+
+    <!-- comment status colors -->
+    <color name="comment_status_unapproved">@color/orange_medium</color>
+    <color name="comment_status_spam">#dd3d36</color>
+
+    <!-- NUX Colors -->
+    <color name="nux_grey_button">#bbdded</color>
+    <color name="nux_alert_bg">#EE000000</color>
+    <color name="nux_background">@color/blue_new_kid</color>
+    <color name="nux_eye_icon_color_closed">#c7c7c7</color>
+    <color name="nux_eye_icon_color_open">@color/blue_light</color>
+
+    <!-- tints -->
+    <color name="post_detail_icon_tint">#646464</color>
+
+    <!-- calypso colors -->
+    <!-- If you are changing these colors, please update them in NotificationsConstants as well -->
+    <color name="calypso_blue_unread">#00aadc</color>
+    <color name="calypso_blue_dark">#324155</color>
+    <color name="calypso_grey">#aac0cf</color>
+    <color name="calypso_blue">#90aec2</color>
+    <color name="calypso_blue_border">#d2dee6</color>
+    <color name="calypso_blue_light">#e8f0f5</color>
+    <color name="calypso_orange_light">#fff8e5</color>
+    <color name="calypso_orange">#ffba00</color>
+    <color name="calypso_orange_dark">#f0821e</color>
+</resources>
