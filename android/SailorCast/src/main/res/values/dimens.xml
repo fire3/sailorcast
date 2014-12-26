@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="settings_padding">12dp</dimen>
     <dimen name="settings_list_item_padding">12dp</dimen>
     <dimen name="format_bar_height">40dp</dimen>
     <dimen name="category_row_height">60dp</dimen>
     <dimen name="category_parent_spinner_row_height">40dp</dimen>
     <dimen name="toolbar_height">48dp</dimen>
-
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_padding">10dp</dimen>
     <dimen name="fab_margin">@dimen/fab_margin_default</dimen>
     <dimen name="fab_margin_default">16dp</dimen>
     <dimen name="fab_margin_tablet">24dp</dimen>
-
     <dimen name="card_elevation">1dp</dimen>
     <dimen name="card_elevation_pressed">4dp</dimen>
-
     <dimen name="message_bar_elevation">2dp</dimen>
-
     <dimen name="drawer_width_static">300dp</dimen>
     <dimen name="drawer_row_height">40dp</dimen>
     <dimen name="drawer_icon_size">24dp</dimen>
@@ -28,28 +25,20 @@
     <dimen name="drawer_header_size">@dimen/drawer_header_size_normal</dimen>
     <dimen name="drawer_header_size_normal">92dp</dimen>
     <dimen name="drawer_header_size_tablet">128dp</dimen>
-
-	<dimen name="media_grid_local_image_width">160dp</dimen>
-	<dimen name="media_grid_progress_height">50dp</dimen>
-
+    <dimen name="media_grid_local_image_width">160dp</dimen>
+    <dimen name="media_grid_progress_height">50dp</dimen>
     <dimen name="theme_details_fragment_width">650dp</dimen>
     <dimen name="theme_details_fragment_height">450dp</dimen>
-
     <dimen name="theme_details_dialog_min_width">650dp</dimen>
     <dimen name="theme_details_dialog_height">450dp</dimen>
-
     <dimen name="action_bar_spinner_width">312dp</dimen>
     <dimen name="action_bar_spinner_y_offset">-8dp</dimen>
     <dimen name="graph_font_size">10sp</dimen>
-
     <dimen name="default_dialog_width">280dp</dimen>
-
     <dimen name="post_editor_content_side_margin">20dp</dimen>
     <dimen name="post_detail_button_size">48dp</dimen>
 
-    <!--
-        native reader dimens
-    -->
+<!--         native reader dimens -->
     <dimen name="margin_extra_small">2dp</dimen>
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_medium">8dp</dimen>
@@ -75,23 +64,18 @@
 
     <!-- padding inside the card (space between card border and card content) -->
     <dimen name="reader_card_content_padding">16dp</dimen>
-
     <dimen name="text_sz_small">12sp</dimen>
     <dimen name="text_sz_medium">14sp</dimen>
     <dimen name="text_sz_large">16sp</dimen>
     <dimen name="text_sz_extra_large">20sp</dimen>
-
     <dimen name="avatar_sz_small">32dp</dimen>
     <dimen name="avatar_sz_medium">48dp</dimen>
     <dimen name="avatar_sz_large">64dp</dimen>
-
     <dimen name="reader_button_icon">48dp</dimen>
-
     <dimen name="reader_featured_image_height_default">220dp</dimen>
     <dimen name="reader_featured_image_height_tablet">280dp</dimen>
     <dimen name="reader_featured_image_height_tablet_large">340dp</dimen>
     <dimen name="reader_featured_image_height">@dimen/reader_featured_image_height_default</dimen>
-
     <dimen name="reader_header_divider_height">2dp</dimen>
 
     <!-- margin to use when indenting comment replies under their parents -->
@@ -99,14 +83,12 @@
 
     <!-- max size for images in Reader comments -->
     <dimen name="reader_comment_max_image_size">160dp</dimen>
-
     <dimen name="empty_list_title_text_size">24sp</dimen>
     <dimen name="empty_list_description_text_size">18sp</dimen>
     <dimen name="empty_list_title_side_margin">32dp</dimen>
     <dimen name="empty_list_title_bottom_margin">8dp</dimen>
     <dimen name="empty_list_description_bottom_margin">8dp</dimen>
     <dimen name="empty_list_description_side_margin">48dp</dimen>
-
     <dimen name="nux_title_font_size">28sp</dimen>
     <dimen name="nux_edit_field_font_size">16sp</dimen>
     <dimen name="nux_button_height">50dp</dimen>
@@ -119,11 +101,12 @@
     <dimen name="notifications_adjusted_font_margin">10dp</dimen>
     <dimen name="comment_user_margin_adjustment">-6dp</dimen>
     <dimen name="comment_snippet_margin_adjustment">15dp</dimen>
-
     <dimen name="progress_bar_height">3dp</dimen>
 
     <!-- stats -->
     <dimen name="stats_button_corner_radius">4dp</dimen>
     <dimen name="stats_barchart_height">128dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 </resources>

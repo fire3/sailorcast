@@ -11,5 +11,6 @@
     <string name="close_drawer">关闭抽屉菜单</string>
     <string name="reader_toast_err_generic">打开阅读器错误</string>
     <string name="settings">设置</string>
+    <string name="title_activity_search">SearchActivity</string>
 
 </resources>
