@@ -3,19 +3,23 @@ package com.crixmod.sailorcast;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SohuApi;
+import com.crixmod.sailorcast.siteapi.YouKuApi;
 import com.crixmod.sailorcast.ui.SCDrawerActivity;
 
 import java.util.ArrayList;
 
 
-public class MainActivity extends SCDrawerActivity implements OnSearchRequestListener {
+public class MainActivity extends SCDrawerActivity
+        implements OnSearchRequestListener,OnGetAlbumDescListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,12 +33,9 @@ public class MainActivity extends SCDrawerActivity implements OnSearchRequestLis
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-        SohuApi api = new SohuApi();
-        try {
-            api.doSearch("神雕侠侣",this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        new SohuApi().doSearch("神雕",this);
+        new YouKuApi().doSearch("海贼", this);
+        new YouKuApi().doSearch("神雕", this);
     }
 
 
@@ -53,10 +54,23 @@ public class MainActivity extends SCDrawerActivity implements OnSearchRequestLis
     @Override
     public void onSearchSuccess(SCAlbums albums) {
         albums.debugLog();
+        for (int i = 0; i < albums.size(); i++) {
+            new YouKuApi().doGetAlbumDesc(albums.get(i),this);
+        }
     }
 
     @Override
-    public void onSearchFailed() {
+    public void onSearchFailed(String failReason) {
+
+    }
+
+    @Override
+    public void onGetAlbumDescSuccess(SCAlbum album) {
+        Log.d("fire3", album.toString());
+    }
+
+    @Override
+    public void onGetAlbumDescFailed(String failReason) {
 
     }
 }

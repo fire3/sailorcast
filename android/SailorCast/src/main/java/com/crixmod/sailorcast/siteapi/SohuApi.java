@@ -11,6 +11,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
@@ -25,9 +26,16 @@ public class SohuApi extends BaseSiteApi {
     private final static String API_SEARCH = "http://api.tv.sohu.com/v4/search/album.json?o=&all=0&ds=&" + API_KEY + "&key=";
 
     @Override
-    public void doSearch(String key, final OnSearchRequestListener listener) throws Exception {
+    public void doSearch(String key, final OnSearchRequestListener listener) {
 
-        String searchKey = URLEncoder.encode(key, "UTF-8");
+        String searchKey = null;
+        try {
+            searchKey = URLEncoder.encode(key, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            listener.onSearchFailed("Error search key");
+            e.printStackTrace();
+            return;
+        }
         Request request = new Request.Builder()
                 .url(API_SEARCH + searchKey)
                 .build();
@@ -35,15 +43,29 @@ public class SohuApi extends BaseSiteApi {
             @Override
             public void onFailure(Request request, IOException e) {
                 e.printStackTrace();
+                listener.onSearchFailed("http failure");
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            public void onResponse(Response response) {
+                if (!response.isSuccessful()) {
+                    listener.onSearchFailed("response failed");
+                    return;
+                }
                 SearchResults results = SailorCast.getGson().fromJson(response.body().charStream(), SearchResults.class);
                 listener.onSearchSuccess(toSCAlbums(results));
             }
         });
+    }
+
+    @Override
+    public void doGetAlbumVideos(SCAlbum album, OnGetAlbumVideosListener listener) {
+
+    }
+
+    @Override
+    public void doGetAlbumDesc(SCAlbum album, OnGetAlbumDescListener listener) {
+
     }
 
     private SCAlbums toSCAlbums(SearchResults results) {
@@ -59,9 +81,7 @@ public class SohuApi extends BaseSiteApi {
             sa.setMainActor(a.getMainActor());
             sa.setTitle(a.getAlbumName());
             sa.setSubTitle(a.getTip());
-            sa.setAlbumId((int)(long)a.getAid());
-            String url = API_ALBUM_INFO + a.getAid() + ".json?" + API_KEY;
-            sa.setApiUrl(url);
+            sa.setAlbumId(a.getAid().toString());
             albums.add(sa);
         }
 

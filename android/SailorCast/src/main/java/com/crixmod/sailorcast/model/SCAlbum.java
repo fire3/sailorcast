@@ -4,7 +4,7 @@ package com.crixmod.sailorcast.model;
  * Created by fire3 on 2014/12/26.
  */
 public class SCAlbum {
-    private Integer mAlbumId = 0;
+    private String mAlbumId = null;
     private Integer mVideosCount = 0;
     private String mTitle = null;
     private String mSubTitle = null;
@@ -14,16 +14,18 @@ public class SCAlbum {
     private String mHorImageUrl = null;
     private String mDesc = null;
     private SCSite mSite = new SCSite(SCSite.UNKNOWN);
-    private String mApiUrl = null;
+    private String mTip = null;
+
+    private SCVideos scVideos = null;
 
     public SCAlbum() {
     }
 
-    public Integer getAlbumId() {
+    public String getAlbumId() {
         return mAlbumId;
     }
 
-    public void setAlbumId(Integer mAlbumId) {
+    public void setAlbumId(String mAlbumId) {
         this.mAlbumId = mAlbumId;
     }
 
@@ -99,14 +101,22 @@ public class SCAlbum {
         this.mDesc = mDesc;
     }
 
-    public String getApiUrl() {
-        return mApiUrl;
+
+    public String getTip() {
+        return mTip;
     }
 
-    public void setApiUrl(String mApiUrl) {
-        this.mApiUrl = mApiUrl;
+    public void setTip(String mTip) {
+        this.mTip = mTip;
     }
 
+    public SCVideos getVideos() {
+        return scVideos;
+    }
+
+    public void setVideos(SCVideos scVideos) {
+        this.scVideos = scVideos;
+    }
 
     @Override
     public String toString() {
@@ -120,8 +130,8 @@ public class SCAlbum {
                 ", mVerImageUrl='" + mVerImageUrl + '\'' +
                 ", mHorImageUrl='" + mHorImageUrl + '\'' +
                 ", mDesc='" + mDesc + '\'' +
+                ", mTip='" + mTip + '\'' +
                 ", mSite=" + mSite +
-                ", mApiUrl='" + mApiUrl + '\'' +
                 '}';
     }
 }

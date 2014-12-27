@@ -10,5 +10,5 @@ import java.util.ArrayList;
  */
 public interface OnSearchRequestListener {
     public void onSearchSuccess(SCAlbums albums);
-    public void onSearchFailed();
+    public void onSearchFailed(String failReason);
 }

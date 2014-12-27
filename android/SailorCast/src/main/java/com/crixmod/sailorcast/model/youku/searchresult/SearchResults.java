@@ -1,0 +1,132 @@
+package com.crixmod.sailorcast.model.youku.searchresult;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class SearchResults {
+
+    @Expose
+    private String status;
+    @Expose
+    private Long pg;
+    @Expose
+    private Long pz;
+    @Expose
+    private Long total;
+    @Expose
+    private List<Result> results = new ArrayList<Result>();
+    @SerializedName("qc_str")
+    @Expose
+    private String qcStr;
+
+    /**
+     *
+     * @return
+     * The status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     *
+     * @param status
+     * The status
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     *
+     * @return
+     * The pg
+     */
+    public Long getPg() {
+        return pg;
+    }
+
+    /**
+     *
+     * @param pg
+     * The pg
+     */
+    public void setPg(Long pg) {
+        this.pg = pg;
+    }
+
+    /**
+     *
+     * @return
+     * The pz
+     */
+    public Long getPz() {
+        return pz;
+    }
+
+    /**
+     *
+     * @param pz
+     * The pz
+     */
+    public void setPz(Long pz) {
+        this.pz = pz;
+    }
+
+    /**
+     *
+     * @return
+     * The total
+     */
+    public Long getTotal() {
+        return total;
+    }
+
+    /**
+     *
+     * @param total
+     * The total
+     */
+    public void setTotal(Long total) {
+        this.total = total;
+    }
+
+    /**
+     *
+     * @return
+     * The results
+     */
+    public List<Result> getResults() {
+        return results;
+    }
+
+    /**
+     *
+     * @param results
+     * The results
+     */
+    public void setResults(List<Result> results) {
+        this.results = results;
+    }
+
+    /**
+     *
+     * @return
+     * The qcStr
+     */
+    public String getQcStr() {
+        return qcStr;
+    }
+
+    /**
+     *
+     * @param qcStr
+     * The qc_str
+     */
+    public void setQcStr(String qcStr) {
+        this.qcStr = qcStr;
+    }
+
+}
