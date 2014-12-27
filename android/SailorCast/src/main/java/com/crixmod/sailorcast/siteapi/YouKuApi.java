@@ -1,7 +1,5 @@
 package com.crixmod.sailorcast.siteapi;
 
-import android.content.Context;
-import android.net.wifi.WifiManager;
 import android.util.Log;
 
 import com.crixmod.sailorcast.SailorCast;
@@ -11,7 +9,6 @@ import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.youku.searchresult.Result;
 import com.crixmod.sailorcast.model.youku.searchresult.SearchResults;
 import com.crixmod.sailorcast.model.youku.show.ShowInfo;
-import com.sailorcast.android.util.StringUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -29,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
  */
 public class YouKuApi extends BaseSiteApi {
 
+    private static final String SUCCESS = "success";
     //YouKu Search:  SEARCH_URL_BASE + URLEncode(key) + PID + GUID
     private final String SEARCH_URL_BASE = "http://search.api.3g.youku.com/layout/android/v4/search/direct_all/";
     private final String PID = "?pid=0865e0628a79dfbb&guid=";
@@ -117,7 +115,10 @@ public class YouKuApi extends BaseSiteApi {
                     try {
                         unEscape = StringEscapeUtils.unescapeJava(response.body().string());
                         SearchResults results =  SailorCast.getGson().fromJson(unEscape, SearchResults.class);
-                        listener.onSearchSuccess(toSCAlbums(results));
+                        if(results.getStatus().equals(SUCCESS))
+                            listener.onSearchSuccess(toSCAlbums(results));
+                        else
+                            listener.onSearchFailed("search failed");
                     } catch (IOException e) {
                         listener.onSearchFailed("io Exception");
                         e.printStackTrace();
@@ -146,7 +147,7 @@ public class YouKuApi extends BaseSiteApi {
     }
 
     private void fillAlbumDesc(SCAlbum album, ShowInfo showInfo) {
-        if(showInfo.getStatus().equals("success")) {
+        if(showInfo.getStatus().equals(SUCCESS)) {
             album.setDesc(showInfo.getDetail().getDesc());
             if(showInfo.getDetail().getPerformer() != null) {
                 String actors = "";
@@ -198,15 +199,16 @@ public class YouKuApi extends BaseSiteApi {
                 try {
                     unEscape = StringEscapeUtils.unescapeJava(response.body().string());
                     ShowInfo showInfo = SailorCast.getGson().fromJson(unEscape,ShowInfo.class);
-                    fillAlbumDesc(album,showInfo);
+                    if(showInfo.getStatus().equals(SUCCESS))
+                        fillAlbumDesc(album,showInfo);
+                    else
+                        listener.onGetAlbumDescFailed("get desc failed");
                     listener.onGetAlbumDescSuccess(album);
                 } catch (IOException e) {
                     listener.onGetAlbumDescFailed("io Exception");
                     e.printStackTrace();
                 }
             }
-
-
         });
     }
 }
