@@ -5,7 +5,8 @@ package com.crixmod.sailorcast.model;
  */
 public class SCAlbum {
     private String mAlbumId = null;
-    private Integer mVideosCount = 0;
+    private Integer mVideosCount = 0;   /* 已经更新的视频数量 */
+    private Integer mVideosTotal = 0;   /* 总共的视频数量 */
     private String mTitle = null;
     private String mSubTitle = null;
     private String mDirector = null;
@@ -15,6 +16,7 @@ public class SCAlbum {
     private String mDesc = null;
     private SCSite mSite = new SCSite(SCSite.UNKNOWN);
     private String mTip = null;
+    private Boolean mIsCompleted = false;  /* 是否完结 */
 
     private SCVideos scVideos = null;
 
@@ -116,6 +118,22 @@ public class SCAlbum {
 
     public void setVideos(SCVideos scVideos) {
         this.scVideos = scVideos;
+    }
+
+    public Boolean getIsCompleted() {
+        return mIsCompleted;
+    }
+
+    public void setIsCompleted(Boolean mIsCompleted) {
+        this.mIsCompleted = mIsCompleted;
+    }
+
+    public Integer getVideosTotal() {
+        return mVideosTotal;
+    }
+
+    public void setVideosTotal(Integer mVideosTotal) {
+        this.mVideosTotal = mVideosTotal;
     }
 
     @Override

@@ -4,24 +4,23 @@ package com.crixmod.sailorcast.model;
  * Created by fire3 on 2014/12/26.
  */
 public class SCVideo {
-    Integer mVideoID = 0;
+    String mVideoID = null;
     String mVideoTitle = null;
     String mM3U8Nor = null;
     String mM3U8High = null;
     String mM3U8Super = null;
-    String mActor = null;
-    String mDirector = null;
     String mHorPic = null;
     String mVerPic = null;
-
+    String mAlbumID = null;
+    Integer mSeqInAlbum = 0;
     public SCVideo() {
     }
 
-    public Integer getVideoID() {
+    public String getVideoID() {
         return mVideoID;
     }
 
-    public void setVideoID(Integer mVideoID) {
+    public void setVideoID(String mVideoID) {
         this.mVideoID = mVideoID;
     }
 
@@ -57,22 +56,6 @@ public class SCVideo {
         this.mM3U8Super = mM3U8Super;
     }
 
-    public String getActor() {
-        return mActor;
-    }
-
-    public void setActor(String mActor) {
-        this.mActor = mActor;
-    }
-
-    public String getDirector() {
-        return mDirector;
-    }
-
-    public void setDirector(String mDirector) {
-        this.mDirector = mDirector;
-    }
-
     public String getHorPic() {
         return mHorPic;
     }
@@ -89,6 +72,15 @@ public class SCVideo {
         this.mVerPic = mVerPic;
     }
 
+    public Integer getSeqInAlbum() {
+        return mSeqInAlbum;
+    }
+
+    public void setSeqInAlbum(Integer mSeqInAlbum) {
+        this.mSeqInAlbum = mSeqInAlbum;
+    }
+
+
     @Override
     public String toString() {
         return "SCVideo{" +
@@ -97,8 +89,6 @@ public class SCVideo {
                 ", mM3U8Nor='" + mM3U8Nor + '\'' +
                 ", mM3U8High='" + mM3U8High + '\'' +
                 ", mM3U8Super='" + mM3U8Super + '\'' +
-                ", mActor='" + mActor + '\'' +
-                ", mDirector='" + mDirector + '\'' +
                 ", mHorPic='" + mHorPic + '\'' +
                 ", mVerPic='" + mVerPic + '\'' +
                 '}';

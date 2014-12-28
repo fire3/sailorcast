@@ -13,7 +13,6 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 
 /**
  * Created by fire3 on 14-12-26.
@@ -59,7 +58,7 @@ public class SohuApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetAlbumVideos(SCAlbum album, OnGetAlbumVideosListener listener) {
+    public void doGetAlbumVideos(SCAlbum album, int pageNo, int pageSize, OnGetVideosListener listener) {
 
     }
 

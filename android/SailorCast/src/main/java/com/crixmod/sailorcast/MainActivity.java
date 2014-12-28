@@ -9,7 +9,9 @@ import android.view.MenuItem;
 
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
+import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SohuApi;
 import com.crixmod.sailorcast.siteapi.YouKuApi;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends SCDrawerActivity
-        implements OnSearchRequestListener,OnGetAlbumDescListener {
+        implements OnSearchRequestListener,OnGetAlbumDescListener,OnGetVideosListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +35,7 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-        new YouKuApi().doSearch("奔跑吧兄弟", this);
+        new YouKuApi().doSearch("武媚娘", this);
     }
 
 
@@ -65,10 +67,21 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetAlbumDescSuccess(SCAlbum album) {
         Log.d("fire3", album.toString());
+        new YouKuApi().doGetAlbumVideos(album,1,10,this);
     }
 
     @Override
     public void onGetAlbumDescFailed(String failReason) {
+
+    }
+
+    @Override
+    public void onGetVideosSuccess(SCVideos videos) {
+        videos.debugLog();
+    }
+
+    @Override
+    public void onGetVideosFailed(String failReason) {
 
     }
 }
