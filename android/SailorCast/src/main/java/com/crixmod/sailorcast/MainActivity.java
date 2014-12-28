@@ -33,9 +33,7 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-//        new SohuApi().doSearch("神雕",this);
-        new YouKuApi().doSearch("海贼", this);
-        new YouKuApi().doSearch("神雕", this);
+        new YouKuApi().doSearch("奔跑吧兄弟", this);
     }
 
 

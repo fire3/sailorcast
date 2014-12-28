@@ -110,11 +110,8 @@ public class YouKuApi extends BaseSiteApi {
                         listener.onSearchFailed("http response fail");
                         return;
                     }
-
-                    String unEscape = null;
                     try {
-                        unEscape = StringEscapeUtils.unescapeJava(response.body().string());
-                        SearchResults results =  SailorCast.getGson().fromJson(unEscape, SearchResults.class);
+                        SearchResults results =  SailorCast.getGson().fromJson(response.body().string(), SearchResults.class);
                         if(results.getStatus().equals(SUCCESS))
                             listener.onSearchSuccess(toSCAlbums(results));
                         else
@@ -133,12 +130,12 @@ public class YouKuApi extends BaseSiteApi {
         for(Result r : results.getResults()) {
             if(r.getIsYouku() == 1) {
                 SCAlbum sa = new SCAlbum();
-                sa.setTitle(r.getShowname());
-                sa.setHorImageUrl(r.getShowThumburl());
-                sa.setVerImageUrl(r.getShowVthumburl());
+                sa.setTitle(StringEscapeUtils.unescapeJava(r.getShowname()));
+                sa.setHorImageUrl(StringEscapeUtils.unescapeJava(r.getShowThumburl()));
+                sa.setVerImageUrl(StringEscapeUtils.unescapeJava(r.getShowVthumburl()));
                 sa.setAlbumId(r.getShowid());
-                sa.setSubTitle(r.getSummary());
-                sa.setTip(r.getNotice());
+                sa.setSubTitle(StringEscapeUtils.unescapeJava(r.getSummary()));
+                sa.setTip(StringEscapeUtils.unescapeJava(r.getNotice()));
                 sa.setSite(new SCSite(SCSite.YOUKU));
                 albums.add(sa);
             }
@@ -148,11 +145,12 @@ public class YouKuApi extends BaseSiteApi {
 
     private void fillAlbumDesc(SCAlbum album, ShowInfo showInfo) {
         if(showInfo.getStatus().equals(SUCCESS)) {
-            album.setDesc(showInfo.getDetail().getDesc());
+            album.setDesc(StringEscapeUtils.unescapeJava(showInfo.getDetail().getDesc()));
+
             if(showInfo.getDetail().getPerformer() != null) {
                 String actors = "";
                 for (String actor : showInfo.getDetail().getPerformer()) {
-                    actors = actors + actor + " ";
+                    actors = actors + StringEscapeUtils.unescapeJava(actor) + " ";
                 }
                 album.setMainActor(actors);
             }
@@ -160,9 +158,13 @@ public class YouKuApi extends BaseSiteApi {
             if(showInfo.getDetail().getDirector() != null) {
                 String directors = "";
                 for(String d : showInfo.getDetail().getDirector()) {
-                    directors  = directors + d + " ";
+                    directors  = directors + StringEscapeUtils.unescapeJava(d) + " ";
                 }
                 album.setDirector(directors);
+            }
+
+            if(showInfo.getDetail().getEpisodeTotal() != null) {
+                album.setVideosCount(showInfo.getDetail().getEpisodeTotal());
             }
         }
     }
@@ -177,6 +179,7 @@ public class YouKuApi extends BaseSiteApi {
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
 
         String url = getShowInfoUrl(album.getAlbumId());
+        Log.d("fire3","desc Url: "  + url);
         if(url == null)
             listener.onGetAlbumDescFailed("wrong albumID");
 
@@ -195,10 +198,8 @@ public class YouKuApi extends BaseSiteApi {
                     listener.onGetAlbumDescFailed("http response fail");
                     return;
                 }
-                String unEscape = null;
                 try {
-                    unEscape = StringEscapeUtils.unescapeJava(response.body().string());
-                    ShowInfo showInfo = SailorCast.getGson().fromJson(unEscape,ShowInfo.class);
+                    ShowInfo showInfo = SailorCast.getGson().fromJson(response.body().string(),ShowInfo.class);
                     if(showInfo.getStatus().equals(SUCCESS))
                         fillAlbumDesc(album,showInfo);
                     else
@@ -211,4 +212,7 @@ public class YouKuApi extends BaseSiteApi {
             }
         });
     }
+
+
+
 }

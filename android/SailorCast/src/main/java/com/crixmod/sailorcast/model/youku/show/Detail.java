@@ -16,7 +16,7 @@ public class Detail {
     private List<String> performer = new ArrayList<String>();
     @SerializedName("episode_total")
     @Expose
-    private String episodeTotal;
+    private Integer episodeTotal;
     @SerializedName("show_videotype")
     @Expose
     private String showVideotype;
@@ -139,7 +139,7 @@ public class Detail {
      * @return
      * The episodeTotal
      */
-    public String getEpisodeTotal() {
+    public Integer getEpisodeTotal() {
         return episodeTotal;
     }
 
@@ -148,7 +148,7 @@ public class Detail {
      * @param episodeTotal
      * The episode_total
      */
-    public void setEpisodeTotal(String episodeTotal) {
+    public void setEpisodeTotal(Integer episodeTotal) {
         this.episodeTotal = episodeTotal;
     }
 

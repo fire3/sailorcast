@@ -17,10 +17,6 @@ public class SearchResults {
     private Long total;
     @Expose
     private List<Result> results = new ArrayList<Result>();
-    @SerializedName("qc_str")
-    @Expose
-    private String qcStr;
-
     /**
      *
      * @return
@@ -111,22 +107,5 @@ public class SearchResults {
         this.results = results;
     }
 
-    /**
-     *
-     * @return
-     * The qcStr
-     */
-    public String getQcStr() {
-        return qcStr;
-    }
-
-    /**
-     *
-     * @param qcStr
-     * The qc_str
-     */
-    public void setQcStr(String qcStr) {
-        this.qcStr = qcStr;
-    }
 
 }
