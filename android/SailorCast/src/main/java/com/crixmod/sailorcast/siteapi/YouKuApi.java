@@ -37,7 +37,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Created by fire4 on 2014/12/27.
+ * Created by fire3 on 2014/12/27.
  */
 public class YouKuApi extends BaseSiteApi {
 
@@ -136,7 +136,6 @@ public class YouKuApi extends BaseSiteApi {
 
         String searchUrl = getSearchUrl(key);
 
-        Log.d("fire4","searchUrl: "  + searchUrl);
         if(searchUrl == null) {
             listener.onSearchFailed("error search url");
         } else {
@@ -355,13 +354,14 @@ public class YouKuApi extends BaseSiteApi {
 
     private void setVideoM3U8(SCVideo video, JSONObject videoJson) {
 
-        //TODO: 加强错误判断
-        String vid = video.getVideoID();
         JSONObject sidData = videoJson.optJSONObject("sid_data");
+        if(sidData == null)
+            return;
+        String vid = video.getVideoID();
+        String gdid = getGUID();
         String token = sidData.optString("token");
         String oip = sidData.optString("oip");
         String sid = sidData.optString("sid");
-        String gdid = getGUID();
         String m3u8SD = null;
         String m3u8HD = null;
         String m3u8HD2 = null;
@@ -376,7 +376,8 @@ public class YouKuApi extends BaseSiteApi {
                 if (localJSON != null)
                 {
                     m3u8SD = localJSON.optString("url");
-                    getEncreptUrl(m3u8SD,vid,token,oip,sid,getGDID());
+                    String m3u8 = getEncreptUrl(m3u8SD,vid,token,oip,sid,getGDID());
+                    video.setM3U8Nor(m3u8);
                 }
             }
         }
@@ -390,7 +391,8 @@ public class YouKuApi extends BaseSiteApi {
                 if (localJSON != null)
                 {
                     m3u8HD = localJSON.optString("url");
-                    getEncreptUrl(m3u8HD,vid,token,oip,sid,getGDID());
+                    String m3u8 = getEncreptUrl(m3u8HD,vid,token,oip,sid,getGDID());
+                    video.setM3U8High(m3u8);
                 }
             }
         }
@@ -404,12 +406,12 @@ public class YouKuApi extends BaseSiteApi {
                 if (localJSON != null)
                 {
                     m3u8HD2 = localJSON.optString("url");
-                    getEncreptUrl(m3u8HD2,vid,token,oip,sid,getGDID());
+                    String m3u8 = getEncreptUrl(m3u8HD2,vid,token,oip,sid,getGDID());
+                    video.setM3U8Super(m3u8);
                 }
             }
         }
 
-        Log.d("fire4",String.format("token:%s oip:%s sid:%s gdid:%s m3u8SD:%s m3u8HD:%s m3u8HD2:%s",token,oip,sid,gdid,m3u8SD,m3u8HD,m3u8HD2));
     }
 
     private byte[] encToByteArray(String txt) {
@@ -419,9 +421,11 @@ public class YouKuApi extends BaseSiteApi {
             arrayOfByte[i] = ((byte)arrayOfChar[i]);
         return arrayOfByte;
     }
+
     private String getEncreptUrl(String url, String videoID, String token, String oip, String sid, String did)
     {
         Decryptions decryptions = new Decryptions();
+
         /*
         // 这里时测试代码，用的是youku破解出来的字符串。
         String plainTxt = "141984443099620f59ce3_XODU4MjM5NTky_9861";
@@ -438,75 +442,16 @@ public class YouKuApi extends BaseSiteApi {
         String ep;
         s = Base64.encodeToString(encToByteArray(decryptions.AESEnc(plainTxt, YOUKU_KEY)), Base64.NO_WRAP);
         ep = URLEncoder.encode(s);
-        Log.d("fire4 - plainTxt",plainTxt);
-        Log.d("fire4 - encrept",s);
-        Log.d("fire4 - ep",s);
 
-
-//        return url + "&oip=" + oip + "&sid=" + sid + "&token=" + token + "&did=" + did + "&ev=1&ctype=20&ep=" +
-        return null;
+        return url + "&oip=" + oip + "&sid=" + sid + "&token=" + token + "&did=" + did + "&ev=1&ctype=20&ep=" + ep;
     }
-
-    /*
-    -------------------------------- core
-    flag = 0 YOUKU
-    flag = 1 TUDOU
-    flag = 2 YOUKU_LIVE
-    flag = 3 TUDOU_LIVE
-
-    y_key = {1206625642, 1092691841, 3888211297, 1403752353}
-    t_key = {768304513, 3648063403, 1200350539, 1135324489}
-    y_live_key = {2380375339, 3372821835, 757854091, 3417384251}
-    t_live_key = {1307283402, 3415975219, 130748267, 1094264761}
-
-    function getConfused(flag)
-    local ftr = math.log10(1000);
-    local ftr2 = math.log10(100);
-    local key = {};
-    if flag==0 then
-            key = y_key;
-    elseif flag == 1 then
-            key = t_key;
-    elseif flag == 2 then
-            key = y_live_key;
-    elseif flag == 3 then
-            key = t_live_key;
-    end
-    local a = math.max(key[1], ftr);
-    local b = math.min(key[2], ftr2);
-    local c = math.max(key[3], ftr);
-    local d = math.min(key[4], ftr2);
-    return a, b, c, d;
-    end
-
-    function doDec(ciphertxt, len, flag)
-    dc = luajava.newInstance("com.decapi.Decryptions");
-    local L, l, R, r = getConfused(flag);
-    ret = dc:AESDec(ciphertxt, len, math.btan2(L, l, R, r));
-    return ret;
-    end
-
-    function doEnc(plaintxt, flag)
-    ec = luajava.newInstance("com.decapi.Decryptions");
-    local L, l, R, r = getConfused(flag);
-    ret = ec:AESEnc(plaintxt, math.btan2(L, l, R, r));
-    return ret;
-    end
-
-
-    private String getEncreptUrl(String url, String filedID, String token, String oip, String sid)
-    {
-
-        return Util.getEncreptUrl(url, filedID, token, oip, sid, is, getGDID());
-    }
-    */
 
     @Override
-    public void doGetVideoPlayUrl(final SCVideo video, OnGetVideoPlayUrlListener listener) {
+    public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
         String url = getVideoInfoUrl(video.getVideoID());
         Log.d("fire4 search",url);
         Request request = new Request.Builder().url(url).header(
-                "User-Agent", "Youku;4.4;Android;4.3;Coolpad 8705"
+                "User-Agent", "Youku;4.4;Android;4.3;Coolpad"
         ).build();
 
         SailorCast.getHttpClient().newCall(request).enqueue(
@@ -525,6 +470,7 @@ public class YouKuApi extends BaseSiteApi {
                             String decryptData = decrypt(encryptData);
                             JSONObject videoJson = new JSONObject(decryptData);
                             setVideoM3U8(video, videoJson);
+                            listener.onGetVideoPlayUrlSuccess(video);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

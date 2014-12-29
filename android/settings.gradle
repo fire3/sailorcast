@@ -1,2 +1,1 @@
-include ':SailorCast', ':decapi'
-include ':libs:utils:SailorCastUtils'
+include ':decapi', ':SailorCast', ':libs:utils:SailorCastUtils'

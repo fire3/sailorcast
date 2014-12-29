@@ -38,6 +38,7 @@ public class MainActivity extends SCDrawerActivity
         }
 
         new YouKuApi().doSearch("武媚娘传奇 TV版", this);
+        new YouKuApi().doSearch("功夫", this);
     }
 
 
@@ -55,7 +56,6 @@ public class MainActivity extends SCDrawerActivity
 
     @Override
     public void onSearchSuccess(SCAlbums albums) {
-        albums.debugLog();
         for (int i = 0; i < albums.size(); i++) {
             new YouKuApi().doGetAlbumDesc(albums.get(i),this);
         }
@@ -68,7 +68,6 @@ public class MainActivity extends SCDrawerActivity
 
     @Override
     public void onGetAlbumDescSuccess(SCAlbum album) {
-        Log.d("fire3", album.toString());
         new YouKuApi().doGetAlbumVideos(album,1,20,this);
     }
 
@@ -79,8 +78,9 @@ public class MainActivity extends SCDrawerActivity
 
     @Override
     public void onGetVideosSuccess(SCVideos videos) {
-        videos.debugLog();
-        new YouKuApi().doGetVideoPlayUrl(videos.get(0),this);
+        for(SCVideo v : videos) {
+            new YouKuApi().doGetVideoPlayUrl(v, this);
+        }
     }
 
     @Override
@@ -90,7 +90,7 @@ public class MainActivity extends SCDrawerActivity
 
     @Override
     public void onGetVideoPlayUrlSuccess(SCVideo video) {
-
+        Log.d("fire3",video.toString());
     }
 
     @Override
