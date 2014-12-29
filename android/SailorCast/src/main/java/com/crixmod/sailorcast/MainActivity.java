@@ -69,7 +69,7 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetAlbumDescSuccess(SCAlbum album) {
         Log.d("fire3", album.toString());
-        new YouKuApi().doGetAlbumVideos(album,1,10,this);
+        new YouKuApi().doGetAlbumVideos(album,1,20,this);
     }
 
     @Override
