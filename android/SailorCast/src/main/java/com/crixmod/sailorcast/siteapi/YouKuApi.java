@@ -61,10 +61,10 @@ public class YouKuApi extends BaseSiteApi {
     private static final String SHOW_VIDEOS_FIELDS = URLEncoder.encode("&fields=is_new|vid|titl|lim&pg=");
     private static final String SHOW_VIDEOS_PZ = "&pz=";
 
-    //得到Video描述文件接口：  VIDEO_INFO_BASE + VIDEO_FORMAT_LAN_TYPE +  getGuid() + VIDEO_ID + videoID
+    //得到Video描述文件接口：  VIDEO_INFO_BASE + getGdid() + VIDEO_FORMAT_LAN_TYPE +  getGuid() + VIDEO_ID + videoID
     //TODO: DID需要处理一下
-    private static final String VIDEO_INFO_BASE = "http://a.play.api.3g.youku.com/common/v3/play?did=386ec68f9eada164dc735c3c3bb5467b&ver=4.4&";
-    private static final String VIDEO_FORMAT_LAN_TYPE = "local_point=&audiolang=1&format=1,5,6,7,8&language=default&point=1&local_time=&local_vid=&ctype=20&pid=0865e0628a79dfbb&guid=";
+    private static final String VIDEO_INFO_BASE = "http://a.play.api.3g.youku.com/common/v3/play?ver=4.4&did=";
+    private static final String VIDEO_FORMAT_LAN_TYPE = "&local_point=&audiolang=1&format=1,5,6,7,8&language=default&point=1&local_time=&local_vid=&ctype=20&pid=0865e0628a79dfbb&guid=";
     private static final String VIDEO_ID = "&id=";
 
 
@@ -96,6 +96,18 @@ public class YouKuApi extends BaseSiteApi {
         return str;
     }
 
+    private String getGDID()
+    {
+        String str = null;
+        if ((str == null) || (str.length() <= 0))
+        {
+            str = md5(SailorCast.getMacAddress() + "&" + SailorCast.getIMEI());
+            if ((str == null) || (str.length() <= 0))
+                return "";
+        }
+        return str;
+    }
+
     private String getSearchUrl(String key) {
         try {
             return SEARCH_URL_BASE + URLEncoder.encode(key,"UTF-8") + PID + getGUID();
@@ -118,7 +130,7 @@ public class YouKuApi extends BaseSiteApi {
     }
 
     private String getVideoInfoUrl(String videoID) {
-        return (VIDEO_INFO_BASE + VIDEO_FORMAT_LAN_TYPE + getGUID() + VIDEO_ID + videoID);
+        return (VIDEO_INFO_BASE + getGDID() + VIDEO_FORMAT_LAN_TYPE + getGUID() + VIDEO_ID + videoID);
     }
 
 
