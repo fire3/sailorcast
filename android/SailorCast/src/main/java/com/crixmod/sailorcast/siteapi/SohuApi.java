@@ -4,6 +4,7 @@ import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCSite;
+import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.sohu.searchresult.Album;
 import com.crixmod.sailorcast.model.sohu.searchresult.SearchResults;
 import com.squareup.okhttp.Callback;
@@ -64,6 +65,11 @@ public class SohuApi extends BaseSiteApi {
 
     @Override
     public void doGetAlbumDesc(SCAlbum album, OnGetAlbumDescListener listener) {
+
+    }
+
+    @Override
+    public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
 
     }
 

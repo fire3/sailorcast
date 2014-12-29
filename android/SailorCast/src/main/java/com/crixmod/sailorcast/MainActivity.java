@@ -9,8 +9,10 @@ import android.view.MenuItem;
 
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
+import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SohuApi;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends SCDrawerActivity
-        implements OnSearchRequestListener,OnGetAlbumDescListener,OnGetVideosListener {
+        implements OnSearchRequestListener,OnGetAlbumDescListener,OnGetVideosListener,OnGetVideoPlayUrlListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-        new YouKuApi().doSearch("武媚娘", this);
+        new YouKuApi().doSearch("武媚娘传奇 TV版", this);
     }
 
 
@@ -78,10 +80,21 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetVideosSuccess(SCVideos videos) {
         videos.debugLog();
+        new YouKuApi().doGetVideoPlayUrl(videos.get(0),this);
     }
 
     @Override
     public void onGetVideosFailed(String failReason) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlSuccess(SCVideo video) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlFailed(String reason) {
 
     }
 }

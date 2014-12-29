@@ -1,5 +1,6 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.util.Base64;
 import android.util.Log;
 
 import com.crixmod.sailorcast.SailorCast;
@@ -24,8 +25,20 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by fire3 on 2014/12/27.
@@ -47,6 +60,12 @@ public class YouKuApi extends BaseSiteApi {
     private static final String SHOW_VIDEOS_PID = "/reverse/videos?pid=0865e0628a79dfbb&guid=";
     private static final String SHOW_VIDEOS_FIELDS = URLEncoder.encode("&fields=is_new|vid|titl|lim&pg=");
     private static final String SHOW_VIDEOS_PZ = "&pz=";
+
+    //得到Video描述文件接口：  VIDEO_INFO_BASE + VIDEO_FORMAT_LAN_TYPE +  getGuid() + VIDEO_ID + videoID
+    //TODO: DID需要处理一下
+    private static final String VIDEO_INFO_BASE = "http://a.play.api.3g.youku.com/common/v3/play?did=386ec68f9eada164dc735c3c3bb5467b&ver=4.4&";
+    private static final String VIDEO_FORMAT_LAN_TYPE = "local_point=&audiolang=1&format=1,5,6,7,8&language=default&point=1&local_time=&local_vid=&ctype=20&pid=0865e0628a79dfbb&guid=";
+    private static final String VIDEO_ID = "&id=";
 
 
     private String md5(String s) {
@@ -97,6 +116,11 @@ public class YouKuApi extends BaseSiteApi {
     private String getShowVideosUrl(String showID, int pageNo, int pageSize) {
             return (SHOW_VIDEOS_BASE + showID +  SHOW_VIDEOS_PID  + getGUID() +  SHOW_VIDEOS_FIELDS + pageNo + SHOW_VIDEOS_PZ + pageSize);
     }
+
+    private String getVideoInfoUrl(String videoID) {
+        return (VIDEO_INFO_BASE + VIDEO_FORMAT_LAN_TYPE + getGUID() + VIDEO_ID + videoID);
+    }
+
 
     @Override
     public void doSearch(String key, final OnSearchRequestListener listener) {
@@ -256,6 +280,7 @@ public class YouKuApi extends BaseSiteApi {
         });
     }
 
+
     @Override
     public void doGetAlbumVideos(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
         String url = getShowVideosUrl(album.getAlbumId(),pageNo,pageSize);
@@ -291,5 +316,65 @@ public class YouKuApi extends BaseSiteApi {
 
     }
 
+    private String decrypt(String encrypted) {
+        String password = "qwer3as2jin4fdsa";
+        String ALG = "AES/ECB/NoPadding";
+        byte[] keyStart;
+        byte[] encryptedRaw = Base64.decode(encrypted,Base64.DEFAULT);
+        try {
+            keyStart = password.getBytes("utf-8");
+            SecretKeySpec skeySpec = new SecretKeySpec(keyStart, ALG);
+            Cipher cipher = Cipher.getInstance(ALG);
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+            byte[] decrypted = cipher.doFinal(encryptedRaw);
+            return new String(decrypted,"UTF-8");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
+        String url = getVideoInfoUrl(video.getVideoID());
+        Log.d("fire3 search",url);
+        Request request = new Request.Builder().url(url).header(
+                "User-Agent" ,"Youku;4.4;Android;4.3;Coolpad 8705"
+        ).build();
+
+        SailorCast.getHttpClient().newCall(request).enqueue(
+                new Callback() {
+                    @Override
+                    public void onFailure(Request request, IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        String ret = response.body().string();
+                        try {
+                            JSONObject jObject = new JSONObject(ret);
+                            String encryptData = jObject.getString("data");
+                            String decryptData = decrypt(encryptData);
+
+                            Log.d("fire3", encryptData);
+                            Log.d("fire3", decryptData);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+    }
 
 }

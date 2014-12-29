@@ -17,6 +17,7 @@ public class SailorCast extends Application {
     private static Context mContext;
     private static OkHttpClient mHttpClient;
     private static Gson mGson;
+    private static String FLV_API = "http://api.flvxz.com/token/9058e263a95c0dfbc1bdac83f4132822";
     @Override
     public void onCreate() {
         super.onCreate();
