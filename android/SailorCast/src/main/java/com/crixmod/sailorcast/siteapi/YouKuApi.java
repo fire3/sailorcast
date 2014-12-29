@@ -19,25 +19,21 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -356,8 +352,64 @@ public class YouKuApi extends BaseSiteApi {
         return null;
     }
 
+    private void setVideoM3U8(SCVideo video, JSONObject videoJson) {
+
+        //TODO: 加强错误判断
+        String vid = video.getVideoID();
+        JSONObject sidData = videoJson.optJSONObject("sid_data");
+        String token = sidData.optString("token");
+        String oip = sidData.optString("oip");
+        String sid = sidData.optString("sid");
+        String gdid = getGUID();
+        String m3u8SD = null;
+        String m3u8HD = null;
+        String m3u8HD2 = null;
+        JSONObject results = videoJson.optJSONObject("results");
+
+        if (results.has("m3u8_flv"))
+        {
+            JSONArray jsonArray = results.optJSONArray("m3u8_flv");
+            if ((jsonArray != null) && (jsonArray.length() > 0))
+            {
+                JSONObject localJSON = jsonArray.optJSONObject(0);
+                if (localJSON != null)
+                {
+                    m3u8SD = localJSON.optString("url");
+                }
+            }
+        }
+
+        if (results.has("m3u8_mp4"))
+        {
+            JSONArray jsonArray = results.optJSONArray("m3u8_mp4");
+            if ((jsonArray != null) && (jsonArray.length() > 0))
+            {
+                JSONObject localJSON = jsonArray.optJSONObject(0);
+                if (localJSON != null)
+                {
+                    m3u8HD = localJSON.optString("url");
+                }
+            }
+        }
+
+        if (results.has("m3u8_hd"))
+        {
+            JSONArray jsonArray = results.optJSONArray("m3u8_hd");
+            if ((jsonArray != null) && (jsonArray.length() > 0))
+            {
+                JSONObject localJSON = jsonArray.optJSONObject(0);
+                if (localJSON != null)
+                {
+                    m3u8HD2 = localJSON.optString("url");
+                }
+            }
+        }
+
+        Log.d("fire3",String.format("token:%s oip:%s sid:%s gdid:%s m3u8SD:%s m3u8HD:%s m3u8HD2:%s",token,oip,sid,gdid,m3u8SD,m3u8HD,m3u8HD2));
+    }
+
     @Override
-    public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
+    public void doGetVideoPlayUrl(final SCVideo video, OnGetVideoPlayUrlListener listener) {
         String url = getVideoInfoUrl(video.getVideoID());
         Log.d("fire3 search",url);
         Request request = new Request.Builder().url(url).header(
@@ -378,9 +430,8 @@ public class YouKuApi extends BaseSiteApi {
                             JSONObject jObject = new JSONObject(ret);
                             String encryptData = jObject.getString("data");
                             String decryptData = decrypt(encryptData);
-
-                            Log.d("fire3", encryptData);
-                            Log.d("fire3", decryptData);
+                            JSONObject videoJson = new JSONObject(decryptData);
+                            setVideoM3U8(video, videoJson);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
