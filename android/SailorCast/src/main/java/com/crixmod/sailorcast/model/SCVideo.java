@@ -13,6 +13,7 @@ public class SCVideo {
     String mVerPic = null;
     String mAlbumID = null;
     Integer mSeqInAlbum = 0;
+    SCSite mSCSite = new SCSite(SCSite.UNKNOWN);
     public SCVideo() {
     }
 
@@ -80,17 +81,35 @@ public class SCVideo {
         this.mSeqInAlbum = mSeqInAlbum;
     }
 
+    public String getAlbumID() {
+        return mAlbumID;
+    }
+
+    public void setAlbumID(String mAlbumID) {
+        this.mAlbumID = mAlbumID;
+    }
+
+    public SCSite getSite() {
+        return mSCSite;
+    }
+
+    public void setSCSite(int siteID) {
+        this.mSCSite = new SCSite(siteID);
+    }
 
     @Override
     public String toString() {
         return "SCVideo{" +
-                "mVideoID=" + mVideoID +
+                "mVideoID='" + mVideoID + '\'' +
                 ", mVideoTitle='" + mVideoTitle + '\'' +
                 ", mM3U8Nor='" + mM3U8Nor + '\'' +
                 ", mM3U8High='" + mM3U8High + '\'' +
                 ", mM3U8Super='" + mM3U8Super + '\'' +
                 ", mHorPic='" + mHorPic + '\'' +
                 ", mVerPic='" + mVerPic + '\'' +
+                ", mAlbumID='" + mAlbumID + '\'' +
+                ", mSeqInAlbum=" + mSeqInAlbum +
+                ", mSCSite=" + mSCSite +
                 '}';
     }
 }

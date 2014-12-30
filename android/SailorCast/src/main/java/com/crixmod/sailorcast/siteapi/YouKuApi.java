@@ -14,6 +14,7 @@ import com.crixmod.sailorcast.model.youku.searchresult.SearchResults;
 import com.crixmod.sailorcast.model.youku.show.ShowInfo;
 import com.crixmod.sailorcast.model.youku.show.ShowVideos;
 import com.crixmod.sailorcast.model.youku.show.ShowVideosResult;
+import com.crixmod.sailorcast.utils.HttpUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -139,10 +140,7 @@ public class YouKuApi extends BaseSiteApi {
         if(searchUrl == null) {
             listener.onSearchFailed("error search url");
         } else {
-            Request request = new Request.Builder()
-                    .url(searchUrl)
-                    .build();
-            SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
+            HttpUtils.asyncGet(searchUrl,new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
                     e.printStackTrace();
@@ -182,7 +180,7 @@ public class YouKuApi extends BaseSiteApi {
                 sa.setAlbumId(r.getShowid());
                 sa.setSubTitle(StringEscapeUtils.unescapeJava(r.getSummary()));
                 sa.setTip(StringEscapeUtils.unescapeJava(r.getNotice()));
-                sa.setSite(new SCSite(SCSite.YOUKU));
+                sa.setSite(SCSite.YOUKU);
                 albums.add(sa);
             }
         }
@@ -218,8 +216,7 @@ public class YouKuApi extends BaseSiteApi {
 
     private void getAlbumUpdateVideosCount(final SCAlbum album, final OnGetAlbumDescListener listener) {
         String url = getShowVideosUrl(album.getAlbumId(),1,1);
-        Request request = new Request.Builder().url(url).build();
-        SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
+        HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 e.printStackTrace();
@@ -251,14 +248,9 @@ public class YouKuApi extends BaseSiteApi {
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
 
         String url = getShowInfoUrl(album.getAlbumId());
-        Log.d("fire4","desc Url: "  + url);
         if(url == null)
             listener.onGetAlbumDescFailed("wrong albumID");
-
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
+        HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 listener.onGetAlbumDescFailed("http failure");
@@ -292,8 +284,7 @@ public class YouKuApi extends BaseSiteApi {
     @Override
     public void doGetAlbumVideos(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
         String url = getShowVideosUrl(album.getAlbumId(),pageNo,pageSize);
-        Request request = new Request.Builder().url(url).build();
-        SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
+        HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 e.printStackTrace();
@@ -316,6 +307,8 @@ public class YouKuApi extends BaseSiteApi {
                     v.setSeqInAlbum(r.getShowVideoseq());
                     v.setVideoTitle(r.getTitle());
                     v.setHorPic(r.getImg());
+                    v.setSCSite(SCSite.YOUKU);
+                    v.setAlbumID(album.getAlbumId());
                     scVideos.add(v);
                 }
                 listener.onGetVideosSuccess(scVideos);
@@ -449,13 +442,11 @@ public class YouKuApi extends BaseSiteApi {
     @Override
     public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
         String url = getVideoInfoUrl(video.getVideoID());
-        Log.d("fire4 search",url);
         Request request = new Request.Builder().url(url).header(
                 "User-Agent", "Youku;4.4;Android;4.3;Coolpad"
         ).build();
 
-        SailorCast.getHttpClient().newCall(request).enqueue(
-                new Callback() {
+        HttpUtils.asyncGet(request, new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
 

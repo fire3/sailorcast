@@ -24,10 +24,11 @@ public class SCSite {
             mSiteName = "Unknown";
     }
 
+    public int getSiteID() {
+        return mSiteID;
+    }
     @Override
     public String toString() {
-        return "SCSite{" +
-                "mSiteID=" + mSiteName +
-                '}';
+        return mSiteName;
     }
 }

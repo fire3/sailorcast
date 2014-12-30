@@ -9,12 +9,14 @@ import android.view.MenuItem;
 
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
+import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.siteapi.SohuApi;
 import com.crixmod.sailorcast.siteapi.YouKuApi;
 import com.crixmod.sailorcast.ui.SCDrawerActivity;
@@ -37,8 +39,10 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-        new YouKuApi().doSearch("武媚娘传奇 TV版", this);
-        new YouKuApi().doSearch("功夫", this);
+//        new YouKuApi().doSearch("武媚娘传奇 TV版", this);
+//        new YouKuApi().doSearch("功夫", this);
+        SiteApi.doSearch(SiteApi.SITE_ID_SOHU,"巧虎",this);
+        SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
     }
 
 
@@ -56,8 +60,8 @@ public class MainActivity extends SCDrawerActivity
 
     @Override
     public void onSearchSuccess(SCAlbums albums) {
-        for (int i = 0; i < albums.size(); i++) {
-            new YouKuApi().doGetAlbumDesc(albums.get(i),this);
+        for(SCAlbum album : albums) {
+            SiteApi.doGetAlbumDesc(album,this);
         }
     }
 
@@ -68,7 +72,8 @@ public class MainActivity extends SCDrawerActivity
 
     @Override
     public void onGetAlbumDescSuccess(SCAlbum album) {
-        new YouKuApi().doGetAlbumVideos(album,1,20,this);
+        Log.d("fire3",album.toString());
+        SiteApi.doGetAlbumVideos(album,1,20,this);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetVideosSuccess(SCVideos videos) {
         for(SCVideo v : videos) {
-            new YouKuApi().doGetVideoPlayUrl(v, this);
+            SiteApi.doGetVideoPlayUrl(v,this);
         }
     }
 

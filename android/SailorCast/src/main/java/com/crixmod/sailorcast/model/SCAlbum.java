@@ -91,8 +91,8 @@ public class SCAlbum {
         return mSite;
     }
 
-    public void setSite(SCSite mSite) {
-        this.mSite = mSite;
+    public void setSite(int siteID) {
+        this.mSite = new SCSite(siteID);
     }
 
     public String getDesc() {

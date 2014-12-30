@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Album {
+public class SearchResultAlbum {
 
     @SerializedName("hor_big_pic")
     @Expose
