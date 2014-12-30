@@ -8,6 +8,7 @@ public class SCSite {
     public static int SOHU = 1;
     public static int IQIYI = 2;
     public static int YOUKU = 3;
+    public static int LETV = 4;
     private String mSiteName;
 
     private int mSiteID;
@@ -20,6 +21,8 @@ public class SCSite {
             mSiteName = "Youku";
         if(mSiteID == IQIYI)
             mSiteName = "IQiyi";
+        if(mSiteID == LETV)
+            mSiteName = "Letv";
         if(mSiteID == UNKNOWN)
             mSiteName = "Unknown";
     }

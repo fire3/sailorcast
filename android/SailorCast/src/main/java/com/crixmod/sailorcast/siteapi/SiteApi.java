@@ -10,12 +10,15 @@ import com.crixmod.sailorcast.model.SCVideo;
 public class SiteApi {
     public static int SITE_ID_YOUKU = SCSite.YOUKU;
     public static int SITE_ID_SOHU = SCSite.SOHU;
+    public static int SITE_ID_LETV = SCSite.LETV;
 
     public static void doSearch(int siteID, String key, OnSearchRequestListener listener) {
         if(siteID == SITE_ID_SOHU)
             new SohuApi().doSearch(key,listener);
         if(siteID == SITE_ID_YOUKU)
             new YouKuApi().doSearch(key,listener);
+        if(siteID == SITE_ID_LETV)
+            new LetvApi().doSearch(key,listener);
 
     }
 
