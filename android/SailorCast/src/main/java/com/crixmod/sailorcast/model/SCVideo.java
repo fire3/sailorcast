@@ -13,6 +13,7 @@ public class SCVideo {
     String mVerPic = null;
     String mAlbumID = null;
     Integer mSeqInAlbum = 0;
+    String mVideoMID = null; //This is for Letv
     SCSite mSCSite = new SCSite(SCSite.UNKNOWN);
     public SCVideo() {
     }
@@ -95,6 +96,15 @@ public class SCVideo {
 
     public void setSCSite(int siteID) {
         this.mSCSite = new SCSite(siteID);
+    }
+
+
+    public String getVideoMID() {
+        return mVideoMID;
+    }
+
+    public void setVideoMID(String mVideoMID) {
+        this.mVideoMID = mVideoMID;
     }
 
     @Override

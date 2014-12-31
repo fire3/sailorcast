@@ -8,6 +8,7 @@ import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.utils.HttpUtils;
+import com.crixmod.sailorcast.utils.MD5;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -41,6 +42,70 @@ public class LetvApi extends BaseSiteApi{
     private final static String ALBUM_VIDEOS_ORDER_ASCENDING = "-1";
     private final static String ALBUM_VIDEOS_ORDER_DESCENDING = "1";
 
+    private final static String SERVER_TIME_URL = "http://dynamic.meizi.app.m.letv.com/" +
+            "android/dynamic.php?mod=mob&ctl=timestamp&act=timestamp&pcode=010410000&version=2.1";
+
+    private final static String VIDEO_FILE_URL_FORMAT = "http://dynamic.meizi.app.m.letv.com/android/dynamic.php?mmsid=" +
+            "%s&playid=0&tss=ios&pcode=010410000&version=2.1&tm=%s&key=%s&vid=" +
+            "%s&ctl=videofile&mod=minfo&act=index";
+    //arg: mmsid currentServerTime key vid
+
+    private static long tmOffset = Long.MAX_VALUE;
+
+    public LetvApi() {
+        doUpdateTmOffset();
+    }
+
+    private synchronized void updateTmOffset(int serverTime) {
+        if(tmOffset == Long.MAX_VALUE) {
+            tmOffset = (System.currentTimeMillis() / 1000) - serverTime;
+            Log.d("fire3","offset: " + tmOffset);
+        }
+    }
+
+    private String getCurrentServerTime() {
+        if(tmOffset != Long.MAX_VALUE)
+            return ""+ (System.currentTimeMillis()/1000 - tmOffset);
+        else
+            return null;
+    }
+
+    private synchronized void doUpdateTmOffset() {
+        String url = SERVER_TIME_URL;
+
+        if(tmOffset != Long.MAX_VALUE) {
+            return;
+        }
+
+        HttpUtils.asyncGet(url,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                try {
+                    JSONObject json = new JSONObject(response.body().string());
+                    String serverTime = json.getString("time");
+                    updateTmOffset(Integer.parseInt(serverTime));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private String generateVideoFileKey(SCVideo video, String currentServerTime)
+    {
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append(video.getVideoMID());
+        localStringBuilder.append(",");
+        localStringBuilder.append(currentServerTime);
+        localStringBuilder.append(",");
+        localStringBuilder.append("bh65OzqYYYmHRQ");
+        return MD5.toMd5(localStringBuilder.toString());
+    }
 
     private SCAlbums parseSearchResult(String result) {
         try {
@@ -177,6 +242,9 @@ public class LetvApi extends BaseSiteApi{
                                     v.setSeqInAlbum(Integer.parseInt(j.getString("episode")));
                                 else
                                     v.setSeqInAlbum(pageNo * pageSize + i);
+                                //MID设置是Letv解析真实链接必须的。
+                                if(!j.optString("mid").isEmpty())
+                                    v.setVideoMID(j.optString("mid"));
 
                                 videos.add(v);
                             }
@@ -235,6 +303,23 @@ public class LetvApi extends BaseSiteApi{
 
     @Override
     public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
+        if(tmOffset != Long.MAX_VALUE) {
+            String currentTm = getCurrentServerTime();
+            String url = String.format(VIDEO_FILE_URL_FORMAT, video.getVideoMID(),
+                    currentTm, generateVideoFileKey(video,currentTm),video.getVideoID());
+            HttpUtils.asyncGet(url,new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
 
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String ret = response.body().string();
+                    Log.d("fire3",ret);
+                }
+            });
+        }
     }
+
 }
