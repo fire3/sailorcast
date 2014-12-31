@@ -65,7 +65,6 @@ public class LetvApi extends BaseSiteApi{
     private synchronized void updateTmOffset(int serverTime) {
         if(tmOffset == Long.MAX_VALUE) {
             tmOffset = (System.currentTimeMillis() / 1000) - serverTime;
-            Log.d("fire3","offset: " + tmOffset);
         }
     }
 
@@ -333,7 +332,6 @@ public class LetvApi extends BaseSiteApi{
                         video.setM3U8Nor(location);
                         listener.onGetVideoPlayUrlNormal(location);
                     }
-                    Log.d("fire3",location);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -366,22 +364,52 @@ public class LetvApi extends BaseSiteApi{
                         if(body.optJSONObject("mp4_350") != null) {
                             //Normal
                             JSONObject mp4 = body.optJSONObject("mp4_350");
+                            //这里优先选择mainUrl即可
+                            String mp4Url = null;
                             if(mp4.optString("mainUrl") != null) {
-                                String mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
-                                getRealLink(video,listener,mp4Url,QUALITY_NORMAL);
+                                mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl0") != null) {
+                                mp4Url = mp4.optString("backUrl0") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl1") != null) {
+                                mp4Url = mp4.optString("backUrl1") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl2") != null) {
+                                mp4Url = mp4.optString("backUrl2") + VIDEO_REAL_LINK_APPENDIX ;
                             }
+                            if(mp4Url != null)
+                                getRealLink(video,listener,mp4Url,QUALITY_NORMAL);
                         }
                         if(body.optJSONObject("mp4_1000") != null) {
-                            //Normal
+                            //High
                             JSONObject mp4 = body.optJSONObject("mp4_1000");
-                            String mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
-                            getRealLink(video, listener, mp4Url,QUALITY_HIGH);
+                            String mp4Url = null;
+                            if(mp4.optString("mainUrl") != null) {
+                                mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl0") != null) {
+                                mp4Url = mp4.optString("backUrl0") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl1") != null) {
+                                mp4Url = mp4.optString("backUrl1") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl2") != null) {
+                                mp4Url = mp4.optString("backUrl2") + VIDEO_REAL_LINK_APPENDIX ;
+                            }
+                            if(mp4Url != null)
+                                getRealLink(video,listener,mp4Url,QUALITY_HIGH);
+
                         }
                         if(body.optJSONObject("mp4_1300") != null) {
-                            //Normal
+                            //Super
                             JSONObject mp4 = body.optJSONObject("mp4_1300");
-                            String mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
-                            getRealLink(video,listener,mp4Url,QUALITY_SUPER);
+                            String mp4Url = null;
+                            if(mp4.optString("mainUrl") != null) {
+                                mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl0") != null) {
+                                mp4Url = mp4.optString("backUrl0") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl1") != null) {
+                                mp4Url = mp4.optString("backUrl1") + VIDEO_REAL_LINK_APPENDIX ;
+                            } else if (mp4.optString("backUrl2") != null) {
+                                mp4Url = mp4.optString("backUrl2") + VIDEO_REAL_LINK_APPENDIX ;
+                            }
+                            if(mp4Url != null)
+                                getRealLink(video,listener,mp4Url,QUALITY_SUPER);
                         }
 
                     } catch (JSONException e) {
