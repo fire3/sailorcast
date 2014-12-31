@@ -196,10 +196,10 @@ public class LetvApi extends BaseSiteApi{
         String url;
         if(album.getLetvStyle().equals("2"))
             url = String.format(ALBUM_VIDEOS_URL_FORMAT,album.getAlbumId(),
-                    Integer.toString(pageNo),Integer.toString(pageSize),order,"0");
+                    Integer.toString(pageNo),Integer.toString(pageSize),order,"1");
         else
             url = String.format(ALBUM_VIDEOS_URL_FORMAT,album.getAlbumId(),
-                    Integer.toString(pageNo),Integer.toString(pageSize),order,"1");
+                    Integer.toString(pageNo),Integer.toString(pageSize),order,"0");
 
         HttpUtils.asyncGet(url,new Callback() {
             @Override
@@ -236,10 +236,7 @@ public class LetvApi extends BaseSiteApi{
                                         v.setHorPic(p.getString("120*90"));
                                 }
 
-                                if(!j.optString("episode").isEmpty())
-                                    v.setSeqInAlbum(Integer.parseInt(j.getString("episode")));
-                                else
-                                    v.setSeqInAlbum(pageNo * pageSize + i);
+                                v.setSeqInAlbum(pageNo * pageSize + i);
                                 //MID设置是Letv解析真实链接必须的。
                                 if(!j.optString("mid").isEmpty())
                                     v.setLetvVideoMID(j.optString("mid"));
@@ -270,18 +267,14 @@ public class LetvApi extends BaseSiteApi{
                     album.setSubTitle(albumJsonBody.getString("subTitle"));
                 if(!albumJsonBody.optString("style").isEmpty())
                     album.setLetvStyle(albumJsonBody.getString("style"));
-                if (!albumJsonBody.optString("episode").isEmpty()) {
-                    album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("episode")));
+                if (!albumJsonBody.optString("platformVideoNum").isEmpty()) {
+                    album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("platformVideoNum")));
                 }
-                if (!albumJsonBody.optString("nowEpisodes").isEmpty()) {
-                    album.setVideosCount(Integer.parseInt(albumJsonBody.getString("nowEpisodes")));
+                if (!albumJsonBody.optString("platformVideoInfo").isEmpty()) {
+                    album.setVideosCount(Integer.parseInt(albumJsonBody.getString("platformVideoInfo")));
                 }
-
-                if(album.getVideosCount() == 0) {
-                    if (!albumJsonBody.optString("platformVideoNum").isEmpty()) {
-                        album.setVideosCount(Integer.parseInt(albumJsonBody.getString("platformVideoNum")));
-                    }
-                }
+                if(album.getVideosCount() == 0)
+                    album.setVideosCount(album.getVideosTotal());
                 if (albumJsonBody.optString("isEnd") != null) {
                     if (albumJsonBody.getString("isEnd").equals("1"))
                         album.setIsCompleted(true);

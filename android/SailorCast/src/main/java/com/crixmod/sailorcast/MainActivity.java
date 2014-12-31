@@ -39,7 +39,7 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"敢死队3",this);
+        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"镖门",this);
       //  SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
     }
 
@@ -71,7 +71,11 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetAlbumDescSuccess(SCAlbum album) {
         Log.d("fire3",album.toString());
-        SiteApi.doGetAlbumVideos(album,1,20,this);
+        //TODO：letv存在VideosCount为0的情况。
+        if(album.getVideosCount() > 20)
+            SiteApi.doGetAlbumVideos(album,1,20,this);
+        else
+            SiteApi.doGetAlbumVideos(album,1,album.getVideosCount(),this);
     }
 
     @Override
