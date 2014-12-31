@@ -99,11 +99,11 @@ public class SCVideo {
     }
 
 
-    public String getVideoMID() {
+    public String getLetvVideoMID() {
         return mVideoMID;
     }
 
-    public void setVideoMID(String mVideoMID) {
+    public void setLetvVideoMID(String mVideoMID) {
         this.mVideoMID = mVideoMID;
     }
 

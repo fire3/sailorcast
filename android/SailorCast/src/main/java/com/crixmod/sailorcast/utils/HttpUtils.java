@@ -16,7 +16,7 @@ public class HttpUtils {
                 .url(url)
                 .build();
 
-        Log.d("fire3 asyncGet", url);
+        Log.d("HttpUtils","asyncGet: " + url);
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
     }
 

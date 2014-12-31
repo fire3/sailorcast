@@ -20,6 +20,8 @@ public class SCAlbum {
 
     private SCVideos scVideos = null;
 
+    private String mLetvStyle = null;
+
     public SCAlbum() {
     }
 
@@ -112,14 +114,6 @@ public class SCAlbum {
         this.mTip = mTip;
     }
 
-    public SCVideos getVideos() {
-        return scVideos;
-    }
-
-    public void setVideos(SCVideos scVideos) {
-        this.scVideos = scVideos;
-    }
-
     public Boolean getIsCompleted() {
         return mIsCompleted;
     }
@@ -136,6 +130,13 @@ public class SCAlbum {
         this.mVideosTotal = mVideosTotal;
     }
 
+    public String getLetvStyle() {
+        return mLetvStyle;
+    }
+
+    public void setLetvStyle(String mLetvStyle) {
+        this.mLetvStyle = mLetvStyle;
+    }
 
     @Override
     public String toString() {
@@ -153,7 +154,6 @@ public class SCAlbum {
                 ", mSite=" + mSite +
                 ", mTip='" + mTip + '\'' +
                 ", mIsCompleted=" + mIsCompleted +
-                ", scVideos=" + scVideos +
                 '}';
     }
 }

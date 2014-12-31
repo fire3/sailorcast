@@ -462,11 +462,11 @@ public class YouKuApi extends BaseSiteApi {
                             JSONObject videoJson = new JSONObject(decryptData);
                             setVideoM3U8(video, videoJson);
                             if(video.getM3U8Nor() != null)
-                                listener.onGetVideoPlayUrlNormal(video.getM3U8Nor());
+                                listener.onGetVideoPlayUrlNormal(video,video.getM3U8Nor());
                             if(video.getM3U8High() != null)
-                                listener.onGetVideoPlayUrlHigh(video.getM3U8High());
+                                listener.onGetVideoPlayUrlHigh(video, video.getM3U8High());
                             if(video.getM3U8Super() != null)
-                                listener.onGetVideoPlayUrlHigh(video.getM3U8Super());
+                                listener.onGetVideoPlayUrlHigh(video, video.getM3U8Super());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

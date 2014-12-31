@@ -37,7 +37,7 @@ public class LetvApi extends BaseSiteApi{
 
     private final static String ALBUM_VIDEOS_URL_FORMAT = "http://static.app.m.letv.com/" +
             "android/mod/mob/ctl/videolist/act/detail/id/" +
-            "%s/vid/0/b/%s/s/%s/o/%s/m/0/pcode/010410000/version/2.1.mindex.html";
+            "%s/vid/0/b/%s/s/%s/o/%s/m/%s/pcode/010410000/version/2.1.mindex.html";
     //
     private final static String ALBUM_VIDEOS_ORDER_ASCENDING = "-1";
     private final static String ALBUM_VIDEOS_ORDER_DESCENDING = "1";
@@ -55,8 +55,8 @@ public class LetvApi extends BaseSiteApi{
     private final static String  VIDEO_REAL_LINK_APPENDIX = "&format=1&expect=1&termid=2&pay=0&ostype=android&hwtype=iphone";
 
     private final static int QUALITY_NORMAL = 1;
-    private final static int QUALITY_HIGH = 1;
-    private final static int QUALITY_SUPER = 1;
+    private final static int QUALITY_HIGH = 2;
+    private final static int QUALITY_SUPER = 3;
 
     public LetvApi() {
         doUpdateTmOffset();
@@ -104,7 +104,7 @@ public class LetvApi extends BaseSiteApi{
     private String generateVideoFileKey(SCVideo video, String currentServerTime)
     {
         StringBuilder localStringBuilder = new StringBuilder();
-        localStringBuilder.append(video.getVideoMID());
+        localStringBuilder.append(video.getLetvVideoMID());
         localStringBuilder.append(",");
         localStringBuilder.append(currentServerTime);
         localStringBuilder.append(",");
@@ -124,7 +124,7 @@ public class LetvApi extends BaseSiteApi{
 
                     //TODO: 这里过滤一下，需要存在 vidEpisode 的album才返回，其它的暂时不返回
                     //没有 vidEpisode 的album，利用 videolist 接口无法返回有效的数据。需要提前生成SCVideos。
-                    if(albumJson.optJSONArray("vidEpisode").length() > 0) {
+                    //if(albumJson.optJSONArray("vidEpisode").length() > 0) {
 
                         SCAlbum a = new SCAlbum();
                         a.setSite(SCSite.LETV);
@@ -148,20 +148,8 @@ public class LetvApi extends BaseSiteApi{
                                 a.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("120*160")));
                             }
                         }
-                        if (!albumJson.optString("episode").isEmpty()) {
-                            a.setVideosTotal(Integer.getInteger(albumJson.getString("episode")));
-                        }
-                        if (!albumJson.optString("nowEpisodes").isEmpty()) {
-                            a.setVideosCount(Integer.getInteger(albumJson.getString("nowEpisodes")));
-                        }
-                        if (albumJson.optString("isEnd") != null) {
-                            if (albumJson.getString("isEnd").equals("1"))
-                                a.setIsCompleted(true);
-                            else
-                                a.setIsCompleted(false);
-                        }
                         albums.add(a);
-                    }
+                    //}
                 }
                 return albums;
             }
@@ -205,8 +193,13 @@ public class LetvApi extends BaseSiteApi{
     @Override
     public void doGetAlbumVideos(final SCAlbum album, final int pageNo, final int pageSize, final OnGetVideosListener listener) {
         String order = ALBUM_VIDEOS_ORDER_ASCENDING;
-        String url = String.format(ALBUM_VIDEOS_URL_FORMAT,album.getAlbumId(),
-                Integer.toString(pageNo),Integer.toString(pageSize),order);
+        String url;
+        if(album.getLetvStyle().equals("2"))
+            url = String.format(ALBUM_VIDEOS_URL_FORMAT,album.getAlbumId(),
+                    Integer.toString(pageNo),Integer.toString(pageSize),order,"0");
+        else
+            url = String.format(ALBUM_VIDEOS_URL_FORMAT,album.getAlbumId(),
+                    Integer.toString(pageNo),Integer.toString(pageSize),order,"1");
 
         HttpUtils.asyncGet(url,new Callback() {
             @Override
@@ -249,7 +242,7 @@ public class LetvApi extends BaseSiteApi{
                                     v.setSeqInAlbum(pageNo * pageSize + i);
                                 //MID设置是Letv解析真实链接必须的。
                                 if(!j.optString("mid").isEmpty())
-                                    v.setVideoMID(j.optString("mid"));
+                                    v.setLetvVideoMID(j.optString("mid"));
 
                                 videos.add(v);
                             }
@@ -275,11 +268,27 @@ public class LetvApi extends BaseSiteApi{
                     album.setDesc(albumJsonBody.getString("description"));
                 if(!albumJsonBody.optString("subTitle").isEmpty())
                     album.setSubTitle(albumJsonBody.getString("subTitle"));
+                if(!albumJsonBody.optString("style").isEmpty())
+                    album.setLetvStyle(albumJsonBody.getString("style"));
+                if (!albumJsonBody.optString("episode").isEmpty()) {
+                    album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("episode")));
+                }
+                if (!albumJsonBody.optString("nowEpisodes").isEmpty()) {
+                    album.setVideosCount(Integer.parseInt(albumJsonBody.getString("nowEpisodes")));
+                }
 
+                if(album.getVideosCount() == 0) {
+                    if (!albumJsonBody.optString("platformVideoNum").isEmpty()) {
+                        album.setVideosCount(Integer.parseInt(albumJsonBody.getString("platformVideoNum")));
+                    }
+                }
+                if (albumJsonBody.optString("isEnd") != null) {
+                    if (albumJsonBody.getString("isEnd").equals("1"))
+                        album.setIsCompleted(true);
+                    else
+                        album.setIsCompleted(false);
+                }
             }
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -290,6 +299,7 @@ public class LetvApi extends BaseSiteApi{
     @Override
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
         String url = String.format(ALBUM_DESC_URL_FORMAT,album.getAlbumId());
+        Log.d("fire3", url);
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -322,15 +332,15 @@ public class LetvApi extends BaseSiteApi{
                     String location = retJson.optString("location");
                     if(quality == QUALITY_SUPER) {
                         video.setM3U8Super(location);
-                        listener.onGetVideoPlayUrlSuper(location);
+                        listener.onGetVideoPlayUrlSuper(video,location);
                     }
                     if(quality == QUALITY_HIGH) {
                         video.setM3U8High(location);
-                        listener.onGetVideoPlayUrlHigh(location);
+                        listener.onGetVideoPlayUrlHigh(video,location);
                     }
                     if(quality == QUALITY_NORMAL) {
                         video.setM3U8Nor(location);
-                        listener.onGetVideoPlayUrlNormal(location);
+                        listener.onGetVideoPlayUrlNormal(video,location);
                     }
 
                 } catch (JSONException e) {
@@ -346,7 +356,7 @@ public class LetvApi extends BaseSiteApi{
     public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
         if(tmOffset != Long.MAX_VALUE) {
             String currentTm = getCurrentServerTime();
-            String url = String.format(VIDEO_FILE_URL_FORMAT, video.getVideoMID(),
+            String url = String.format(VIDEO_FILE_URL_FORMAT, video.getLetvVideoMID(),
                     currentTm, generateVideoFileKey(video,currentTm),video.getVideoID());
             HttpUtils.asyncGet(url,new Callback() {
                 @Override

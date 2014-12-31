@@ -39,7 +39,7 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"红高粱",this);
+        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"敢死队3",this);
       //  SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
     }
 
@@ -82,8 +82,8 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetVideosSuccess(SCVideos videos) {
         for(SCVideo v : videos) {
-            Log.d("fire3",v.toString());
-            SiteApi.doGetVideoPlayUrl(v,this);
+            Log.d("fire3","video: " + v.toString());
+           SiteApi.doGetVideoPlayUrl(v,this);
         }
     }
 
@@ -93,17 +93,17 @@ public class MainActivity extends SCDrawerActivity
     }
 
     @Override
-    public void onGetVideoPlayUrlNormal(String urlNormal) {
+    public void onGetVideoPlayUrlNormal(SCVideo v, String urlNormal) {
 
     }
 
     @Override
-    public void onGetVideoPlayUrlHigh(String urlHigh) {
-
+    public void onGetVideoPlayUrlHigh(SCVideo v, String urlHigh) {
+        Log.d("fire3","video: " + v.getVideoTitle() + " " + urlHigh);
     }
 
     @Override
-    public void onGetVideoPlayUrlSuper(String urlSuper) {
+    public void onGetVideoPlayUrlSuper(SCVideo v, String urlSuper) {
 
     }
 
