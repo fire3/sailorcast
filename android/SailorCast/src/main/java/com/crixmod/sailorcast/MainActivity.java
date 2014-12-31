@@ -39,8 +39,8 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-      //  SiteApi.doSearch(SiteApi.SITE_ID_LETV,"红高粱",this);
-        SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"红高粱",this);
+        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"红高粱",this);
+      //  SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
     }
 
 
@@ -82,6 +82,7 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetVideosSuccess(SCVideos videos) {
         for(SCVideo v : videos) {
+            Log.d("fire3",v.toString());
             SiteApi.doGetVideoPlayUrl(v,this);
         }
     }

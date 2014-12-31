@@ -6,6 +6,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.utils.HttpUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -30,7 +31,16 @@ public class LetvApi extends BaseSiteApi{
             "?mod=mob&ctl=searchmix&act=index&src=1&cg=&wd=%s&anum=&ph=&pt=&ver=&pn=%s&ps=%s&pcode=010410000&version=2.1";
     // Search arg: {keyword,pageNo(start from 0), pageSize}
 
-    private final static String ALBUM_DESC_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/mod/mob/ctl/album/act/detail/id/%s/pcode/010410000/version/2.1.mindex.html";
+    private final static String ALBUM_DESC_URL_FORMAT = "http://static.meizi.app.m.letv.com/" +
+            "android/mod/mob/ctl/album/act/detail/id/%s/pcode/010410000/version/2.1.mindex.html";
+
+    private final static String ALBUM_VIDEOS_URL_FORMAT = "http://static.app.m.letv.com/" +
+            "android/mod/mob/ctl/videolist/act/detail/id/" +
+            "%s/vid/0/b/%s/s/%s/o/%s/m/0/pcode/010410000/version/2.1.mindex.html";
+    //
+    private final static String ALBUM_VIDEOS_ORDER_ASCENDING = "-1";
+    private final static String ALBUM_VIDEOS_ORDER_DESCENDING = "1";
+
 
     private SCAlbums parseSearchResult(String result) {
         try {
@@ -123,8 +133,63 @@ public class LetvApi extends BaseSiteApi{
     }
 
     @Override
-    public void doGetAlbumVideos(SCAlbum album, int pageNo, int pageSize, OnGetVideosListener listener) {
+    public void doGetAlbumVideos(final SCAlbum album, final int pageNo, final int pageSize, final OnGetVideosListener listener) {
+        String order = ALBUM_VIDEOS_ORDER_ASCENDING;
+        String url = String.format(ALBUM_VIDEOS_URL_FORMAT,album.getAlbumId(),
+                Integer.toString(pageNo),Integer.toString(pageSize),order);
 
+        HttpUtils.asyncGet(url,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    if(retJson.optJSONObject("body") != null) {
+                        JSONObject jsonBody = retJson.getJSONObject("body");
+                        JSONArray jsonArray = jsonBody.optJSONArray("videoInfo");
+                        if(jsonArray != null && jsonArray.length() > 0) {
+                            SCVideos videos = new SCVideos();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject j = jsonArray.getJSONObject(i);
+                                SCVideo v = new SCVideo();
+                                v.setAlbumID(album.getAlbumId());
+                                v.setSCSite(album.getSite().getSiteID());
+                                if(!j.optString("nameCn").isEmpty())
+                                    v.setVideoTitle(j.getString("nameCn")  );
+                                if(!j.optString("id").isEmpty())
+                                    v.setVideoID(j.getString("id"));
+                                JSONObject p = j.optJSONObject("picAll");
+                                if(p != null) {
+                                    if(!p.optString("200*150").isEmpty())
+                                        v.setHorPic(p.getString("200*150"));
+                                    else if(!p.optString("320*200").isEmpty())
+                                        v.setHorPic(p.getString("320*200"));
+                                    else if(!p.optString("120*90").isEmpty())
+                                        v.setHorPic(p.getString("120*90"));
+                                }
+
+                                if(!j.optString("episode").isEmpty())
+                                    v.setSeqInAlbum(Integer.parseInt(j.getString("episode")));
+                                else
+                                    v.setSeqInAlbum(pageNo * pageSize + i);
+
+                                videos.add(v);
+                            }
+                            listener.onGetVideosSuccess(videos);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     private void fillAlbumDesc(SCAlbum album, String albumJsonString) {
