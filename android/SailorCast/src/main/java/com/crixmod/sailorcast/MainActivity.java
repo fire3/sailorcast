@@ -93,8 +93,18 @@ public class MainActivity extends SCDrawerActivity
     }
 
     @Override
-    public void onGetVideoPlayUrlSuccess(SCVideo video) {
-        Log.d("fire3",video.toString());
+    public void onGetVideoPlayUrlNormal(String urlNormal) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlHigh(String urlHigh) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlSuper(String urlSuper) {
+
     }
 
     @Override

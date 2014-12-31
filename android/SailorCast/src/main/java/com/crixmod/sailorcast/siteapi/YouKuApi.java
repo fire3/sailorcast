@@ -461,7 +461,12 @@ public class YouKuApi extends BaseSiteApi {
                             String decryptData = decrypt(encryptData);
                             JSONObject videoJson = new JSONObject(decryptData);
                             setVideoM3U8(video, videoJson);
-                            listener.onGetVideoPlayUrlSuccess(video);
+                            if(video.getM3U8Nor() != null)
+                                listener.onGetVideoPlayUrlNormal(video.getM3U8Nor());
+                            if(video.getM3U8High() != null)
+                                listener.onGetVideoPlayUrlHigh(video.getM3U8High());
+                            if(video.getM3U8Super() != null)
+                                listener.onGetVideoPlayUrlHigh(video.getM3U8Super());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

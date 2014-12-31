@@ -158,7 +158,12 @@ public class SohuApi extends BaseSiteApi {
 
     @Override
     public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
-        listener.onGetVideoPlayUrlSuccess(video);
+        if(video.getM3U8Nor() != null)
+            listener.onGetVideoPlayUrlNormal(video.getM3U8Nor());
+        if(video.getM3U8High() != null)
+            listener.onGetVideoPlayUrlHigh(video.getM3U8High());
+        if(video.getM3U8Super() != null)
+            listener.onGetVideoPlayUrlHigh(video.getM3U8Super());
     }
 
     private SCAlbums toSCAlbums(SearchResults results) {

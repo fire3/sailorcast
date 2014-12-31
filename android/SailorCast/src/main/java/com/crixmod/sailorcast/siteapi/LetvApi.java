@@ -52,7 +52,11 @@ public class LetvApi extends BaseSiteApi{
 
     private static long tmOffset = Long.MAX_VALUE;
 
-    private final static String  VIDEO_REAL_LINK_FORMAT = "&format=1&expect=1&termid=2&pay=0&ostype=android&hwtype=iphone";
+    private final static String  VIDEO_REAL_LINK_APPENDIX = "&format=1&expect=1&termid=2&pay=0&ostype=android&hwtype=iphone";
+
+    private final static int QUALITY_NORMAL = 1;
+    private final static int QUALITY_HIGH = 1;
+    private final static int QUALITY_SUPER = 1;
 
     public LetvApi() {
         doUpdateTmOffset();
@@ -303,8 +307,45 @@ public class LetvApi extends BaseSiteApi{
 
     }
 
+    private void getRealLink(final SCVideo video, final OnGetVideoPlayUrlListener listener, String jumpLink, final int quality) {
+
+        HttpUtils.asyncGet(jumpLink, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    String location = retJson.optString("location");
+                    if(quality == QUALITY_SUPER) {
+                        video.setM3U8Super(location);
+                        listener.onGetVideoPlayUrlSuper(location);
+                    }
+                    if(quality == QUALITY_HIGH) {
+                        video.setM3U8High(location);
+                        listener.onGetVideoPlayUrlHigh(location);
+                    }
+                    if(quality == QUALITY_NORMAL) {
+                        video.setM3U8Nor(location);
+                        listener.onGetVideoPlayUrlNormal(location);
+                    }
+                    Log.d("fire3",location);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+
     @Override
-    public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
+    public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
         if(tmOffset != Long.MAX_VALUE) {
             String currentTm = getCurrentServerTime();
             String url = String.format(VIDEO_FILE_URL_FORMAT, video.getVideoMID(),
@@ -320,9 +361,29 @@ public class LetvApi extends BaseSiteApi{
                     String ret = response.body().string();
                     try {
                         JSONObject retJson = new JSONObject(ret);
-                        JSONObject body = retJson.getJSONObject("body");
+                        JSONObject body = retJson.getJSONObject("body").getJSONObject("videofile").getJSONObject("infos");
 
-                        Log.d("fire3",body.toString());
+                        if(body.optJSONObject("mp4_350") != null) {
+                            //Normal
+                            JSONObject mp4 = body.optJSONObject("mp4_350");
+                            if(mp4.optString("mainUrl") != null) {
+                                String mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
+                                getRealLink(video,listener,mp4Url,QUALITY_NORMAL);
+                            }
+                        }
+                        if(body.optJSONObject("mp4_1000") != null) {
+                            //Normal
+                            JSONObject mp4 = body.optJSONObject("mp4_1000");
+                            String mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
+                            getRealLink(video, listener, mp4Url,QUALITY_HIGH);
+                        }
+                        if(body.optJSONObject("mp4_1300") != null) {
+                            //Normal
+                            JSONObject mp4 = body.optJSONObject("mp4_1300");
+                            String mp4Url = mp4.optString("mainUrl") + VIDEO_REAL_LINK_APPENDIX ;
+                            getRealLink(video,listener,mp4Url,QUALITY_SUPER);
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
