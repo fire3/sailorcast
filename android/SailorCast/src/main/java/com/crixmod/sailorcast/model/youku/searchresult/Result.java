@@ -31,8 +31,7 @@ public class Result {
     private Long isYouku;
     @Expose
     private String showname;
-    @Expose
-    private Double reputation;
+
     @SerializedName("stripe_bottom")
     @Expose
     private String stripeBottom;
@@ -43,17 +42,6 @@ public class Result {
     private String summary;
     @Expose
     private String cats;
-    @SerializedName("format_flag")
-    @Expose
-    private Long formatFlag;
-    @Expose
-    private Long paid;
-    @SerializedName("need_query")
-    @Expose
-    private Long needQuery;
-    @SerializedName("pay_type")
-    @Expose
-    private String payType;
 
     /**
      *
@@ -238,24 +226,6 @@ public class Result {
     /**
      *
      * @return
-     * The reputation
-     */
-    public Double getReputation() {
-        return reputation;
-    }
-
-    /**
-     *
-     * @param reputation
-     * The reputation
-     */
-    public void setReputation(Double reputation) {
-        this.reputation = reputation;
-    }
-
-    /**
-     *
-     * @return
      * The stripeBottom
      */
     public String getStripeBottom() {
@@ -323,79 +293,6 @@ public class Result {
      */
     public void setCats(String cats) {
         this.cats = cats;
-    }
-
-    /**
-     *
-     * @return
-     * The formatFlag
-     */
-    public Long getFormatFlag() {
-        return formatFlag;
-    }
-
-    /**
-     *
-     * @param formatFlag
-     * The format_flag
-     */
-    public void setFormatFlag(Long formatFlag) {
-        this.formatFlag = formatFlag;
-    }
-
-    /**
-     *
-     * @return
-     * The paid
-     */
-    public Long getPaid() {
-        return paid;
-    }
-
-    /**
-     *
-     * @param paid
-     * The paid
-     */
-    public void setPaid(Long paid) {
-        this.paid = paid;
-    }
-
-    /**
-     *
-     * @return
-     * The needQuery
-     */
-    public Long getNeedQuery() {
-        return needQuery;
-    }
-
-    /**
-     *
-     * @param needQuery
-     * The need_query
-     */
-    public void setNeedQuery(Long needQuery) {
-        this.needQuery = needQuery;
-    }
-
-
-    /**
-     *
-     * @return
-     * The payType
-     */
-    public String getPayType() {
-        return payType;
-    }
-
-    /**
-     *
-     * @param payType
-     * The pay_type
-     */
-    public void setPayType(String payType) {
-        this.payType = payType;
     }
 
 }
