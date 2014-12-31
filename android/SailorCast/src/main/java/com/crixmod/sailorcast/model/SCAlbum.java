@@ -136,11 +136,13 @@ public class SCAlbum {
         this.mVideosTotal = mVideosTotal;
     }
 
+
     @Override
     public String toString() {
         return "SCAlbum{" +
-                "mAlbumId=" + mAlbumId +
+                "mAlbumId='" + mAlbumId + '\'' +
                 ", mVideosCount=" + mVideosCount +
+                ", mVideosTotal=" + mVideosTotal +
                 ", mTitle='" + mTitle + '\'' +
                 ", mSubTitle='" + mSubTitle + '\'' +
                 ", mDirector='" + mDirector + '\'' +
@@ -148,8 +150,10 @@ public class SCAlbum {
                 ", mVerImageUrl='" + mVerImageUrl + '\'' +
                 ", mHorImageUrl='" + mHorImageUrl + '\'' +
                 ", mDesc='" + mDesc + '\'' +
-                ", mTip='" + mTip + '\'' +
                 ", mSite=" + mSite +
+                ", mTip='" + mTip + '\'' +
+                ", mIsCompleted=" + mIsCompleted +
+                ", scVideos=" + scVideos +
                 '}';
     }
 }

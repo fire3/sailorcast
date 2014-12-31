@@ -27,6 +27,8 @@ public class SiteApi {
             new YouKuApi().doGetAlbumVideos(album,pageNo,pageSize,listener);
         if(album.getSite().getSiteID() == SCSite.SOHU)
             new SohuApi().doGetAlbumVideos(album,pageNo,pageSize,listener);
+        if(album.getSite().getSiteID() == SCSite.LETV)
+            new LetvApi().doGetAlbumVideos(album,pageNo,pageSize,listener);
 
     }
 
@@ -35,6 +37,8 @@ public class SiteApi {
             new YouKuApi().doGetAlbumDesc(album,listener);
         if(album.getSite().getSiteID() == SCSite.SOHU)
             new SohuApi().doGetAlbumDesc(album,listener);
+        if(album.getSite().getSiteID() == SCSite.LETV)
+            new LetvApi().doGetAlbumDesc(album,listener);
     }
 
     public static void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
@@ -42,6 +46,8 @@ public class SiteApi {
             new YouKuApi().doGetVideoPlayUrl(video,listener);
         if(video.getSite().getSiteID() == SCSite.SOHU)
             new SohuApi().doGetVideoPlayUrl(video,listener);
+        if(video.getSite().getSiteID() == SCSite.LETV)
+            new LetvApi().doGetVideoPlayUrl(video,listener);
     }
 
 }

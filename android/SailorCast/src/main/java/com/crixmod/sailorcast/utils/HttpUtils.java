@@ -1,5 +1,7 @@
 package com.crixmod.sailorcast.utils;
 
+import android.util.Log;
+
 import com.crixmod.sailorcast.SailorCast;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -14,6 +16,7 @@ public class HttpUtils {
                 .url(url)
                 .build();
 
+        Log.d("fire3 asyncGet", url);
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
     }
 

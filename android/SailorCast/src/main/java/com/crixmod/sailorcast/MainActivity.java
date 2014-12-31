@@ -39,10 +39,8 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
-//        new YouKuApi().doSearch("武媚娘传奇 TV版", this);
-//        new YouKuApi().doSearch("功夫", this);
-        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"红高粱",this);
-        //SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
+      //  SiteApi.doSearch(SiteApi.SITE_ID_LETV,"红高粱",this);
+        SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"红高粱",this);
     }
 
 
