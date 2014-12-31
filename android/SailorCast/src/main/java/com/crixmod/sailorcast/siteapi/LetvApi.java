@@ -52,6 +52,8 @@ public class LetvApi extends BaseSiteApi{
 
     private static long tmOffset = Long.MAX_VALUE;
 
+    private final static String  VIDEO_REAL_LINK_FORMAT = "&format=1&expect=1&termid=2&pay=0&ostype=android&hwtype=iphone";
+
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -316,7 +318,14 @@ public class LetvApi extends BaseSiteApi{
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String ret = response.body().string();
-                    Log.d("fire3",ret);
+                    try {
+                        JSONObject retJson = new JSONObject(ret);
+                        JSONObject body = retJson.getJSONObject("body");
+
+                        Log.d("fire3",body.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
