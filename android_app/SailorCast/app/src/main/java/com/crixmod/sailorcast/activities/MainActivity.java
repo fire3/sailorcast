@@ -1,17 +1,23 @@
-package com.crixmod.sailorcast;
+package com.crixmod.sailorcast.activities;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crixmod.sailorcast.R;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends BaseToolbarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
     }
 
 

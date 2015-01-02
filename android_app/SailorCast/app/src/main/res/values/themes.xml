@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/Pink_200</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/Grey_200</item>
+        <item name="android:colorPressedHighlight">@color/Grey_300</item>
+        <item name="android:colorLongPressedHighlight">@color/Grey_300</item>
+        <item name="android:textColor">@color/Grey_800</item>
+
+        <item name="windowActionBar">false</item>
+    </style>
+</resources>

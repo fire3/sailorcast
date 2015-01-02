@@ -17,6 +17,7 @@ import com.crixmod.sailorcast.utils.HttpUtils;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
