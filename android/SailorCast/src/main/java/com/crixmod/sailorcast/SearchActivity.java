@@ -1,15 +1,17 @@
 package com.crixmod.sailorcast;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
-import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
@@ -17,20 +19,23 @@ import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
-import com.crixmod.sailorcast.siteapi.SohuApi;
-import com.crixmod.sailorcast.siteapi.YouKuApi;
 import com.crixmod.sailorcast.ui.SCDrawerActivity;
 
-import java.util.ArrayList;
 
+public class SearchActivity extends SCDrawerActivity
+        implements
+        OnSearchRequestListener,
+        OnGetAlbumDescListener,
+        OnGetVideosListener,
+        OnGetVideoPlayUrlListener,
+        View.OnKeyListener
 
-public class MainActivity extends SCDrawerActivity
-        implements OnSearchRequestListener,OnGetAlbumDescListener,OnGetVideosListener,OnGetVideoPlayUrlListener {
+{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
-        createMenuDrawer(R.layout.activity_main);
+        createMenuDrawer(R.layout.activity_search);
         setSupportActionBar(getToolbar());
 
         ActionBar actionBar = getSupportActionBar();
@@ -39,10 +44,19 @@ public class MainActivity extends SCDrawerActivity
             actionBar.setTitle(getString(R.string.hello_world));
         }
 
+        fixEditTextPadding();
+
         SiteApi.doSearch(SiteApi.SITE_ID_LETV,"镖门",this);
       //  SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
+
     }
 
+    private void fixEditTextPadding() {
+        float density = getResources().getDisplayMetrics().density;
+        int paddingH = (int) (16 * density);
+        EditText editText = (EditText) findViewById(R.id.search_input);
+        editText.setPadding(paddingH,0,paddingH,0);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,5 +128,10 @@ public class MainActivity extends SCDrawerActivity
     @Override
     public void onGetVideoPlayUrlFailed(String reason) {
 
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return false;
     }
 }

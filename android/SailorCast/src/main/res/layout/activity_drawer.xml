@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="10"
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
@@ -17,8 +16,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             app:contentInsetLeft="72dp"
@@ -30,8 +28,7 @@
             android:orientation="vertical"
             android:id="@+id/activity_container"
             android:layout_width="match_parent"
-            android:layout_weight="9"
-            android:layout_height="0dp">
+            android:layout_height="match_parent">
         </LinearLayout>
 
     </LinearLayout>
