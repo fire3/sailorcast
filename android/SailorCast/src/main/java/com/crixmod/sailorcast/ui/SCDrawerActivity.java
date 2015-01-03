@@ -158,7 +158,8 @@ public abstract class SCDrawerActivity extends ActionBarActivity {
      */
     protected void createMenuDrawer(int contentViewId) {
         ViewGroup container = (ViewGroup) findViewById(R.id.activity_container);
-        container.addView(getLayoutInflater().inflate(contentViewId, null));
+        //container.addView(getLayoutInflater().inflate(contentViewId, null));
+        getLayoutInflater().inflate(contentViewId, container,true);
         initMenuDrawer();
     }
 
