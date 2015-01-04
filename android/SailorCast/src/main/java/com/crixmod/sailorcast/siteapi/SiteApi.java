@@ -19,7 +19,12 @@ public class SiteApi {
             new YouKuApi().doSearch(key,listener);
         if(siteID == SITE_ID_LETV)
             new LetvApi().doSearch(key,listener);
+    }
 
+    public static void doSearchAll(String key, OnSearchRequestListener listener) {
+        new SohuApi().doSearch(key,listener);
+        new YouKuApi().doSearch(key,listener);
+        new LetvApi().doSearch(key,listener);
     }
 
     public static void doGetAlbumVideos(SCAlbum album, int pageNo, int pageSize,  OnGetVideosListener listener) {

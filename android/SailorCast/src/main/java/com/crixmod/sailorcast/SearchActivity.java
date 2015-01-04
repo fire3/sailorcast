@@ -1,5 +1,6 @@
 package com.crixmod.sailorcast;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,6 +9,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -45,10 +48,22 @@ public class SearchActivity extends SCDrawerActivity
         }
 
         fixEditTextPadding();
+        setSearchButton();
 
-        SiteApi.doSearch(SiteApi.SITE_ID_LETV,"镖门",this);
-      //  SiteApi.doSearch(SiteApi.SITE_ID_YOUKU,"巧虎",this);
+    }
 
+
+    private void setSearchButton() {
+        Button button = (Button) findViewById(R.id.search_ok);
+        final EditText editText = (EditText) findViewById(R.id.search_input);
+        final OnSearchRequestListener listener = this;
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String key = editText.getText().toString();
+                SiteApi.doSearchAll(key,listener);
+            }
+        });
     }
 
     private void fixEditTextPadding() {
@@ -132,6 +147,20 @@ public class SearchActivity extends SCDrawerActivity
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
+        final OnSearchRequestListener listener = this;
+        final EditText editText = (EditText) findViewById(R.id.search_input);
+        if (keyCode == EditorInfo.IME_ACTION_SEARCH ||
+                keyCode == EditorInfo.IME_ACTION_DONE ||
+                event.getAction() == KeyEvent.ACTION_DOWN &&
+                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+
+            if(v.getId() == R.id.search_input) {
+
+                String key = editText.getText().toString();
+                SiteApi.doSearchAll(key,listener);
+            }
+        }
+
         return false;
     }
 }
