@@ -1,4 +1,4 @@
-package com.crixmod.sailorcast.ui;
+package com.crixmod.sailorcast.uiutils;
 
 /**
  * Created by fire3 on 14-12-26.
@@ -7,7 +7,7 @@ package com.crixmod.sailorcast.ui;
 
 import android.content.Context;
 
-import com.crixmod.sailorcast.ui.prefs.AppPrefs;
+import com.crixmod.sailorcast.uiutils.prefs.AppPrefs;
 
 public enum ActivityId {
     UNKNOWN("Unknown"),

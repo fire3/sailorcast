@@ -1,4 +1,4 @@
-package com.crixmod.sailorcast.ui;
+package com.crixmod.sailorcast.uiutils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
-import com.crixmod.sailorcast.ui.DrawerItems.DrawerItem;
+import com.crixmod.sailorcast.uiutils.DrawerItems.DrawerItem;
 
 
 public class DrawerAdapter extends BaseAdapter {

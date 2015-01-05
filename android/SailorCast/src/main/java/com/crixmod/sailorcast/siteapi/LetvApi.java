@@ -177,6 +177,7 @@ public class LetvApi extends BaseSiteApi{
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String ret = response.body().string();
+                    Log.d("fire3",ret);
                     SCAlbums albums =  parseSearchResult(ret);
                     if(albums != null) {
                         albums.debugLog();

@@ -13,7 +13,7 @@ import android.graphics.Point;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
-import com.crixmod.sailorcast.ui.ActivityId;
+import com.crixmod.sailorcast.uiutils.ActivityId;
 import com.sailorcast.android.util.DisplayUtils;
 
 public class SCActivityUtils {

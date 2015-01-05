@@ -1,4 +1,4 @@
-package com.crixmod.sailorcast.ui.prefs;
+package com.crixmod.sailorcast.uiutils.prefs;
 
 
 import android.content.SharedPreferences;
@@ -6,7 +6,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.crixmod.sailorcast.SailorCast;
-import com.crixmod.sailorcast.ui.ActivityId;
+import com.crixmod.sailorcast.uiutils.ActivityId;
 
 public class AppPrefs {
     public enum PrefKey {

@@ -1,4 +1,4 @@
-package com.crixmod.sailorcast.ui;
+package com.crixmod.sailorcast.uiutils;
 
 import android.content.Context;
 
