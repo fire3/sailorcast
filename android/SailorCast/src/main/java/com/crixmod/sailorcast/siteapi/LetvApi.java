@@ -166,7 +166,7 @@ public class LetvApi extends BaseSiteApi{
     public void doSearch(String key, final OnSearchRequestListener listener) {
         try {
             String pageNo = "0";
-            String pageSize = "50";
+            String pageSize = "30";
             String url = String.format(SEARCH_URL_FORMAT,URLEncoder.encode(key,"UTF-8"),pageNo,pageSize);
             HttpUtils.asyncGet(url,new Callback() {
                 @Override
@@ -177,6 +177,7 @@ public class LetvApi extends BaseSiteApi{
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String ret = response.body().string();
+                    Log.d("fire3",ret);
                     SCAlbums albums =  parseSearchResult(ret);
                     if(albums != null) {
                         albums.debugLog();

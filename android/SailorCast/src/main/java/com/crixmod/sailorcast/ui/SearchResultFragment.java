@@ -62,6 +62,8 @@ implements OnSearchRequestListener
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setEmptyText("没有搜索结果");
+        setListShown(true);
     }
 
     @Override
@@ -73,6 +75,7 @@ implements OnSearchRequestListener
             @Override
             public void run() {
                 setListAdapter(adapter);
+                setListShown(true);
             }
         });
     }
@@ -139,7 +142,7 @@ implements OnSearchRequestListener
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     //AlbumActivity.launch((Activity)mContext,album.getAid(),album.getCid());
+                     AlbumActivity.launch((Activity)mContext,album);
                 }
             });
         }

@@ -3,24 +3,20 @@ package com.crixmod.sailorcast.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crixmod.sailorcast.R;
-import com.crixmod.sailorcast.model.SCAlbums;
-import com.crixmod.sailorcast.model.sohu.searchresult.SearchResults;
-import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 
-public class SearchResultsActivity extends BaseToolbarActivity
-{
+public class SearchResultsActivity extends BaseToolbarActivity {
 
     private static final String EXTRA_KEYWORD = "SearchResultsActivity:keyword";
 
@@ -88,6 +84,7 @@ public class SearchResultsActivity extends BaseToolbarActivity
 
         private Context mContext;
         private String mKeyword;
+
         public SitePagerAdapter(FragmentManager fm, Context context, String keyword) {
             super(fm);
             mContext = context;
@@ -97,7 +94,7 @@ public class SearchResultsActivity extends BaseToolbarActivity
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            return SearchResultFragment.newInstance(mKeyword,position);
+            return SearchResultFragment.newInstance(mKeyword, position);
         }
 
         @Override
@@ -107,7 +104,7 @@ public class SearchResultsActivity extends BaseToolbarActivity
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return SiteApi.getSiteName(position,mContext);
+            return SiteApi.getSiteName(position, mContext);
         }
     }
 }

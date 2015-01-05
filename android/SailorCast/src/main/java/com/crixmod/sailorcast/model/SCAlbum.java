@@ -1,9 +1,12 @@
 package com.crixmod.sailorcast.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by fire3 on 2014/12/26.
  */
-public class SCAlbum {
+public class SCAlbum implements Parcelable {
     private String mAlbumId = null;
     private Integer mVideosCount = 0;   /* 已经更新的视频数量 */
     private Integer mVideosTotal = 0;   /* 总共的视频数量 */
@@ -17,9 +20,6 @@ public class SCAlbum {
     private SCSite mSite = new SCSite(SCSite.UNKNOWN);
     private String mTip = null;
     private Boolean mIsCompleted = false;  /* 是否完结 */
-
-    private SCVideos scVideos = null;
-
     private String mLetvStyle = null;
 
     public SCAlbum() {
@@ -156,4 +156,75 @@ public class SCAlbum {
                 ", mIsCompleted=" + mIsCompleted +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        /*
+            private String mAlbumId = null;
+    private Integer mVideosCount = 0;
+    private Integer mVideosTotal = 0;
+    private String mTitle = null;
+    private String mSubTitle = null;
+    private String mDirector = null;
+    private String mMainActor = null;
+    private String mVerImageUrl = null;
+    private String mHorImageUrl = null;
+    private String mDesc = null;
+    private SCSite mSite = new SCSite(SCSite.UNKNOWN);
+    private String mTip = null;
+    private Boolean mIsCompleted = false;
+    private String mLetvStyle = null;
+
+         */
+        parcel.writeString(mAlbumId);
+        parcel.writeInt(mVideosCount);
+        parcel.writeInt(mVideosTotal);
+        parcel.writeString(mTitle);
+        parcel.writeString(mSubTitle);
+        parcel.writeString(mDirector);
+        parcel.writeString(mMainActor);
+        parcel.writeString(mVerImageUrl);
+        parcel.writeString(mHorImageUrl);
+        parcel.writeString(mDesc);
+        parcel.writeInt(mSite.getSiteID());
+        parcel.writeString(mTip);
+        parcel.writeByte((byte) (mIsCompleted ? 1 : 0)); //myBoolean = in.readByte() != 0;
+        parcel.writeString(mLetvStyle);
+
+    }
+
+    private SCAlbum (Parcel in) {
+        this.mAlbumId = in.readString();
+        this.mVideosCount = in.readInt();
+        this.mVideosTotal = in.readInt();
+        this.mTitle = in.readString();
+        this.mSubTitle = in.readString();
+        this.mDirector = in.readString();
+        this.mMainActor = in.readString();
+        this.mVerImageUrl = in.readString();
+        this.mHorImageUrl = in.readString();
+        this.mDesc = in.readString();
+        this.mSite = new SCSite(in.readInt());
+        this.mTip = in.readString();
+        this.mIsCompleted = in.readByte() != 0;
+        this.mLetvStyle = in.readString();
+    }
+
+    public static final Parcelable.Creator<SCAlbum> CREATOR = new Parcelable.Creator<SCAlbum>() {
+
+        @Override
+        public SCAlbum createFromParcel(Parcel source) {
+            return new SCAlbum(source);
+        }
+
+        @Override
+        public SCAlbum[] newArray(int size) {
+            return new SCAlbum[size];
+        }
+    };
 }
