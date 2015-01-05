@@ -1,5 +1,8 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.content.Context;
+
+import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
@@ -53,6 +56,20 @@ public class SiteApi {
             new SohuApi().doGetVideoPlayUrl(video,listener);
         if(video.getSite().getSiteID() == SCSite.LETV)
             new LetvApi().doGetVideoPlayUrl(video,listener);
+    }
+
+    public static int getSupportSiteNumber() {
+        return 3;
+    }
+
+    public static String getSiteName(int siteID, Context mContext) {
+        if(siteID == SCSite.YOUKU)
+            return mContext.getResources().getString(R.string.site_youku);
+        if(siteID == SCSite.LETV)
+            return mContext.getResources().getString(R.string.site_letv);
+        if(siteID == SCSite.SOHU)
+            return mContext.getResources().getString(R.string.site_sohu);
+        return null;
     }
 
 }

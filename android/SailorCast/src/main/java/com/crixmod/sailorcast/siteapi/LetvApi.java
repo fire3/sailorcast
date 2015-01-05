@@ -166,7 +166,7 @@ public class LetvApi extends BaseSiteApi{
     public void doSearch(String key, final OnSearchRequestListener listener) {
         try {
             String pageNo = "0";
-            String pageSize = "30";
+            String pageSize = "50";
             String url = String.format(SEARCH_URL_FORMAT,URLEncoder.encode(key,"UTF-8"),pageNo,pageSize);
             HttpUtils.asyncGet(url,new Callback() {
                 @Override

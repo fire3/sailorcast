@@ -109,4 +109,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="font_size_tiny">12sp</dimen>
+    <dimen name="font_size_small">13sp</dimen>
+    <dimen name="font_size_normal">15sp</dimen>
+    <dimen name="imageview_search_result_height">120dp</dimen>
 </resources>

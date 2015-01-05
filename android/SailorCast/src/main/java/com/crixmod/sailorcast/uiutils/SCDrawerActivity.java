@@ -1,5 +1,5 @@
 
-package com.crixmod.sailorcast.ui;
+package com.crixmod.sailorcast.uiutils;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,32 +17,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.utils.SCActivityUtils;
-import com.sailorcast.android.util.AppLog;
-import com.sailorcast.android.util.AppLog.T;
-import com.sailorcast.android.util.BlogUtils;
-import com.sailorcast.android.util.DeviceUtils;
 import com.sailorcast.android.util.DisplayUtils;
 import com.sailorcast.android.util.ListScrollPositionManager;
 import com.sailorcast.android.util.ToastUtils;
-import com.sailorcast.android.util.ToastUtils.Duration;
 
-import com.crixmod.sailorcast.ui.DrawerItems.DrawerItem;
-import java.util.List;
-import java.util.Map;
+import com.crixmod.sailorcast.uiutils.DrawerItems.DrawerItem;
 
 /**
  * Base class for Activities that include a standard action bar and menu drawer.

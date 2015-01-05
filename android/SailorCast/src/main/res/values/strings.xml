@@ -11,6 +11,12 @@
     <string name="close_drawer">关闭抽屉菜单</string>
     <string name="reader_toast_err_generic">打开阅读器错误</string>
     <string name="settings">设置</string>
-    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_search">搜索</string>
+    <string name="title_activity_search_results">搜索结果</string>
+    <string name="site_sohu">搜狐视频</string>
+    <string name="site_youku">优酷视频</string>
+    <string name="site_letv">乐视视频</string>
+    <string name="site_iqiyi">爱奇艺</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
