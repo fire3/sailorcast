@@ -28,6 +28,7 @@ implements OnSearchRequestListener
     private String mKeyword;
     private int    mSiteID;
 
+    private SearchResultAdapter mAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -62,27 +63,36 @@ implements OnSearchRequestListener
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setEmptyText("没有搜索结果");
-        setListShown(true);
+        if(mAdapter != null) {
+            setListAdapter(mAdapter);
+            setListShown(true);
+        }
+        else
+            setListShown(false);
     }
 
     @Override
     public void onSearchSuccess(SCAlbums albums) {
-        albums.debugLog();
-        final SearchResultAdapter adapter = new SearchResultAdapter(getActivity(),albums);
+        mAdapter = new SearchResultAdapter(getActivity(),albums);
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                setListAdapter(adapter);
+                setListAdapter(mAdapter);
                 setListShown(true);
             }
         });
     }
 
     @Override
-    public void onSearchFailed(String failReason) {
-
+    public void onSearchFailed(final String failReason) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setEmptyText(failReason);
+                setListShown(true);
+            }
+        });
     }
 
 

@@ -3,12 +3,20 @@ package com.crixmod.sailorcast;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.okhttp.OkHttpClient;
+
+import java.io.File;
 
 /**
  * Created by fire3 on 14-12-26.
@@ -24,7 +32,32 @@ public class SailorCast extends Application {
         mContext = this;
         mHttpClient = new OkHttpClient();
         mGson = new Gson();
+        initImageLoader(this);
     }
+
+
+
+    private void initImageLoader(Context c) {
+        File imageCacheDir = StorageUtils.getOwnCacheDirectory(c.getApplicationContext(), "ImageCache");
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(c.getApplicationContext())
+                .threadPriority(Thread.MIN_PRIORITY)
+                        //.memoryCache(new LruMemoryCache(4 * 1024 * 1024))
+                        //.memoryCacheSize(4 * 1024 * 1024)  // 2Mb
+                .diskCache(new UnlimitedDiscCache(imageCacheDir))
+                .diskCacheFileNameGenerator(new HashCodeFileNameGenerator())
+                .diskCacheSize(50 * 1024 * 1024) // 50 Mb
+                        //.tasksProcessingOrder(QueueProcessingType.FIFO)
+                        //.writeDebugLogs() // Remove for release app
+                .build();
+        if (ImageLoader.getInstance().isInited() == false)
+            ImageLoader.getInstance().init(config);
+
+    }
+
+    public static Resources getResource() {
+        return mContext.getResources();
+    }
+
 
     public static Context getContext() {
         return mContext;

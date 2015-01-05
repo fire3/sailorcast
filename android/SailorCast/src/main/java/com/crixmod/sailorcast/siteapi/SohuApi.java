@@ -2,6 +2,7 @@ package com.crixmod.sailorcast.siteapi;
 
 import android.util.Log;
 
+import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
@@ -65,7 +66,13 @@ public class SohuApi extends BaseSiteApi {
                 SearchResults results = null;
                 try {
                     results = SailorCast.getGson().fromJson(response.body().string(), SearchResults.class);
-                    listener.onSearchSuccess(toSCAlbums(results));
+
+                    SCAlbums albums = toSCAlbums(results);
+                    if(albums != null)
+                        listener.onSearchSuccess(albums);
+                    else
+                        listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -167,6 +174,10 @@ public class SohuApi extends BaseSiteApi {
     }
 
     private SCAlbums toSCAlbums(SearchResults results) {
+        if(results.getData().getSearchResultAlbums() == null)
+            return null;
+        if(results.getData().getSearchResultAlbums().size() == 0)
+            return null;
 
         SCAlbums albums = new SCAlbums();
         for(SearchResultAlbum a : results.getData().getSearchResultAlbums()) {

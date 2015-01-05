@@ -2,6 +2,8 @@ package com.crixmod.sailorcast.siteapi;
 
 import android.util.Log;
 
+import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCSite;
@@ -182,7 +184,8 @@ public class LetvApi extends BaseSiteApi{
                     if(albums != null) {
                         albums.debugLog();
                         listener.onSearchSuccess(albums);
-                    }
+                    } else
+                        listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
                 }
             });
         } catch (UnsupportedEncodingException e) {

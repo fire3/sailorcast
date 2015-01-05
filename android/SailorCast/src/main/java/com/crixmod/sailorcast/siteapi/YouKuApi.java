@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.siteapi;
 import android.util.Base64;
 import android.util.Log;
 
+import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
@@ -155,10 +156,15 @@ public class YouKuApi extends BaseSiteApi {
                     }
                     try {
                         SearchResults results =  SailorCast.getGson().fromJson(response.body().string(), SearchResults.class);
-                        if(results.getStatus().equals(SUCCESS))
-                            listener.onSearchSuccess(toSCAlbums(results));
+                        if(results.getStatus().equals(SUCCESS)) {
+                            SCAlbums albums = toSCAlbums(results);
+                            if(albums != null)
+                                listener.onSearchSuccess(albums);
+                            else
+                                listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                        }
                         else
-                            listener.onSearchFailed("search failed");
+                            listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
                     } catch (IOException e) {
                         listener.onSearchFailed("io Exception");
                         e.printStackTrace();
@@ -184,7 +190,10 @@ public class YouKuApi extends BaseSiteApi {
                 albums.add(sa);
             }
         }
-        return albums;
+        if(albums.size() > 0)
+            return albums;
+        else
+            return null;
     }
 
     private void fillAlbumDesc(SCAlbum album, ShowInfo showInfo) {
