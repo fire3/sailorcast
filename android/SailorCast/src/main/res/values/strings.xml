@@ -20,5 +20,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_album">AlbumActivity</string>
     <string name="fail_reason_no_results">对不起，没有搜索到任何结果...</string>
+    <string name="director">导演：</string>
+    <string name="actor">演员：</string>
+    <string name="toggle_button_order">倒序显示：</string>
+    <string name="toggle_button_display_title">标题显示：</string>
 
 </resources>

@@ -1,18 +1,32 @@
 package com.crixmod.sailorcast.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
+import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 
-public class AlbumActivity extends BaseToolbarActivity {
+import java.util.HashMap;
+import java.util.Map;
+
+public class AlbumActivity extends BaseToolbarActivity implements OnGetAlbumDescListener {
 
     private SCAlbum mAlbum;
 
@@ -20,14 +34,15 @@ public class AlbumActivity extends BaseToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAlbum = getIntent().getParcelableExtra("album");
-
-        Log.d("fire3", mAlbum.toString());
+        SiteApi.doGetAlbumDesc(mAlbum,this);
     }
 
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_album;
     }
+
+
 
 
     @Override
@@ -59,5 +74,136 @@ public class AlbumActivity extends BaseToolbarActivity {
 
         activity.startActivity(mpdIntent);
     }
+
+    private void fillAlbumDescView(SCAlbum album) {
+        ImageView albumImage = (ImageView) findViewById(R.id.album_image);
+        TextView albumTitle = (TextView) findViewById(R.id.album_title);
+        TextView albumDirector = (TextView) findViewById(R.id.album_director);
+        TextView albumActor = (TextView) findViewById(R.id.album_main_actor);
+        TextView albumDesc = (TextView) findViewById(R.id.album_desc);
+        LinearLayout albumTopInfo = (LinearLayout) findViewById(R.id.album_topinfo_container);
+
+
+        albumTitle.setText(album.getTitle());
+        if(album.getDirector() != null && !album.getDirector().isEmpty()) {
+            albumDirector.setText(getResources().getString(R.string.director) + album.getDirector());
+            albumDirector.setVisibility(View.VISIBLE);
+        }
+        else
+            albumDirector.setVisibility(View.GONE);
+
+        if(album.getMainActor() != null && !album.getMainActor().isEmpty()) {
+            albumActor.setText(getResources().getString(R.string.actor) + album.getMainActor());
+            albumActor.setVisibility(View.VISIBLE);
+        }
+        else
+            albumActor.setVisibility(View.GONE);
+
+        if(album.getDesc() != null && !album.getDesc().isEmpty())
+            albumDesc.setText(album.getDesc());
+
+        albumImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openAlbumDesc(view);
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onGetAlbumDescSuccess(final SCAlbum album) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fillAlbumDescView(album);
+                Log.d("fire3", "album count:" + album.getVideosCount());
+            }
+        });
+    }
+
+    @Override
+    public void onGetAlbumDescFailed(String failReason) {
+
+    }
+
+    public void closeAlbumDesc(View view) {
+        RelativeLayout albumDescContainer = (RelativeLayout) findViewById(R.id.album_desc_container);
+        albumDescContainer.setVisibility(View.GONE);
+    }
+
+    public void openAlbumDesc(View view) {
+        RelativeLayout albumDescContainer = (RelativeLayout) findViewById(R.id.album_desc_container);
+        albumDescContainer.setVisibility(View.VISIBLE);
+    }
+
+
+    public class AlbumVideoGridPagerAdapter extends FragmentPagerAdapter {
+
+        private int mVideoCount = 0;
+        private Context mContext;
+        private Map<Integer, String> mFragmentTags;
+        private FragmentManager mFragmentManager;
+        private int mTabPageSize;
+
+
+
+        public AlbumVideoGridPagerAdapter(FragmentManager fm, Context mContext, int videoCount, int tabPageSize) {
+            super(fm);
+            this.mContext = mContext;
+            this.mVideoCount = videoCount;
+            this.mFragmentManager = fm;
+            this.mTabPageSize = tabPageSize;
+            mFragmentTags = new HashMap<Integer, String>();
+        }
+
+        @Override
+        public int getCount() {
+            if (mVideoCount > 0) {
+                return (mVideoCount % mTabPageSize == 0) ? (mVideoCount / mTabPageSize) : (mVideoCount / mTabPageSize + 1);
+            } else
+                return 0;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position == (getCount() - 1))
+                return (position * mTabPageSize + 1) + " - " + (position * mTabPageSize +
+                        (((mVideoCount % mTabPageSize) == 0) ? mTabPageSize : (mVideoCount % mTabPageSize))
+                );
+            else
+                return (position * mTabPageSize + 1) + " - " + (position * mTabPageSize + mTabPageSize);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Object obj = super.instantiateItem(container, position);
+            if (obj instanceof Fragment) {
+                // record the fragment tag here.
+                Fragment f = (Fragment) obj;
+                String tag = f.getTag();
+                mFragmentTags.put(position, tag);
+            }
+            return obj;
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            int pageNo = i + 1;
+            int pageSize = mTabPageSize;
+            AlbumPlayControlFragment newFrag =
+                    AlbumPlayControlFragment.newInstance(mAlbum, pageNo, pageSize);
+            return newFrag;
+        }
+
+        public Fragment getFragment(int position) {
+            String tag = mFragmentTags.get(position);
+            if (tag == null)
+                return null;
+            return mFragmentManager.findFragmentByTag(tag);
+        }
+    }
+
 
 }

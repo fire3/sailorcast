@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="key_checked_text_view"/>
+    <item type="id" name="key_video_number_in_album"/>
+    <item name="key_video" type="id" />
+</resources>
