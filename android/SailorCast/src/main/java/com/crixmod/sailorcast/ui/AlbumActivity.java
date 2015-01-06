@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,14 +20,16 @@ import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
+import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AlbumActivity extends BaseToolbarActivity implements OnGetAlbumDescListener {
+public class AlbumActivity extends BaseToolbarActivity implements OnGetAlbumDescListener,AlbumPlayControlFragment.OnAlbumPlayInteractionListener {
 
     private SCAlbum mAlbum;
 
@@ -111,6 +114,24 @@ public class AlbumActivity extends BaseToolbarActivity implements OnGetAlbumDesc
 
     }
 
+    private void fillAlbumPlayControl(final SCAlbum album) {
+        LinearLayout playContainer = (LinearLayout) findViewById(R.id.album_play_control_container);
+
+        if(album.getVideosCount() > 1) {
+            //More than one videos, start viewPager
+            ViewPager mViewPager = (ViewPager) findViewById(R.id.album_viewpager);
+            SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+            AlbumVideoGridPagerAdapter mAdapter =
+                    new AlbumVideoGridPagerAdapter(getSupportFragmentManager(), this, album.getVideosCount(),20);
+
+            mViewPager.setAdapter(mAdapter);
+            mSlidingTabLayout.setViewPager(mViewPager);
+        } else {
+            //Just one video, hide viewPager, get video info.
+            playContainer.setVisibility(View.GONE);
+            openAlbumDesc(null);
+        }
+    }
 
     @Override
     public void onGetAlbumDescSuccess(final SCAlbum album) {
@@ -118,7 +139,7 @@ public class AlbumActivity extends BaseToolbarActivity implements OnGetAlbumDesc
             @Override
             public void run() {
                 fillAlbumDescView(album);
-                Log.d("fire3", "album count:" + album.getVideosCount());
+                fillAlbumPlayControl(album);
             }
         });
     }
@@ -136,6 +157,16 @@ public class AlbumActivity extends BaseToolbarActivity implements OnGetAlbumDesc
     public void openAlbumDesc(View view) {
         RelativeLayout albumDescContainer = (RelativeLayout) findViewById(R.id.album_desc_container);
         albumDescContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onVideoSelected(SCVideo v, int videoNoInAlbum) {
+
+    }
+
+    @Override
+    public void onVideosLoadFinished() {
+
     }
 
 

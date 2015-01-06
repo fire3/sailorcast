@@ -7,7 +7,7 @@
     android:lines = "1"
     android:ellipsize="end"
     android:singleLine="true"
-    android:textColor="@color/Grey_700"
+    android:textColor="@color/grey_medium"
     android:textSize="18dp"
     android:gravity="left|center_vertical"
     android:paddingLeft="5dp"

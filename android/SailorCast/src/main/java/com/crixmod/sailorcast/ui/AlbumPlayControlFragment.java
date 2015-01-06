@@ -44,7 +44,8 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     private int mPageSize;
     private SCAlbum mAlbum;
     private SCVideos mVideos;
-    private OnFragmentInteractionListener mListener;
+    private AlbumVideoGridAdaptor mAdapter;
+    private OnAlbumPlayInteractionListener mListener;
 
 
     public static AlbumPlayControlFragment newInstance(SCAlbum album, int pageNo, int pageSize) {
@@ -84,6 +85,8 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
         super.onViewCreated(view, savedInstanceState);
         mGrid = (GridView) view.findViewById(R.id.album_play_control_grid);
         mContainer = (LinearLayout)view.findViewById(R.id.container);
+        if(mAdapter != null)
+            mGrid.setAdapter(mAdapter);
     }
 
     @Override
@@ -92,6 +95,8 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
         View view =  inflater.inflate(R.layout.fragment_album_play_control, container, false);
         return view;
     }
+
+
 
     @Override
     public void onResume() {
@@ -116,15 +121,14 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     private void onVideosReady(SCVideos videos) {
         int count = videos.size();
         mVideos = videos;
-        AlbumVideoGridAdaptor adapter = new AlbumVideoGridAdaptor(getActivity(),(mPageNo-1)*mPageSize + 1,count,mPlayControlType);
-        mGrid.setAdapter(adapter);
-        if(mPlayControlType == PLAY_CONTROL_TYPE_DETAIL)
-            mGrid.setNumColumns(1);
+        mAdapter = new AlbumVideoGridAdaptor(getActivity(),(mPageNo-1)*mPageSize + 1,count,mPlayControlType);
 
         mGrid.post(new Runnable() {
             @Override
             public void run() {
-                mListener.onVideosLoadFinished();
+                mGrid.setAdapter(mAdapter);
+                if(mPlayControlType == PLAY_CONTROL_TYPE_DETAIL)
+                    mGrid.setNumColumns(1);
             }
         });
     }
@@ -267,7 +271,7 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnAlbumPlayInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -281,7 +285,7 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     }
 
 
-    public interface OnFragmentInteractionListener {
+    public interface OnAlbumPlayInteractionListener {
         public void onVideoSelected(SCVideo v, int videoNoInAlbum);
         public void onVideosLoadFinished();
     }

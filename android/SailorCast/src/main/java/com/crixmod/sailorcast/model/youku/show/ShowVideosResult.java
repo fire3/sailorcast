@@ -9,9 +9,6 @@ public class ShowVideosResult {
 
     @Expose
     private List<String> streamtypes = new ArrayList<String>();
-    @SerializedName("show_videostage")
-    @Expose
-    private Integer showVideostage;
     @Expose
     private String videoid;
     @SerializedName("show_videoseq")
@@ -41,24 +38,6 @@ public class ShowVideosResult {
      */
     public void setStreamtypes(List<String> streamtypes) {
         this.streamtypes = streamtypes;
-    }
-
-    /**
-     *
-     * @return
-     * The showVideostage
-     */
-    public Integer getShowVideostage() {
-        return showVideostage;
-    }
-
-    /**
-     *
-     * @param showVideostage
-     * The show_videostage
-     */
-    public void setShowVideostage(Integer showVideostage) {
-        this.showVideostage = showVideostage;
     }
 
     /**
