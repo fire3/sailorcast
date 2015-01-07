@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,7 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     public void selectVideoItem(int item) {
         final int numVisibleChildren = mGrid.getChildCount();
         final int firstVisiblePosition = mGrid.getFirstVisiblePosition();
+        Log.d("fire3", "selectVideoItem");
 
         for ( int i = 0; i < numVisibleChildren; i++ ) {
             int positionOfView = firstVisiblePosition + i;
@@ -131,6 +133,14 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
                     mGrid.setNumColumns(1);
             }
         });
+        //这里有些bug，因为Adapter刚刚设置，mGrid的View可能没有创建好，selectVideoItem方法可能无效。
+        //暂时采用等待10ms的方式绕过这个问题，可能存在更好的方法。
+        mGrid.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mListener.onVideosLoadFinished();
+            }
+        },10);
     }
 
     private void handleFocusView(View view) {

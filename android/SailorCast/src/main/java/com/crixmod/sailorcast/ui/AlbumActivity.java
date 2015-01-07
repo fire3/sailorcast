@@ -54,6 +54,14 @@ public class AlbumActivity extends BaseToolbarActivity
     private Button mDlnaNorButton;
     private Switch mToggleOrder;
     private Switch mToggleTitle;
+    private ViewPager mViewPager;
+    private SlidingTabLayout mSlidingTabLayout;
+
+    private AlbumVideoGridPagerAdapter mAdapter;
+
+    private int mTabPageSize = 20;
+    private int mInitialVideoNoInAlbum = 0;
+    private ViewPager.OnPageChangeListener mPageChangeListener;
 
 
     @Override
@@ -62,6 +70,7 @@ public class AlbumActivity extends BaseToolbarActivity
         mAlbum = getIntent().getParcelableExtra("album");
         SiteApi.doGetAlbumDesc(mAlbum,this);
         findViews();
+        setupViewPager();
     }
 
     @Override
@@ -79,6 +88,9 @@ public class AlbumActivity extends BaseToolbarActivity
         mDlnaSuperButton = (Button) findViewById(R.id.btn_dlna_super);
         mToggleOrder = (Switch) findViewById(R.id.toggle_order);
         mToggleTitle = (Switch) findViewById(R.id.toggle_title);
+        mViewPager = (ViewPager) findViewById(R.id.album_viewpager);
+        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+
     }
 
     @Override
@@ -117,6 +129,28 @@ public class AlbumActivity extends BaseToolbarActivity
                 .putExtra("album",album);
 
         activity.startActivity(mpdIntent);
+    }
+
+    private void setupViewPager() {
+       mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.d("fire3", "onPageScrolled");
+                hideAllPlayButton();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("fire3", "onPageSelected");
+                hideAllPlayButton();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Log.d("fire3", "onPageScrollStateChanged");
+                hideAllPlayButton();
+            }
+        });
     }
 
     private void fillAlbumDescView(SCAlbum album) {
@@ -160,14 +194,15 @@ public class AlbumActivity extends BaseToolbarActivity
 
         if(album.getVideosCount() > 1) {
             //More than one videos, start viewPager
-            ViewPager mViewPager = (ViewPager) findViewById(R.id.album_viewpager);
-            SlidingTabLayout mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-            AlbumVideoGridPagerAdapter mAdapter =
-                    new AlbumVideoGridPagerAdapter(getSupportFragmentManager(), this, album.getVideosCount(),20);
+            mAdapter =
+                    new AlbumVideoGridPagerAdapter(getSupportFragmentManager(), this, album.getVideosCount(),mTabPageSize);
 
             mViewPager.setAdapter(mAdapter);
             mSlidingTabLayout.setViewPager(mViewPager);
             showToggleButton();
+
+            int index = mInitialVideoNoInAlbum/mTabPageSize;
+            mViewPager.setCurrentItem(index);
         } else {
             //Just one video, hide viewPager, get video info.
             playContainer.setVisibility(View.GONE);
@@ -208,6 +243,7 @@ public class AlbumActivity extends BaseToolbarActivity
                 fillAlbumPlayControl(album);
             }
         });
+
     }
 
     @Override
@@ -246,6 +282,14 @@ public class AlbumActivity extends BaseToolbarActivity
     @Override
     public void onVideosLoadFinished() {
 
+        int index = mInitialVideoNoInAlbum/mTabPageSize;
+        int id = mInitialVideoNoInAlbum % mTabPageSize;
+        Log.d("fire3",String.format("onVideosLoadFinished() index: %d id:%d current: %d",index,id,mViewPager.getCurrentItem()));
+
+        if(index == mViewPager.getCurrentItem()) {
+            AlbumPlayControlFragment fragment = (AlbumPlayControlFragment) mAdapter.getFragment(index);
+            fragment.selectVideoItem(id);
+        }
     }
 
     @Override
