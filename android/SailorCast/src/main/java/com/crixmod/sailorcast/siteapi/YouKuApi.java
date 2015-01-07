@@ -55,7 +55,7 @@ public class YouKuApi extends BaseSiteApi {
 
     //得到剧集中每一个video的ID接口： SHOW_VIDEOS_BASE + showid +  SHOW_VIDEOS_PID  + GUID + SHOW_VIDEOS_FIELDS + pageNo + SHOW_VIDEOS_PZ + pageSize
     private static final String SHOW_VIDEOS_BASE =  "http://api.mobile.youku.com/shows/";
-    private static final String SHOW_VIDEOS_PID = "/reverse/videos?pid=0865e0628a79dfbb&guid=";
+    private static final String SHOW_VIDEOS_PID = "/reverse/videos?pid=0865e0628a79dfbb&ver=4.4&guid=";
     private static final String SHOW_VIDEOS_FIELDS ="&fields=" + URLEncoder.encode("is_new|vid|titl|lim") + "&pg=";
     private static final String SHOW_VIDEOS_PZ = "&pz=";
 
