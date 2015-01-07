@@ -69,7 +69,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/abc_text_size_small_material"
                     android:text="@string/toggle_button_display_title"
-                    android:id="@+id/toggle_playcontrol"
+                    android:id="@+id/toggle_title"
+                    android:visibility="gone"
                     />
                 <Switch
                     android:layout_width="wrap_content"
@@ -77,6 +78,7 @@
                     android:textSize="@dimen/abc_text_size_small_material"
                     android:text="@string/toggle_button_order"
                     android:id="@+id/toggle_order"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>
@@ -111,20 +113,25 @@
             <!--   下面是Description控件 -->
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:visibility="gone"
+                android:background="@color/calypso_blue_light"
                 android:id="@+id/album_desc_container"
                 android:layout_width="fill_parent" android:layout_height="fill_parent">
                 <RelativeLayout android:orientation="vertical"
                     android:layout_width="fill_parent" android:layout_height="fill_parent"
                     android:padding="2dp">
                     <!-- Contents will go here..-->
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
                     <TextView
                         android:id="@+id/album_desc"
-                        android:paddingTop="30dp"
+                        android:paddingTop="25dp"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
-                        android:background="@color/white"
+                        android:paddingBottom="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+                    </ScrollView>
 
                 </RelativeLayout>
                 <Button android:layout_alignParentRight="true" android:text="X"
@@ -133,6 +140,7 @@
                     android:layout_margin="5dp" android:layout_height="25dp"
                     android:layout_width="25dp" android:textSize="12sp" android:textStyle="bold"
                     android:onClick="closeAlbumDesc"
+                    android:id="@+id/album_desc_close"
                 />
             </RelativeLayout>
 
@@ -143,6 +151,10 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_height="0dp">
+
+            <include layout="@layout/album_play_button_dlna"/>
+            <include layout="@layout/album_play_button_phone"/>
+
         </LinearLayout>
     </LinearLayout>
 

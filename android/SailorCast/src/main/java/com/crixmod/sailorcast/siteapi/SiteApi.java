@@ -6,6 +6,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.utils.HttpUtils;
 
 /**
  * Created by fire3 on 14-12-30.
@@ -14,6 +15,10 @@ public class SiteApi {
     public static int SITE_ID_YOUKU = SCSite.YOUKU;
     public static int SITE_ID_SOHU = SCSite.SOHU;
     public static int SITE_ID_LETV = SCSite.LETV;
+
+    public static void cancel() {
+        HttpUtils.cancelAll();
+    }
 
     public static void doSearch(int siteID, String key, OnSearchRequestListener listener) {
         if(siteID == SITE_ID_SOHU)

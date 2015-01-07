@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
@@ -29,6 +30,7 @@ implements OnSearchRequestListener
     private int    mSiteID;
 
     private SearchResultAdapter mAdapter;
+    private String mFailReason;
 
     /**
      * Use this factory method to create a new instance of
@@ -56,30 +58,37 @@ implements OnSearchRequestListener
         if (getArguments() != null) {
             mKeyword = getArguments().getString(ARG_KEYWORD);
             mSiteID = getArguments().getInt(ARG_SITEID);
-            SiteApi.doSearch(mSiteID,mKeyword,this);
         }
+        mAdapter = new SearchResultAdapter(getActivity());
+        SiteApi.doSearch(mSiteID, mKeyword, this);
+        mFailReason = SailorCast.getResource().getString(R.string.fail_reason_searching);
     }
+
+    @Override
+    public void onDestroy() {
+        SiteApi.cancel();
+        super.onDestroy();
+    }
+
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(mAdapter != null) {
-            setListAdapter(mAdapter);
-            setListShown(true);
-        }
-        else
-            setListShown(false);
+        setListAdapter(mAdapter);
+        setEmptyText(mFailReason);
     }
+
 
     @Override
     public void onSearchSuccess(SCAlbums albums) {
-        mAdapter = new SearchResultAdapter(getActivity(),albums);
-
+        for(SCAlbum a : albums) {
+            mAdapter.addAlbum(a);
+        }
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                setListAdapter(mAdapter);
-                setListShown(true);
+                mAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -89,8 +98,9 @@ implements OnSearchRequestListener
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                setEmptyText(failReason);
-                setListShown(true);
+                mFailReason = failReason;
+                if (isVisible())
+                    setEmptyText(failReason);
             }
         });
     }
@@ -112,6 +122,15 @@ implements OnSearchRequestListener
         SearchResultAdapter(Context mContext, SCAlbums mResults) {
             this.mContext = mContext;
             this.mAlbums = mResults;
+        }
+
+        SearchResultAdapter(Context mContext) {
+            this.mContext = mContext;
+            mAlbums = new SCAlbums();
+        }
+
+        public void addAlbum(SCAlbum album) {
+            mAlbums.add(album);
         }
 
         @Override

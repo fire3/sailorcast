@@ -11,8 +11,10 @@ import com.squareup.okhttp.Request;
  */
 public class HttpUtils {
 
+    private static final String REQUEST_TAG = "okhttp";
     public static void asyncGet(String url, Callback callback) {
         Request request = new Request.Builder()
+                .tag(REQUEST_TAG)
                 .url(url)
                 .build();
 
@@ -24,4 +26,7 @@ public class HttpUtils {
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
     }
 
+    public static void cancelAll() {
+        SailorCast.getHttpClient().cancel(REQUEST_TAG);
+    }
 }
