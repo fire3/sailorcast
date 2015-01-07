@@ -33,6 +33,7 @@ import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
+import com.crixmod.sailorcast.utils.ImageTools;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,19 +139,16 @@ public class AlbumActivity extends BaseToolbarActivity
        mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d("fire3", "onPageScrolled");
                 hideAllPlayButton();
             }
 
             @Override
             public void onPageSelected(int position) {
-                Log.d("fire3", "onPageSelected");
                 hideAllPlayButton();
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-                Log.d("fire3", "onPageScrollStateChanged");
                 hideAllPlayButton();
             }
         });
@@ -190,6 +188,9 @@ public class AlbumActivity extends BaseToolbarActivity
             }
         });
 
+        if(album.getVerImageUrl() != null) {
+            ImageTools.displayImage(albumImage,album.getVerImageUrl());
+        }
     }
 
     private void fillAlbumPlayControl(final SCAlbum album) {
@@ -300,7 +301,6 @@ public class AlbumActivity extends BaseToolbarActivity
 
     @Override
     public void onVideoSelected(SCVideo v, int videoNoInAlbum) {
-        Log.d("fire3","selected: " + v.getVideoTitle() + " count: " + videoNoInAlbum);
         mCurrentVideo = v;
         mVideoInAlbum = videoNoInAlbum;
         hideAllPlayButton();
@@ -312,11 +312,11 @@ public class AlbumActivity extends BaseToolbarActivity
 
         int index = mInitialVideoNoInAlbum/mTabPageSize;
         int id = mInitialVideoNoInAlbum % mTabPageSize;
-        Log.d("fire3",String.format("onVideosLoadFinished() index: %d id:%d current: %d",index,id,mViewPager.getCurrentItem()));
 
         if(index == mViewPager.getCurrentItem()) {
-            AlbumPlayControlFragment fragment = (AlbumPlayControlFragment) mAdapter.getFragment(index);
-            fragment.selectVideoItem(id);
+            AlbumPlayControlFragment fragment =  mAdapter.getFragment(index);
+            if(fragment != null)
+                fragment.selectVideoItem(id);
         }
     }
 
@@ -326,7 +326,6 @@ public class AlbumActivity extends BaseToolbarActivity
             SCVideo v = videos.get(0);
             mCurrentVideo = v;
             mVideoInAlbum = 0;
-            Log.d("fire3","only one selected: " + mCurrentVideo.getVideoTitle() + " count: " + 0);
             hideAllPlayButton();
             SiteApi.doGetVideoPlayUrl(v,this);
         }

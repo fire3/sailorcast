@@ -13,7 +13,9 @@
                         android:text="@string/btn_phone_super"
                         android:textColor="@color/grey_medium"
                         android:onClick="onDlnaButtonClick"
-                        android:layout_margin="10dp"
+
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -24,7 +26,9 @@
                         android:textColor="@color/grey_medium"
                         android:text="@string/btn_phone_high"
                         android:onClick="onDlnaButtonClick"
-                        android:layout_margin="10dp"
+
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -35,9 +39,11 @@
                         android:textColor="@color/grey_medium"
                         android:text="@string/btn_phone_normal"
                         android:onClick="onDlnaButtonClick"
-                        android:layout_margin="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                     />
 
             </LinearLayout>

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
+import com.crixmod.sailorcast.utils.ImageTools;
 
 public class SearchResultFragment extends ListFragment
 implements OnSearchRequestListener
@@ -168,6 +170,14 @@ implements OnSearchRequestListener
             viewHolder.videoTitle.setText(album.getTitle());
             viewHolder.videoTip.setText(album.getTip());
 
+            if(album.getVerImageUrl() != null) {
+                ImageTools.fixVerPosterRatio(viewHolder.videoImage);
+                ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl());
+            } else if(album.getHorImageUrl() != null) {
+                ImageTools.fixHorPosterRatio(viewHolder.videoImage);
+                ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl());
+            }
+
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -184,9 +194,6 @@ implements OnSearchRequestListener
             viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);
             viewHolder.resultContainer = (LinearLayout)itemView.findViewById(R.id.search_result);
 
-
-            final ImageView imageView = viewHolder.videoImage;
-            //AppUtils.fixVerPosterRatio(imageView);
             itemView.setTag(viewHolder);
             return itemView;
         }

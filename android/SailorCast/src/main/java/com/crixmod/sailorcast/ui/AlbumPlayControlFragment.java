@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -105,19 +106,26 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
 
     }
 
-    public void selectVideoItem(int item) {
-        final int numVisibleChildren = mGrid.getChildCount();
-        final int firstVisiblePosition = mGrid.getFirstVisiblePosition();
-        Log.d("fire3", "selectVideoItem");
+    public void selectVideoItem(final int item) {
+        Log.d("fire3", "selectVideoItem item: "  + item);
 
-        for ( int i = 0; i < numVisibleChildren; i++ ) {
-            int positionOfView = firstVisiblePosition + i;
 
-            if (positionOfView == item) {
-                View view = mGrid.getChildAt(i);
-                view.requestFocus();
+        mGrid.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                final int numVisibleChildren = mGrid.getChildCount();
+                final int firstVisiblePosition = mGrid.getFirstVisiblePosition();
+                for ( int i = 0; i < numVisibleChildren; i++ ) {
+                    int positionOfView = firstVisiblePosition + i;
+
+                    if (positionOfView == item) {
+                        View view = mGrid.getChildAt(i);
+                        view.requestFocus();
+                    }
+                }
             }
-        }
+        },100);
     }
 
     private void onVideosReady(SCVideos videos) {
@@ -125,22 +133,38 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
         mVideos = videos;
         mAdapter = new AlbumVideoGridAdaptor(getActivity(),(mPageNo-1)*mPageSize + 1,count);
 
-        mGrid.post(new Runnable() {
-            @Override
-            public void run() {
-                mGrid.setAdapter(mAdapter);
-                if(mIsShowTitle == true)
-                    mGrid.setNumColumns(1);
-            }
-        });
+        if(mGrid != null) {
+            mGrid.post(new Runnable() {
+                @Override
+                public void run() {
+                    mGrid.setAdapter(mAdapter);
+                    if (mIsShowTitle == true)
+                        mGrid.setNumColumns(1);
+                    mListener.onVideosLoadFinished();
+                }
+            });
         //这里有些bug，因为Adapter刚刚设置，mGrid的View可能没有创建好，selectVideoItem方法可能无效。
         //暂时采用等待10ms的方式绕过这个问题，可能存在更好的方法。
+        /*
         mGrid.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mListener.onVideosLoadFinished();
             }
-        },10);
+        },100);
+        */
+
+            /*
+            mGrid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    mListener.onVideosLoadFinished();
+                    mGrid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+            */
+        }
     }
 
     private void handleFocusView(View view) {

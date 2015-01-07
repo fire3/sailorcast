@@ -19,12 +19,27 @@ public class HttpUtils {
     private static final String REQUEST_TAG = "okhttp";
 
     public static Request buildRequest(String url) {
-        Request request = new Request.Builder()
-                .tag(REQUEST_TAG)
-                .url(url)
-                .build();
-        Log.d("HttpUtils", "request Url: " + url);
-        return request;
+
+        if (SailorCast.isNetworkAvailable()) {
+            int maxAge = 60 * 60 * 24; // read from cache for 1 day
+            Request request = new Request.Builder()
+                    .tag(REQUEST_TAG)
+                    .addHeader("Cache-Control", "public, max-age=" + maxAge)
+                    .url(url)
+                    .build();
+            Log.d("HttpUtils", "request Url: " + url);
+            return request;
+        } else {
+           int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
+             Request request = new Request.Builder()
+                    .tag(REQUEST_TAG)
+                     .addHeader("Cache-Control",
+                             "public, only-if-cached, max-stale=" + maxStale)
+                    .url(url)
+                    .build();
+            Log.d("HttpUtils", "request Url: " + url);
+            return request;
+        }
     }
 
     public static void asyncGet(String url, Activity activity, Callback callback) {
