@@ -6,14 +6,5 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     >
-    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/album_play_control_grid"
-        android:numColumns="5"
-        android:padding="5dp"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"
-        android:stretchMode="columnWidth"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </GridView>
+
 </LinearLayout>

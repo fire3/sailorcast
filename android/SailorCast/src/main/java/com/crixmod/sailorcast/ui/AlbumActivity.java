@@ -7,14 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -58,10 +59,11 @@ public class AlbumActivity extends BaseToolbarActivity
     private SlidingTabLayout mSlidingTabLayout;
 
     private AlbumVideoGridPagerAdapter mAdapter;
-
-    private int mTabPageSize = 20;
+    private int TAB_SIZE_BUTTON = 20;
+    private int TAB_SIZE_TITLE = 5;
+    private int mTabPageSize = TAB_SIZE_BUTTON;
     private int mInitialVideoNoInAlbum = 0;
-    private ViewPager.OnPageChangeListener mPageChangeListener;
+    private boolean mIsShowTitle = false;
 
 
     @Override
@@ -71,6 +73,7 @@ public class AlbumActivity extends BaseToolbarActivity
         SiteApi.doGetAlbumDesc(mAlbum,this);
         findViews();
         setupViewPager();
+        setupToggleButton();
     }
 
     @Override
@@ -196,9 +199,10 @@ public class AlbumActivity extends BaseToolbarActivity
             //More than one videos, start viewPager
             mAdapter =
                     new AlbumVideoGridPagerAdapter(getSupportFragmentManager(), this, album.getVideosCount(),mTabPageSize);
-
+            mViewPager.removeAllViews();
             mViewPager.setAdapter(mAdapter);
             mSlidingTabLayout.setViewPager(mViewPager);
+            mAdapter.notifyDataSetChanged();
             showToggleButton();
 
             int index = mInitialVideoNoInAlbum/mTabPageSize;
@@ -211,6 +215,30 @@ public class AlbumActivity extends BaseToolbarActivity
             SiteApi.doGetAlbumVideos(mAlbum,1,1,this);
             hideToggleButton();
         }
+    }
+
+
+    private void setupToggleButton() {
+        mToggleTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if ( b == true )
+                    mTabPageSize = TAB_SIZE_TITLE;
+                else
+                    mTabPageSize = TAB_SIZE_BUTTON;
+
+                mIsShowTitle = b;
+                mAdapter.destroy();
+                mViewPager.setAdapter(null);
+                mViewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        fillAlbumPlayControl(mAlbum);
+                    }
+                });
+            }
+        });
+
     }
 
     private void showToggleButton() {
@@ -417,15 +445,27 @@ public class AlbumActivity extends BaseToolbarActivity
             int pageNo = i + 1;
             int pageSize = mTabPageSize;
             AlbumPlayControlFragment newFrag =
-                    AlbumPlayControlFragment.newInstance(mAlbum, pageNo, pageSize);
+                    AlbumPlayControlFragment.newInstance(mAlbum, pageNo, pageSize, mIsShowTitle);
             return newFrag;
         }
 
-        public Fragment getFragment(int position) {
+        public AlbumPlayControlFragment getFragment(int position) {
             String tag = mFragmentTags.get(position);
             if (tag == null)
                 return null;
-            return mFragmentManager.findFragmentByTag(tag);
+            return (AlbumPlayControlFragment) mFragmentManager.findFragmentByTag(tag);
+        }
+
+        public void destroy() {
+            for (Map.Entry<Integer, String> entry : mFragmentTags.entrySet())
+            {
+                Fragment f =  mFragmentManager.findFragmentByTag(entry.getValue());
+                if(f != null) {
+                    FragmentTransaction trans = mFragmentManager.beginTransaction();
+                    trans.remove((Fragment) f);
+                    trans.commit();
+                }
+            }
         }
     }
 

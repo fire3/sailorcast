@@ -32,12 +32,7 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     private static final String ARG_ALBUM = "album";
     private static final String ARG_PAGE_NO = "pageNo";
     private static final String ARG_PAGE_SIZE = "pageSize";
-    private static final String ARG_ORDER = "videoOrder";
-
-    public static final int PLAY_CONTROL_TYPE_BUTTON = 1;
-    public static final int PLAY_CONTROL_TYPE_DETAIL = 2;
-
-    private int mPlayControlType = PLAY_CONTROL_TYPE_BUTTON;
+    private static final String ARG_IS_SHOW_TITLE = "isShowTitle";
 
     private GridView mGrid;
     private LinearLayout mContainer;
@@ -47,14 +42,16 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     private SCVideos mVideos;
     private AlbumVideoGridAdaptor mAdapter;
     private OnAlbumPlayInteractionListener mListener;
+    private boolean mIsShowTitle;
 
 
-    public static AlbumPlayControlFragment newInstance(SCAlbum album, int pageNo, int pageSize) {
+    public static AlbumPlayControlFragment newInstance(SCAlbum album, int pageNo, int pageSize, boolean isShowTitle) {
         AlbumPlayControlFragment fragment = new AlbumPlayControlFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_ALBUM, album);
         args.putInt(ARG_PAGE_NO, pageNo);
         args.putInt(ARG_PAGE_SIZE, pageSize);
+        args.putBoolean(ARG_IS_SHOW_TITLE, isShowTitle);
 
         fragment.setArguments(args);
         return fragment;
@@ -64,12 +61,6 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
         // Required empty public constructor
     }
 
-    public void setPlayControlType(int controlType) {
-        if(controlType == PLAY_CONTROL_TYPE_BUTTON || controlType == PLAY_CONTROL_TYPE_DETAIL) {
-            mPlayControlType = controlType;
-        }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +68,15 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
             mAlbum = getArguments().getParcelable(ARG_ALBUM);
             mPageNo = getArguments().getInt(ARG_PAGE_NO);
             mPageSize = getArguments().getInt(ARG_PAGE_SIZE);
-            SiteApi.doGetAlbumVideos(mAlbum,mPageNo,mPageSize,this);
+            mIsShowTitle = getArguments().getBoolean(ARG_IS_SHOW_TITLE);
+            Log.d("fire3","AlbumPlayControlFragmet: " + mIsShowTitle);
+            SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
         }
     }
 
     @Override
     public void onViewCreated(View view,Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mGrid = (GridView) view.findViewById(R.id.album_play_control_grid);
         mContainer = (LinearLayout)view.findViewById(R.id.container);
         if(mAdapter != null)
             mGrid.setAdapter(mAdapter);
@@ -94,6 +86,14 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_album_play_control, container, false);
+
+        inflater.inflate(R.layout.album_play_gridview, (ViewGroup) view,true);
+        mGrid = (GridView) view.findViewById(R.id.album_play_control_grid);
+        if(mIsShowTitle)
+            mGrid.setNumColumns(1);
+        else
+            mGrid.setNumColumns(5);
+
         return view;
     }
 
@@ -123,13 +123,13 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
     private void onVideosReady(SCVideos videos) {
         int count = videos.size();
         mVideos = videos;
-        mAdapter = new AlbumVideoGridAdaptor(getActivity(),(mPageNo-1)*mPageSize + 1,count,mPlayControlType);
+        mAdapter = new AlbumVideoGridAdaptor(getActivity(),(mPageNo-1)*mPageSize + 1,count);
 
         mGrid.post(new Runnable() {
             @Override
             public void run() {
                 mGrid.setAdapter(mAdapter);
-                if(mPlayControlType == PLAY_CONTROL_TYPE_DETAIL)
+                if(mIsShowTitle == true)
                     mGrid.setNumColumns(1);
             }
         });
@@ -169,13 +169,11 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
         private Context mContext;
         private int mInitialNumber;
         private int mCount;
-        private int mPlayControlType;
 
-        AlbumVideoGridAdaptor(Context mContext, int mInitialNumber, int mCount, int mPlayControlType) {
+        AlbumVideoGridAdaptor(Context mContext, int mInitialNumber, int mCount) {
             this.mContext = mContext;
             this.mInitialNumber = mInitialNumber;
             this.mCount = mCount;
-            this.mPlayControlType = mPlayControlType;
         }
 
         @Override
@@ -267,12 +265,10 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
         }
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            if(mPlayControlType == AlbumPlayControlFragment.PLAY_CONTROL_TYPE_BUTTON)
-                return getButtonView(i,view,viewGroup);
-            else if(mPlayControlType == AlbumPlayControlFragment.PLAY_CONTROL_TYPE_DETAIL)
-                return getDetailView(i,view,viewGroup);
+            if(mIsShowTitle == false)
+                return getButtonView(i, view, viewGroup);
             else
-                return view;
+                return getDetailView(i,view,viewGroup);
         }
 
     }
