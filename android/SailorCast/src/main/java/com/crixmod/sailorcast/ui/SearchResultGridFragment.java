@@ -36,6 +36,7 @@ implements OnSearchRequestListener
     private SearchResultAdapter mAdapter;
     private String mFailReason;
     private GridView mGrid;
+    private TextView mEmpty;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,6 +81,10 @@ implements OnSearchRequestListener
 
         View view =  inflater.inflate(R.layout.fragment_search_result, container, false);
         mGrid = (GridView) view.findViewById(R.id.search_result_grid);
+        mEmpty = (TextView) view.findViewById(android.R.id.empty);
+        mGrid.setEmptyView(mEmpty);
+        mEmpty.setText(mFailReason);
+
         return view;
     }
 
@@ -109,7 +114,7 @@ implements OnSearchRequestListener
             @Override
             public void run() {
                 mFailReason = failReason;
-
+                mEmpty.setText(mFailReason);
             }
         });
     }

@@ -2,6 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.crixmod.sailorcast.ui.AlbumActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+    <item android:id="@+id/action_display_title" android:title="@string/action_display_title"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_display_button" android:title="@string/action_display_button"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>
