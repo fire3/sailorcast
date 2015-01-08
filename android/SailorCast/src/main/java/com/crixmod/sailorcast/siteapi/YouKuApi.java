@@ -185,7 +185,7 @@ public class YouKuApi extends BaseSiteApi {
                 sa.setVerImageUrl(StringEscapeUtils.unescapeJava(r.getShowVthumburl()));
                 sa.setAlbumId(r.getShowid());
                 sa.setSubTitle(StringEscapeUtils.unescapeJava(r.getSummary()));
-                sa.setTip(StringEscapeUtils.unescapeJava(r.getNotice()));
+                sa.setTip(StringEscapeUtils.unescapeJava(r.getCats()));
                 sa.setSite(SCSite.YOUKU);
                 albums.add(sa);
             }

@@ -121,4 +121,8 @@
     <color name="calypso_orange_light">#fff8e5</color>
     <color name="calypso_orange">#ffba00</color>
     <color name="calypso_orange_dark">#f0821e</color>
+
+
+    <color name="TransparentWhite">#11FFFFFF</color>
+    <color name="TransparentBlack">#B0000000</color>
 </resources>
