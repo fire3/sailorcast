@@ -31,5 +31,7 @@
     <string name="btn_dlna_super">超清\n投射</string>
     <string name="btn_dlna_high">高清\n投射</string>
     <string name="btn_dlna_normal">标清\n投射</string>
+    <string name="action_display_title">显示标题</string>
+    <string name="action_display_button">显示按钮</string>
 
 </resources>

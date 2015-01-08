@@ -28,7 +28,7 @@ public class SearchActivity extends SCDrawerActivity
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(getString(R.string.hello_world));
+            actionBar.setTitle(getString(R.string.app_name));
         }
 
         fixEditTextPadding();

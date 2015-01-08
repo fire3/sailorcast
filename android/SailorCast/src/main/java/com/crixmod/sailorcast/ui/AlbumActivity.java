@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -54,8 +55,6 @@ public class AlbumActivity extends BaseToolbarActivity
     private Button mDlnaSuperButton;
     private Button mDlnaHighButton;
     private Button mDlnaNorButton;
-    private Switch mToggleOrder;
-    private Switch mToggleTitle;
     private ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
 
@@ -71,10 +70,10 @@ public class AlbumActivity extends BaseToolbarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAlbum = getIntent().getParcelableExtra("album");
-        SiteApi.doGetAlbumDesc(mAlbum,this);
+        SiteApi.doGetAlbumDesc(mAlbum, this);
         findViews();
         setupViewPager();
-        setupToggleButton();
+        setTitle(mAlbum.getTitle());
     }
 
     @Override
@@ -90,8 +89,6 @@ public class AlbumActivity extends BaseToolbarActivity
         mDlnaHighButton = (Button) findViewById(R.id.btn_dlna_high);
         mDlnaNorButton = (Button) findViewById(R.id.btn_dlna_normal);
         mDlnaSuperButton = (Button) findViewById(R.id.btn_dlna_super);
-        mToggleOrder = (Switch) findViewById(R.id.toggle_order);
-        mToggleTitle = (Switch) findViewById(R.id.toggle_title);
         mViewPager = (ViewPager) findViewById(R.id.album_viewpager);
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
 
@@ -120,10 +117,41 @@ public class AlbumActivity extends BaseToolbarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_display_button) {
+            if ( mIsShowTitle == true ) {
+                mTabPageSize = TAB_SIZE_BUTTON;
+                mIsShowTitle = false;
+                mAdapter.destroy();
+                mViewPager.setAdapter(null);
+                mViewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        fillAlbumPlayControl(mAlbum);
+                    }
+                });
+            }
+            return true;
+        }
+        if (id == R.id.action_display_title) {
+            if ( mIsShowTitle == false ) {
+                mTabPageSize = TAB_SIZE_TITLE;
+                mIsShowTitle = true;
+                mAdapter.destroy();
+                mViewPager.setAdapter(null);
+                mViewPager.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        fillAlbumPlayControl(mAlbum);
+                    }
+                });
+            }
             return true;
         }
 
+        if(id == android.R.id.home) {
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -204,7 +232,6 @@ public class AlbumActivity extends BaseToolbarActivity
             mViewPager.setAdapter(mAdapter);
             mSlidingTabLayout.setViewPager(mViewPager);
             mAdapter.notifyDataSetChanged();
-            showToggleButton();
 
             int index = mInitialVideoNoInAlbum/mTabPageSize;
             mViewPager.setCurrentItem(index);
@@ -214,42 +241,7 @@ public class AlbumActivity extends BaseToolbarActivity
             openAlbumDesc(null);
             hideAlbumCloseButton();
             SiteApi.doGetAlbumVideos(mAlbum,1,1,this);
-            hideToggleButton();
         }
-    }
-
-
-    private void setupToggleButton() {
-        mToggleTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if ( b == true )
-                    mTabPageSize = TAB_SIZE_TITLE;
-                else
-                    mTabPageSize = TAB_SIZE_BUTTON;
-
-                mIsShowTitle = b;
-                mAdapter.destroy();
-                mViewPager.setAdapter(null);
-                mViewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        fillAlbumPlayControl(mAlbum);
-                    }
-                });
-            }
-        });
-
-    }
-
-    private void showToggleButton() {
-        mToggleTitle.setVisibility(View.VISIBLE);
-        mToggleOrder.setVisibility(View.VISIBLE);
-    }
-
-    private void hideToggleButton() {
-        mToggleTitle.setVisibility(View.GONE);
-        mToggleOrder.setVisibility(View.GONE);
     }
 
 

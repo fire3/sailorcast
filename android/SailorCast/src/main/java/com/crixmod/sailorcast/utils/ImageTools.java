@@ -17,6 +17,9 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
  * Created by fire3 on 2015/1/7.
  */
 public class ImageTools {
+    public static final float VER_POSTER_RATIO = 0.73f;
+    public static final float HOR_POSTER_RATIO = 1.5f;
+
     public static void displayImage(ImageView view, String picUrl, final DisplayImageOptions displayImageOptions) {
         final String pic = picUrl;
         final ImageView imageView = view;
@@ -25,6 +28,8 @@ public class ImageTools {
             public void run() {
                 ImageAware imageAware = new ImageViewAware(imageView, false);
 
+                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
+                /*
                 if (SailorCast.isNetworkMobile()) {
                     //mobile
                     com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("drawable://" + R.drawable.pic_defaultposter, imageAware, displayImageOptions);
@@ -32,6 +37,7 @@ public class ImageTools {
                     //wifi
                     com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
                 }
+                */
             }
         });
     }
@@ -57,6 +63,8 @@ public class ImageTools {
             public void run() {
                 ImageAware imageAware = new ImageViewAware(imageView, false);
 
+                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
+                /*
                 if (SailorCast.isNetworkMobile()) {
                     //mobile
                     com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("drawable://" + R.drawable.pic_defaultposter, imageAware, displayImageOptions);
@@ -64,6 +72,7 @@ public class ImageTools {
                     //wifi
                     com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
                 }
+                */
             }
         });
     }
@@ -90,13 +99,16 @@ public class ImageTools {
             public void run() {
                 ImageAware imageAware = new ImageViewAware(imageView, false);
 
+                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
+                /*
                 if (SailorCast.isNetworkMobile()) {
                     //mobile
                     com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("drawable://" + R.drawable.pic_defaultposter, imageAware, displayImageOptions);
                 } else if (SailorCast.isNetworkFWifi()) {
                     //wifi
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-                }
+                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
+               }
+                */
             }
         });
     }
@@ -107,7 +119,7 @@ public class ImageTools {
                 @Override
                 public void run() {
                     int width = image.getWidth();
-                    int height = Math.round((float) width / 240.0f * 180.0f);
+                    int height = Math.round((float) width / HOR_POSTER_RATIO);
                     image.getLayoutParams().height = height;
                     image.setVisibility(View.VISIBLE);
                 }
@@ -120,7 +132,7 @@ public class ImageTools {
             @Override
             public void run() {
                 int width = image.getWidth();
-                int height = Math.round((float) width / 240.0f * 330.0f);
+                int height = Math.round((float) width / VER_POSTER_RATIO);
                 image.getLayoutParams().height = height;
                 image.setVisibility(View.VISIBLE);
             }

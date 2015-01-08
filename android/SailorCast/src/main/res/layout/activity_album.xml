@@ -45,11 +45,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
+                    android:layout_margin="@dimen/margin_small"
                     android:lines="1"
                     android:textSize="@dimen/abc_text_size_medium_material" />
 
                 <TextView
                     android:id="@+id/album_director"
+                    android:layout_margin="@dimen/margin_small"
                     android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -59,29 +61,13 @@
 
                 <TextView
                     android:id="@+id/album_main_actor"
+                    android:layout_margin="@dimen/margin_small"
                     android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:lines="1"
                     android:textSize="@dimen/abc_text_size_small_material" />
-
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_small_material"
-                    android:text="@string/toggle_button_display_title"
-                    android:id="@+id/toggle_title"
-                    android:visibility="gone"
-                    />
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_small_material"
-                    android:text="@string/toggle_button_order"
-                    android:id="@+id/toggle_order"
-                    android:visibility="gone"
-                    />
 
             </LinearLayout>
         </LinearLayout>

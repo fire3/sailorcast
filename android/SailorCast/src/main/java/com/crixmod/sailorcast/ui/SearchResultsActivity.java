@@ -60,7 +60,8 @@ public class SearchResultsActivity extends BaseToolbarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if(id == android.R.id.home) {
+            finish();
             return true;
         }
 
@@ -94,7 +95,7 @@ public class SearchResultsActivity extends BaseToolbarActivity {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            return SearchResultFragment.newInstance(mKeyword, position);
+            return SearchResultGridFragment.newInstance(mKeyword, position);
         }
 
         @Override
