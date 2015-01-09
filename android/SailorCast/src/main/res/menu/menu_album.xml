@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.crixmod.sailorcast.ui.AlbumActivity">
+    tools:context="com.crixmod.sailorcast.view.AlbumActivity">
     <item android:id="@+id/action_display_title" android:title="@string/action_display_title"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_display_button" android:title="@string/action_display_button"

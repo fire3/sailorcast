@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2013 Aurélien Chabot <aurelien@chabot.fr>
+
+  This file is part of DroidUPNP.
+
+  DroidUPNP is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  DroidUPNP is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with DroidUPNP.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	style="@style/renderer" >
+
+	<TextView
+		android:id="@+id/trackDurationElapse"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:layout_alignParentTop="true"
+		android:layout_gravity="center_vertical|fill_vertical"
+		android:layout_marginTop="10dp"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginBottom="5dp"
+		android:text="@string/duration"
+		style="@style/rendererText"
+		android:textAppearance="?android:attr/textAppearanceSmall" />
+
+	<TextView
+		android:id="@+id/trackDurationRemaining"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentTop="true"
+		android:layout_gravity="center_vertical|fill_vertical"
+		android:layout_marginTop="10dp"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginBottom="5dp"
+		android:text="@string/duration"
+		style="@style/rendererText"
+		android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+	<LinearLayout
+		android:id="@+id/descriptionLayout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="10dp"
+		android:layout_marginStart="10dp"
+		android:layout_marginRight="110dp"
+		android:layout_marginEnd="110dp"
+		android:layout_below="@id/trackDurationElapse"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:orientation="vertical"
+		android:layout_gravity="center_vertical|center_horizontal" >
+
+		<TextView
+			android:id="@+id/title"
+			android:textIsSelectable="false"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:ellipsize="marquee"
+			android:singleLine="true"
+			style="@style/rendererTitle" />
+
+		<TextView
+			android:id="@+id/subtitle"
+			android:textIsSelectable="false"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:ellipsize="marquee"
+			android:singleLine="true"
+			style="@style/rendererSubtitle" />
+
+	</LinearLayout>
+
+	<ImageButton
+		android:id="@+id/play_pauseButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="10dip"
+		android:layout_marginEnd="10dip"
+		android:layout_marginLeft="7dip"
+		android:layout_marginStart="7dip"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:layout_below="@id/trackDurationRemaining"
+		android:contentDescription="@string/play"
+		android:padding="3dp"
+		android:background="@android:color/transparent"
+		android:src="@drawable/play" />
+
+	<ImageButton
+		android:id="@+id/stopButton"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toLeftOf="@id/play_pauseButton"
+		android:layout_toStartOf="@id/play_pauseButton"
+		android:layout_below="@id/trackDurationRemaining"
+		android:layout_marginRight="7dp"
+		android:layout_marginEnd="7dp"
+		android:contentDescription="@string/stop"
+		android:padding="3dp"
+		android:background="@android:color/transparent"
+		android:src="@drawable/stop" />
+
+	<LinearLayout
+		android:id="@+id/volumeLayout"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		android:layout_marginBottom="5dp"
+		android:layout_marginRight="10dp"
+		android:layout_marginLeft="10dp"
+		android:layout_alignParentBottom="true"
+		android:layout_gravity="center_vertical|center_horizontal" >
+
+		<ImageButton
+			android:id="@+id/volumeIcon"
+			android:layout_width="40dp"
+			android:layout_height="match_parent"
+			android:layout_marginRight="15dp"
+			android:layout_marginEnd="15dp"
+			android:contentDescription="@string/mute"
+			android:background="@android:color/transparent"
+			android:src="@drawable/volume" />
+
+		<SeekBar
+			android:id="@+id/volume"
+			android:layout_height="match_parent"
+			android:layout_width="match_parent" />
+
+	</LinearLayout>
+
+</RelativeLayout>

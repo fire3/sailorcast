@@ -125,4 +125,6 @@
 
     <color name="TransparentWhite">#11FFFFFF</color>
     <color name="TransparentBlack">#B0000000</color>
+
+    <color name="blue_trans">#77379293</color>
 </resources>

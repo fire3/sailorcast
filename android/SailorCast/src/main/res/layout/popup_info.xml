@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2013 Aurélien Chabot <aurelien@chabot.fr>
+
+  This file is part of DroidUPNP.
+
+  DroidUPNP is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  DroidUPNP is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with DroidUPNP.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical" >
+
+	<TableLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="25dp"
+		>
+
+		<TableRow
+			android:id="@+id/row_manufacturer"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_manufacturer"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/manufacturer" />
+		   <TextView
+				android:id="@+id/separator_manufacturer"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/manufacturer"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"/>
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_manufacturer_url"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_manufacturer_url"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/manufacturer_url" />
+		   <TextView
+				android:id="@+id/separator_manufacturer_url"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/manufacturer_url"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_model_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_model_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/model_name" />
+		   <TextView
+				android:id="@+id/separator_model_name"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/model_name"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_model_url"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_model_url"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/model_url" />
+		   <TextView
+				android:id="@+id/separator_model_url"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/model_url"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_model_number"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_model_number"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/model_number" />
+		   <TextView
+				android:id="@+id/separator_model_number"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/model_number"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_model_desc"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_model_desc"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/model_desc" />
+		   <TextView
+				android:id="@+id/separator_model_desc"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/model_desc"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_presentation_url"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_presentation_url"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/presention_url" />
+		   <TextView
+				android:id="@+id/separator_presentation_url"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/presentation_url"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_desc_xml"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_desc_xml"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/desc_xml" />
+		   <TextView
+				android:id="@+id/separator_desc_xml"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/desc_xml"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+
+		<TableRow
+			android:id="@+id/row_udn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" >
+
+			<TextView
+				android:id="@+id/text_udn"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/udn" />
+			<TextView
+				android:id="@+id/separator_udn"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/separator" />
+			<TextView
+				android:id="@+id/udn"
+				android:textIsSelectable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+		</TableRow>
+	</TableLayout>
+
+	<Button
+		android:id="@+id/button"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/OK" />
+
+</LinearLayout>

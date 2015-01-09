@@ -113,4 +113,6 @@
     <dimen name="font_size_small">13sp</dimen>
     <dimen name="font_size_normal">15sp</dimen>
     <dimen name="imageview_search_result_height">120dp</dimen>
+
+    <dimen name="navigation_drawer_width">240dp</dimen>
 </resources>

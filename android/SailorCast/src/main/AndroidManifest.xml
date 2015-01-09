@@ -26,11 +26,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SearchResultsActivity"
+            android:name=".view.SearchResultsActivity"
             android:label="@string/title_activity_search_results" >
         </activity>
         <activity
-            android:name=".ui.AlbumActivity"
+            android:name=".view.AlbumActivity"
             android:label="@string/title_activity_album" >
         </activity>
     </application>

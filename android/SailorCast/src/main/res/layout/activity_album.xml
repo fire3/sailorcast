@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.crixmod.sailorcast.ui.AlbumActivity">
+    tools:context="com.crixmod.sailorcast.view.AlbumActivity">
 
     <include layout="@layout/toolbar" />
 
@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="4"
-        tools:context="com.crixmod.sailorcast.ui.AlbumActivity">
+        tools:context="com.crixmod.sailorcast.view.AlbumActivity">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/album_topinfo_container"

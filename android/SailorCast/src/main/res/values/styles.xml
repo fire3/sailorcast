@@ -10,260 +10,53 @@
         <item name="colorControlHighlight">@color/color_control_highlight</item>
 
         <item name="android:windowBackground">@color/calypso_blue_light</item>
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_wordpress</item>
-        <item name="android:popupMenuStyle">@style/PopupMenu.SailorCast</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Dark.SailorCast</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.SailorCast</item>
-        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.SailorCast</item>
-        <item name="android:actionBarTabTextStyle">@style/TabTextStyle.SailorCast</item>
-        <item name="android:actionBarTabBarStyle">@style/TabBarStyle.SailorCast</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="windowActionBar">false</item>
 
         <item name="android:editTextStyle">@android:style/Widget.EditText</item>
-        <!-- Light.DarkActionBar specific -->
-        <item name="android:actionBarWidgetTheme">@style/Theme.SailorCast.Widget</item>
-
         <item name="swipeToRefreshStyle">@style/SailorCast.SwipeToRefresh</item>
     </style>
 
-    <!-- see values-21/styles.xml -->
-    <style name="SailorCast.DrawerActivity" parent="Calypso.NoActionBar" />
+	<drawable name="play">@drawable/ic_action_play</drawable>
+	<drawable name="pause">@drawable/ic_action_pause</drawable>
+	<drawable name="stop">@drawable/ic_action_stop</drawable>
+	<drawable name="volume">@drawable/ic_action_volume_on</drawable>
+	<drawable name="volume_mute">@drawable/ic_action_volume_muted</drawable>
 
-    <style name="SailorCast.DropDownListView.Light" parent="SailorCast">
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Light.SailorCast</item>
-    </style>
+	<!-- Drawer style -->
+	<style name="drawer">
+		<item name="android:background">@color/grey_medium_dark</item>
+	</style>
 
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.SailorCast.Widget" parent="Theme.AppCompat">
-        <item name="android:popupMenuStyle">@style/PopupMenu.SailorCast</item>
-        <item name="android:dropDownListViewStyle">@style/DropDownListView.Light.SailorCast</item>
-    </style>
+	<style name="DrawerText" parent="@android:style/TextAppearance">
+		<item name="android:textColor">@android:color/white</item>
+	</style>
 
-    <style name="TabBarStyle.SailorCast" parent="@android:style/Widget.Holo.ActionBar.TabBar">
-        <item name="android:showDividers">middle</item>
-        <item name="android:divider">@drawable/tab_divider_wordpress</item>
-    </style>
+	<style name="deviceListLabel">
+		<item name="android:textColor">@color/grey_medium_light</item>
+	</style>
 
-   <style name="PopupMenu.SailorCast" parent="android:Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_wordpress</item>
-    </style>
+	<style name="deviceListSeparator">
+		<item name="android:background">@color/grey_medium_light</item>
+	</style>
 
-    <style name="DropDownListView.Dark.SailorCast" parent="android:Widget.Holo.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_wordpress</item>
-        <item name="android:fadeScrollbars">false</item>
-        <item name="android:scrollbarThumbVertical">@drawable/scrollbar_transparent_white</item>
-    </style>
+	<!-- Renderer style -->
+	<style name="renderer">
+		<item name="android:background">?android:attr/colorBackground</item>
+	</style>
 
-    <style name="DropDownListView.Light.SailorCast" parent="android:Widget.Holo.ListView.DropDown">
-        <item name="android:listSelector">@drawable/selectable_background_wordpress</item>
-        <item name="android:fadeScrollbars">false</item>
-    </style>
+	<style name="rendererText">
+		<item name="android:textColor">@android:color/black</item>
+	</style>
 
-    <style name="TabTextStyle.SailorCast" parent="android:Widget.Holo.ActionBar.TabText">
-        <item name="android:textColor">@color/grey_dark</item>
-    </style>
+	<style name="rendererTitle" parent="rendererText">
+		<item name="android:textSize">18sp</item>
+	</style>
 
-    <style name="DropDownNav.SailorCast" parent="android:Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/spinner_background_ab_wordpress</item>
-        <item name="android:dropDownSelector">@drawable/selectable_background_wordpress</item>
-    </style>
-
-    <style name="ProgressBar.SailorCast" parent="android:Widget.Holo.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_horizontal_wordpress</item>
-    </style>
-
-    <style name="ActionButton.CloseMode.SailorCast" parent="android:Widget.Holo.ActionButton.CloseMode">
-        <item name="android:background">@drawable/btn_cab_done_wordpress</item>
-    </style>
-
-    <style name="SailorCastSectionHeader">
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
-        <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingBottom">4dp</item>
-        <item name="android:textColor">#AAAAAA</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="SailorCastSettingsSectionHeader" parent="SailorCastSectionHeader">
-        <item name="android:background">@drawable/section_header</item>
-        <item name="android:textColor">#323232</item>
-        <item name="android:paddingBottom">6dp</item>
-    </style>
-
-    <style name="SailorCastSubHeader">
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginLeft">12dp</item>
-        <item name="android:textColor">#AAAAAA</item>
-        <item name="android:layout_marginBottom">-4dp</item>
-    </style>
-
-    <style name="SailorCast.ToggleButton">
-        <item name="android:minWidth">@dimen/format_bar_height</item>
-        <item name="android:minHeight">@dimen/format_bar_height</item>
-        <item name="android:textOn">""</item>
-        <item name="android:textOff">""</item>
-    </style>
-
-    <style name="SailorCastTitleAppearance" parent="@android:style/TextAppearance">
-        <item name="android:singleLine">true</item>
-        <item name="android:shadowColor">#BB000000</item>
-        <item name="android:shadowRadius">2.75</item>
-        <item name="android:textColor">#FFF6F6F6</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="DrawerText">
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:textAppearance">?android:attr/textAppearance</item>
-        <item name="android:textColor">@color/drawer_text</item>
-        <item name="android:textSize">@dimen/text_sz_large</item>
-        <item name="android:clickable">false</item>
-    </style>
-
-    <style name="DrawerIcon">
-        <item name="android:layout_height">@dimen/drawer_icon_size</item>
-        <item name="android:layout_width">@dimen/drawer_icon_size</item>
-        <item name="android:scaleType">centerInside</item>
-        <item name="android:clickable">false</item>
-        <item name="android:tint">@color/drawer_icon_tint</item>
-    </style>
-
-    <style name="DrawerBadge">
-        <item name="android:background">@drawable/comment_badge_background</item>
-        <item name="android:textAppearance">?android:attr/textAppearance</item>
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:layout_height">@dimen/drawer_badge_size</item>
-        <item name="android:layout_width">@dimen/drawer_badge_size</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center</item>
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
-    </style>
-
-    <style name="SailorCastWelcomeStyle">
-        <item name="android:layout_gravity">center</item>
-    </style>
-
-    <style name="ThemeDetailsHeader">
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="MediaGalleryText">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="MediaGalleryNumOfColumns" parent="@style/MediaGalleryText">
-        <item name="android:textColor">@color/media_grid_item_checkstate_text_selector</item>
-        <item name="android:background">@drawable/media_gallery_option_selector</item>
-        <item name="android:button">@null</item>
-    </style>
-
-    <style name="MediaGalleryTypeCheckbox">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:drawablePadding">8dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:button">@null</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="EmptyListText">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:gravity">center_horizontal|center_vertical</item>
-        <item name="android:textColor">@color/grey_medium</item>
-    </style>
-
-    <!-- NUX Styles -->
-    <style name="SailorCast.NUXPrimaryButton">
-        <item name="android:textColor">@color/nux_primary_button</item>
-        <item name="android:layout_height">@dimen/nux_button_height</item>
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:clickable">true</item>
-        <item name="android:background">@drawable/nux_primary_button_selector</item>
-        <item name="android:stateListAnimator">@anim/raise</item>
-    </style>
-
-    <style name="SailorCast.NUXWhiteButtonNoBg">
-        <item name="android:textColor">@drawable/nux_white_button_nobg_selector</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:clickable">true</item>
-    </style>
-
-    <style name="SailorCast.NUXGreyButtonNoBg">
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@drawable/nux_grey_button_nobg_selector</item>
-    </style>
-
-    <style name="SailorCast.NUXEditText">
-        <item name="android:background">#FFFFFF</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:textColor">#444444</item>
-        <item name="android:textColorHint">#AAAAAA</item>
-        <item name="android:padding">12dp</item>
-        <item name="android:layout_marginLeft">40dp</item>
-    </style>
-
-    <style name="SailorCast.NUXTitle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginBottom">24dp</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">@dimen/nux_title_font_size</item>
-        <item name="android:lineSpacingExtra">-4sp</item>
-    </style>
-
-    <style name="SailorCast.EmptyList">
-        <item name="android:textColor">@color/grey_medium_dark</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginLeft">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
-    </style>
-
-    <style name="SailorCast.EmptyList.Title" parent="SailorCast.EmptyList">
-        <item name="android:textSize">@dimen/empty_list_title_text_size</item>
-        <item name="fontVariation">light</item>
-    </style>
-
-    <style name="SailorCast.EmptyList.Description" parent="SailorCast.EmptyList">
-        <item name="android:textSize">@dimen/empty_list_description_text_size</item>
-    </style>
-
-    <!--
-        moderation views on comment detail
-    -->
-    <style name="SailorCast.ModerateButton">
-        <item name="android:textColor">@color/calypso_blue</item>
-        <item name="android:textSize">@dimen/text_sz_small</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:background">@drawable/moderate_button_selector</item>
-        <item name="android:paddingTop">@dimen/margin_small</item>
-        <item name="android:paddingRight">@dimen/margin_small</item>
-        <item name="android:paddingLeft">@dimen/margin_small</item>
-        <item name="android:paddingBottom">@dimen/margin_medium</item>
-        <item name="android:drawablePadding">-4dp</item>
-        <item name="android:focusable">true</item>
-        <item name="android:clickable">true</item>
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="SailorCast.BorderedBackground">
-        <item name="android:background">@color/white</item>
-    </style>
+	<style name="rendererSubtitle" parent="rendererText">
+		<item name="android:textStyle">italic</item>
+		<item name="android:textSize">15sp</item>
+	</style>
 
     <!-- Dialog -->
     <style name="SailorCast.Dialog" parent="Theme.AppCompat.Light.Dialog">

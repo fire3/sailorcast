@@ -3,27 +3,23 @@ package com.crixmod.sailorcast;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.crixmod.sailorcast.ui.SearchResultsActivity;
-import com.crixmod.sailorcast.uiutils.SCDrawerActivity;
+import com.crixmod.sailorcast.view.SearchResultsActivity;
+import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 
 
-public class SearchActivity extends SCDrawerActivity
+public class SearchActivity extends BaseToolbarActivity
 {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
-        createMenuDrawer(R.layout.activity_search);
-        setSupportActionBar(getToolbar());
+        setContentView(R.layout.activity_search);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -34,6 +30,11 @@ public class SearchActivity extends SCDrawerActivity
         fixEditTextPadding();
         setSearchButton();
 
+    }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_search;
     }
 
 
