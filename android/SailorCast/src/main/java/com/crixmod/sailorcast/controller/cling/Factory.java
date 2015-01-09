@@ -21,7 +21,7 @@ package com.crixmod.sailorcast.controller.cling;
 
 import android.content.Context;
 
-import com.crixmod.sailorcast.Main;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.controller.upnp.IUpnpServiceController;
 import com.crixmod.sailorcast.model.cling.RendererState;
 import com.crixmod.sailorcast.model.upnp.ARendererState;
@@ -38,7 +38,7 @@ public class Factory implements IFactory {
 	@Override
 	public IRendererCommand createRendererCommand(IRendererState rs)
 	{
-		AndroidUpnpService aus = ((ServiceListener) Main.upnpServiceController.getServiceListener()).getUpnpService();
+		AndroidUpnpService aus = ((ServiceListener) SailorCast.upnpServiceController.getServiceListener()).getUpnpService();
 		ControlPoint cp = null;
 		if (aus != null)
 			cp = aus.getControlPoint();

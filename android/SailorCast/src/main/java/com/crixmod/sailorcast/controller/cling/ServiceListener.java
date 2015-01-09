@@ -27,7 +27,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.crixmod.sailorcast.Main;
 import com.crixmod.sailorcast.model.cling.CDevice;
 import com.crixmod.sailorcast.model.cling.CRegistryListener;
 import com.crixmod.sailorcast.model.upnp.ICallableFilter;

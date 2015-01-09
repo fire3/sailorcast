@@ -34,6 +34,8 @@ public class SailorCast extends Application {
     private static String FLV_API = "http://api.flvxz.com/token/9058e263a95c0dfbc1bdac83f4132822";
     private static final long SIZE_OF_HTTP_CACHE = 10 * 1024 * 1024;
 
+    public static IUpnpServiceController upnpServiceController = null;
+    public static IFactory factory = null;
 
     @Override
     public void onCreate() {
@@ -44,8 +46,18 @@ public class SailorCast extends Application {
         initImageLoader(this);
         initHttpClient(mHttpClient,mContext);
 
+		// Use cling factory
+		if (factory == null)
+			factory = new com.crixmod.sailorcast.controller.cling.Factory();
+
+		// Upnp service
+		if (upnpServiceController == null)
+			upnpServiceController = factory.createUpnpServiceController(this);
+
 
     }
+
+
 
     private void initHttpClient(OkHttpClient client, Context context) {
 

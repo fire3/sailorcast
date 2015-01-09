@@ -19,7 +19,7 @@
 
 package com.crixmod.sailorcast.model.upnp;
 
-import com.crixmod.sailorcast.Main;
+import com.crixmod.sailorcast.SailorCast;
 
 public class RendererDiscovery extends DeviceDiscovery {
 
@@ -39,8 +39,8 @@ public class RendererDiscovery extends DeviceDiscovery {
 	@Override
 	protected boolean isSelected(IUpnpDevice device)
 	{
-		if (Main.upnpServiceController != null && Main.upnpServiceController.getSelectedRenderer() != null)
-			return device.equals(Main.upnpServiceController.getSelectedRenderer());
+		if (SailorCast.upnpServiceController != null && SailorCast.upnpServiceController.getSelectedRenderer() != null)
+			return device.equals(SailorCast.upnpServiceController.getSelectedRenderer());
 
 		return false;
 	}
@@ -54,15 +54,15 @@ public class RendererDiscovery extends DeviceDiscovery {
 	@Override
 	protected void select(IUpnpDevice device, boolean force)
 	{
-		Main.upnpServiceController.setSelectedRenderer(device, force);
+		SailorCast.upnpServiceController.setSelectedRenderer(device, force);
 	}
 
 	@Override
 	protected void removed(IUpnpDevice d)
 	{
-		if (Main.upnpServiceController != null && Main.upnpServiceController.getSelectedRenderer() != null
-				&& d.equals(Main.upnpServiceController.getSelectedRenderer()))
-			Main.upnpServiceController.setSelectedRenderer(null);
+		if (SailorCast.upnpServiceController != null && SailorCast.upnpServiceController.getSelectedRenderer() != null
+				&& d.equals(SailorCast.upnpServiceController.getSelectedRenderer()))
+			SailorCast.upnpServiceController.setSelectedRenderer(null);
 	}
 
 }

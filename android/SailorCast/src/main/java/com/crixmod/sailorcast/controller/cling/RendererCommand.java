@@ -21,7 +21,7 @@ package com.crixmod.sailorcast.controller.cling;
 
 import android.util.Log;
 
-import com.crixmod.sailorcast.Main;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.cling.CDevice;
 import com.crixmod.sailorcast.model.cling.RendererState;
 import com.crixmod.sailorcast.model.cling.TrackMetadata;
@@ -103,19 +103,19 @@ public class RendererCommand implements Runnable, IRendererCommand {
 
 	public static Service getRenderingControlService()
 	{
-		if (Main.upnpServiceController.getSelectedRenderer() == null)
+		if (SailorCast.upnpServiceController.getSelectedRenderer() == null)
 			return null;
 
-		return ((CDevice) Main.upnpServiceController.getSelectedRenderer()).getDevice().findService(
+		return ((CDevice) SailorCast.upnpServiceController.getSelectedRenderer()).getDevice().findService(
 				new UDAServiceType("RenderingControl"));
 	}
 
 	public static Service getAVTransportService()
 	{
-		if (Main.upnpServiceController.getSelectedRenderer() == null)
+		if (SailorCast.upnpServiceController.getSelectedRenderer() == null)
 			return null;
 
-		return ((CDevice) Main.upnpServiceController.getSelectedRenderer()).getDevice().findService(
+		return ((CDevice) SailorCast.upnpServiceController.getSelectedRenderer()).getDevice().findService(
 				new UDAServiceType("AVTransport"));
 	}
 

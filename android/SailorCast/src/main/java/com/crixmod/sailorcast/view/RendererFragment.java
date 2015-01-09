@@ -35,7 +35,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crixmod.sailorcast.Main;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.cling.RendererState;
 import com.crixmod.sailorcast.model.upnp.ARendererState;
@@ -98,8 +98,8 @@ public class RendererFragment extends Fragment implements Observer
 		super.onActivityCreated(savedInstanceState);
 
 		// Listen to renderer change
-		if (Main.upnpServiceController != null)
-			Main.upnpServiceController.addSelectedRendererObserver(this);
+		if (SailorCast.upnpServiceController != null)
+			SailorCast.upnpServiceController.addSelectedRendererObserver(this);
 		else
 			Log.w(TAG, "upnpServiceController was not ready !!!");
 
@@ -112,7 +112,7 @@ public class RendererFragment extends Fragment implements Observer
 	{
 		super.onStart();
 
-		// Call Main Initialise Function
+		// Call SailorCast Initialise Function
 		this.init();
 	}
 
@@ -138,7 +138,7 @@ public class RendererFragment extends Fragment implements Observer
 	@Override
 	public void onDestroy()
 	{
-		Main.upnpServiceController.delSelectedRendererObserver(this);
+		SailorCast.upnpServiceController.delSelectedRendererObserver(this);
 		super.onDestroy();
 	}
 
@@ -150,7 +150,7 @@ public class RendererFragment extends Fragment implements Observer
 
 	public void startControlPoint()
 	{
-		if (Main.upnpServiceController.getSelectedRenderer() == null)
+		if (SailorCast.upnpServiceController.getSelectedRenderer() == null)
 		{
 			if (device != null)
 			{
@@ -177,14 +177,14 @@ public class RendererFragment extends Fragment implements Observer
 		}
 
 		if (device == null || rendererState == null || rendererCommand == null
-				|| !device.equals(Main.upnpServiceController.getSelectedRenderer()))
+				|| !device.equals(SailorCast.upnpServiceController.getSelectedRenderer()))
 		{
-			device = Main.upnpServiceController.getSelectedRenderer();
+			device = SailorCast.upnpServiceController.getSelectedRenderer();
 
-			Log.i(TAG, "Renderer changed !!! " + Main.upnpServiceController.getSelectedRenderer().getDisplayString());
+			Log.i(TAG, "Renderer changed !!! " + SailorCast.upnpServiceController.getSelectedRenderer().getDisplayString());
 
-			rendererState = Main.factory.createRendererState();
-			rendererCommand = Main.factory.createRendererCommand(rendererState);
+			rendererState = SailorCast.factory.createRendererState();
+			rendererCommand = SailorCast.factory.createRendererCommand(rendererState);
 
 			if (rendererState == null || rendererCommand == null)
 			{

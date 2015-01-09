@@ -21,7 +21,7 @@ package com.crixmod.sailorcast.model.upnp;
 
 import android.util.Log;
 
-import com.crixmod.sailorcast.Main;
+import com.crixmod.sailorcast.SailorCast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -99,7 +99,7 @@ public abstract class DeviceDiscovery {
 	{
 		observerList.add(o);
 
-		final Collection<IUpnpDevice> upnpDevices = Main.upnpServiceController.getServiceListener()
+		final Collection<IUpnpDevice> upnpDevices = SailorCast.upnpServiceController.getServiceListener()
 				.getFilteredDeviceList(getCallableFilter());
 		for (IUpnpDevice d : upnpDevices)
 			o.addedDevice(d);

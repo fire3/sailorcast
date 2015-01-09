@@ -25,7 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
-import com.crixmod.sailorcast.Main;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.upnp.IUpnpDevice;
 
 import java.util.Observable;
@@ -44,8 +44,8 @@ public class RendererDeviceFragment extends UpnpDeviceListFragment implements Ob
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		Main.upnpServiceController.getRendererDiscovery().addObserver(this);
-		Main.upnpServiceController.addSelectedRendererObserver(this);
+		SailorCast.upnpServiceController.getRendererDiscovery().addObserver(this);
+		SailorCast.upnpServiceController.addSelectedRendererObserver(this);
 		Log.d(TAG, "onActivityCreated");
 	}
 
@@ -53,16 +53,16 @@ public class RendererDeviceFragment extends UpnpDeviceListFragment implements Ob
 	public void onDestroy()
 	{
 		super.onDestroy();
-		Main.upnpServiceController.getRendererDiscovery().removeObserver(this);
-		Main.upnpServiceController.delSelectedRendererObserver(this);
+		SailorCast.upnpServiceController.getRendererDiscovery().removeObserver(this);
+		SailorCast.upnpServiceController.delSelectedRendererObserver(this);
 		Log.d(TAG, "onDestroy");
 	}
 
 	@Override
 	protected boolean isSelected(IUpnpDevice device)
 	{
-		if (Main.upnpServiceController != null && Main.upnpServiceController.getSelectedRenderer() != null)
-			return device.equals(Main.upnpServiceController.getSelectedRenderer());
+		if (SailorCast.upnpServiceController != null && SailorCast.upnpServiceController.getSelectedRenderer() != null)
+			return device.equals(SailorCast.upnpServiceController.getSelectedRenderer());
 
 		return false;
 	}
@@ -76,7 +76,7 @@ public class RendererDeviceFragment extends UpnpDeviceListFragment implements Ob
 	@Override
 	protected void select(IUpnpDevice device, boolean force)
 	{
-		Main.upnpServiceController.setSelectedRenderer(device, force);
+		SailorCast.upnpServiceController.setSelectedRenderer(device, force);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class RendererDeviceFragment extends UpnpDeviceListFragment implements Ob
 			@Override
 			public void run()
 			{
-				IUpnpDevice device = Main.upnpServiceController.getSelectedRenderer();
+				IUpnpDevice device = SailorCast.upnpServiceController.getSelectedRenderer();
 				if (device == null)
 				{
 					// Uncheck device

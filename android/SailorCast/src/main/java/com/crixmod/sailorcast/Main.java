@@ -49,10 +49,6 @@ public class Main extends BaseToolbarActivity
 {
 	private static final String TAG = "Main";
 
-	// Controller
-	public static IUpnpServiceController upnpServiceController = null;
-	public static IFactory factory = null;
-
 
 	private DrawerFragment mDrawerFragment;
 	private CharSequence mTitle;
@@ -70,19 +66,10 @@ public class Main extends BaseToolbarActivity
 	{
 		super.onCreate(savedInstanceState);
 
-		Log.d(TAG, "onCreated : " + savedInstanceState + factory + upnpServiceController);
-
-		// Use cling factory
-		if (factory == null)
-			factory = new com.crixmod.sailorcast.controller.cling.Factory();
-
-		// Upnp service
-		if (upnpServiceController == null)
-			upnpServiceController = factory.createUpnpServiceController(this);
 
 		Fragment rendererFragment = getSupportFragmentManager().findFragmentById(R.id.RendererFragment);
 		if (rendererFragment != null && rendererFragment instanceof Observer)
-			upnpServiceController.addSelectedRendererObserver((Observer) rendererFragment);
+			SailorCast.upnpServiceController.addSelectedRendererObserver((Observer) rendererFragment);
 		else
 			Log.w(TAG, "No rendererFragment yet !");
 
@@ -114,7 +101,7 @@ public class Main extends BaseToolbarActivity
 	public void onResume()
 	{
 		Log.v(TAG, "Resume activity");
-		upnpServiceController.resume(this);
+		SailorCast.upnpServiceController.resume(this);
 		super.onResume();
 	}
 
@@ -122,14 +109,14 @@ public class Main extends BaseToolbarActivity
 	public void onPause()
 	{
 		Log.v(TAG, "Pause activity");
-		upnpServiceController.pause();
-		upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
+		SailorCast.upnpServiceController.pause();
+		SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
 		super.onPause();
 	}
 
 	public void refresh()
 	{
-		upnpServiceController.getServiceListener().refresh();
+		SailorCast.upnpServiceController.getServiceListener().refresh();
 	}
 
 	@Override
