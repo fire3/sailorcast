@@ -22,6 +22,7 @@ package com.crixmod.sailorcast.controller.cling;
 import android.util.Log;
 
 import com.crixmod.sailorcast.SailorCast;
+import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.cling.CDevice;
 import com.crixmod.sailorcast.model.cling.RendererState;
 import com.crixmod.sailorcast.model.cling.TrackMetadata;
@@ -351,6 +352,46 @@ public class RendererCommand implements Runnable, IRendererCommand {
 
 	}
 
+    @Override
+    public void lauchSCVideoHigh(final SCVideo video) {
+        if (getAVTransportService() == null)
+			return;
+
+
+		String type = "videoItem";
+
+		// TODO genre && artURI
+		final TrackMetadata trackMetadata = new TrackMetadata(video.getVideoID(), video.getVideoTitle(),
+				"", "", "", "",
+				"object.item." + type);
+
+		Log.i(TAG, "TrackMetadata : "+trackMetadata.toString());
+
+		// Stop playback before setting URI
+		controlPoint.execute(new Stop(getAVTransportService()) {
+			@Override
+			public void success(ActionInvocation invocation)
+			{
+				Log.v(TAG, "Success stopping ! ");
+				callback();
+			}
+
+			@Override
+			public void failure(ActionInvocation arg0, UpnpResponse arg1, String arg2)
+			{
+				Log.w(TAG, "Fail to stop ! " + arg2);
+				callback();
+			}
+
+			public void callback()
+			{
+				setURI(video.getM3U8High(), trackMetadata);
+			}
+		});
+
+
+    }
+
 	// Update
 
 	public void updateMediaInfo()
@@ -469,7 +510,7 @@ public class RendererCommand implements Runnable, IRendererCommand {
 		updateTransportInfo();
 	}
 
-	@Override
+    @Override
 	public void run()
 	{
 		// LastChange lastChange = new LastChange(new AVTransportLastChangeParser(),

@@ -2,5 +2,6 @@
 <resources>
     <item type="id" name="key_checked_text_view"/>
     <item type="id" name="key_video_number_in_album"/>
+    <item name="key_video_url" type="id" />
     <item name="key_video" type="id" />
 </resources>

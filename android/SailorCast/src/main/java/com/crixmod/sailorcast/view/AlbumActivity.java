@@ -22,9 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
+import com.crixmod.sailorcast.model.upnp.IRendererCommand;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
@@ -35,6 +37,7 @@ import com.crixmod.sailorcast.utils.ImageTools;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class AlbumActivity extends BaseToolbarActivity
         implements OnGetAlbumDescListener,
@@ -333,41 +336,47 @@ public class AlbumActivity extends BaseToolbarActivity
                 mDlnaNorButton.setVisibility(View.VISIBLE);
                 mPlayNorButton.setVisibility(View.VISIBLE);
 
-                mPlayNorButton.setTag(R.id.key_video,urlNormal);
+                mPlayNorButton.setTag(R.id.key_video_url,urlNormal);
+                mPlayNorButton.setTag(R.id.key_video,v);
                 mPlayNorButton.setTag(R.id.key_video_number_in_album,mVideoInAlbum);
-                mDlnaNorButton.setTag(R.id.key_video,urlNormal);
+                mDlnaNorButton.setTag(R.id.key_video_url,urlNormal);
+                mDlnaNorButton.setTag(R.id.key_video,v);
                 mDlnaNorButton.setTag(R.id.key_video_number_in_album,mVideoInAlbum);
             }
         });
     }
 
     @Override
-    public void onGetVideoPlayUrlHigh(SCVideo v, final String urlHigh) {
+    public void onGetVideoPlayUrlHigh(final SCVideo v, final String urlHigh) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mDlnaHighButton.setVisibility(View.VISIBLE);
                 mPlayHighButton.setVisibility(View.VISIBLE);
 
-                mPlayHighButton.setTag(R.id.key_video,urlHigh);
+                mPlayHighButton.setTag(R.id.key_video_url,urlHigh);
+                mPlayHighButton.setTag(R.id.key_video,v);
                 mPlayHighButton.setTag(R.id.key_video_number_in_album,mVideoInAlbum);
-                mDlnaHighButton.setTag(R.id.key_video,urlHigh);
+                mDlnaHighButton.setTag(R.id.key_video_url,urlHigh);
+                mDlnaHighButton.setTag(R.id.key_video,v);
                 mDlnaHighButton.setTag(R.id.key_video_number_in_album,mVideoInAlbum);
             }
         });
     }
 
     @Override
-    public void onGetVideoPlayUrlSuper(SCVideo v, final String urlSuper) {
+    public void onGetVideoPlayUrlSuper(final SCVideo v, final String urlSuper) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mDlnaSuperButton.setVisibility(View.VISIBLE);
                 mPlaySuperButton.setVisibility(View.VISIBLE);
 
-                mPlaySuperButton.setTag(R.id.key_video, urlSuper);
+                mPlaySuperButton.setTag(R.id.key_video_url, urlSuper);
+                mPlaySuperButton.setTag(R.id.key_video, v);
                 mPlaySuperButton.setTag(R.id.key_video_number_in_album, mVideoInAlbum);
-                mDlnaSuperButton.setTag(R.id.key_video,urlSuper);
+                mDlnaSuperButton.setTag(R.id.key_video_url,urlSuper);
+                mDlnaSuperButton.setTag(R.id.key_video,v);
                 mDlnaSuperButton.setTag(R.id.key_video_number_in_album, mVideoInAlbum);
             }
         });
@@ -457,6 +466,20 @@ public class AlbumActivity extends BaseToolbarActivity
         }
     }
 
+    @Override
+    protected void onResume() {
+        SailorCast.upnpServiceController.resume(this);
+        super.onResume();
+
+    }
+
+	@Override
+	public void onPause()
+	{
+		SailorCast.upnpServiceController.pause();
+		SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
+		super.onPause();
+	}
 
 
     /**
@@ -464,7 +487,7 @@ public class AlbumActivity extends BaseToolbarActivity
      * @param button
      */
     public void onPlayButtonClick(View button) {
-        String url = (String) button.getTag(R.id.key_video);
+        String url = (String) button.getTag(R.id.key_video_url);
         if(url != null) {
             //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
             //BaiduPlayerActivity.launch(this,url);
@@ -479,7 +502,8 @@ public class AlbumActivity extends BaseToolbarActivity
      * @param button
      */
     public void onDlnaButtonClick(View button) {
-        String url = (String) button.getTag(R.id.key_video);
+        String url = (String) button.getTag(R.id.key_video_url);
+        final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
         if(url != null) {
             //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
             //BaiduPlayerActivity.launch(this,url);
@@ -487,6 +511,24 @@ public class AlbumActivity extends BaseToolbarActivity
         }
         else
             Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
+
+        FragmentManager fm = getSupportFragmentManager();
+        RendererDialog dialog = new RendererDialog();
+        dialog.setCallback(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                launchRenderer(v);
+                return null;
+            }
+        });
+        dialog.show(fm,"Render");
     }
+
+
+	private void launchRenderer(SCVideo video)
+	{
+		IRendererCommand rendererCommand = SailorCast.factory.createRendererCommand(SailorCast.factory.createRendererState());
+		rendererCommand.lauchSCVideoHigh(video);
+	}
 
 }

@@ -19,6 +19,7 @@
 
 package com.crixmod.sailorcast.model.upnp;
 
+import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.upnp.didl.IDIDLItem;
 
 public interface IRendererCommand {
@@ -58,5 +59,8 @@ public interface IRendererCommand {
 
 	// / Full
 	public void updateFull();
+
+    // SCVideo
+    public void lauchSCVideoHigh(final SCVideo video);
 
 }

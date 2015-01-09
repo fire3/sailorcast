@@ -12,7 +12,7 @@
                         android:background="@drawable/square_border"
                         android:text="@string/btn_phone_super"
                         android:textColor="@color/grey_medium"
-                        android:onClick="onDlnaButtonClick"
+                        android:onClick="onPlayButtonClick"
 
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
@@ -25,7 +25,7 @@
                         android:background="@drawable/square_border"
                         android:textColor="@color/grey_medium"
                         android:text="@string/btn_phone_high"
-                        android:onClick="onDlnaButtonClick"
+                        android:onClick="onPlayButtonClick"
 
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
@@ -38,7 +38,7 @@
                         android:background="@drawable/square_border"
                         android:textColor="@color/grey_medium"
                         android:text="@string/btn_phone_normal"
-                        android:onClick="onDlnaButtonClick"
+                        android:onClick="onPlayButtonClick"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
