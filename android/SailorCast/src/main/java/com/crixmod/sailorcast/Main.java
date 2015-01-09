@@ -19,15 +19,16 @@
 
 package com.crixmod.sailorcast;
 
+import android.support.v4.app.Fragment;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +44,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Observer;
 
-public class Main extends Activity
+public class Main extends ActionBarActivity
 {
 	private static final String TAG = "Main";
 
@@ -58,7 +59,7 @@ public class Main extends Activity
 
 	public RendererFragment getRenderer()
 	{
-		Fragment f = getFragmentManager().findFragmentById(R.id.RendererFragment);
+		Fragment f = getSupportFragmentManager().findFragmentById(R.id.RendererFragment);
 		if(f != null)
 			return (RendererFragment) f;
 		return null;
@@ -80,16 +81,16 @@ public class Main extends Activity
 		if (upnpServiceController == null)
 			upnpServiceController = factory.createUpnpServiceController(this);
 
-		Fragment rendererFragment = getFragmentManager().findFragmentById(R.id.RendererFragment);
+		Fragment rendererFragment = getSupportFragmentManager().findFragmentById(R.id.RendererFragment);
 		if (rendererFragment != null && rendererFragment instanceof Observer)
 			upnpServiceController.addSelectedRendererObserver((Observer) rendererFragment);
 		else
 			Log.w(TAG, "No rendererFragment yet !");
 
-		if(getFragmentManager().findFragmentById(R.id.navigation_drawer) instanceof DrawerFragment)
+		if(getSupportFragmentManager().findFragmentById(R.id.navigation_drawer) instanceof DrawerFragment)
 		{
 			mDrawerFragment = (DrawerFragment)
-					getFragmentManager().findFragmentById(R.id.navigation_drawer);
+					getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 			mTitle = getTitle();
 
 			// Set up the drawer.

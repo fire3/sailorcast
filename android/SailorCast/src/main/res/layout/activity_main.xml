@@ -23,8 +23,12 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context="com.crixmod.sailorcast.Main">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-	<fragment android:id="@+id/content"
+    <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
+    <fragment android:id="@+id/content"
 		android:name="com.crixmod.sailorcast.view.Content"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -36,5 +40,6 @@
 		android:layout_gravity="start"
 		android:name="com.crixmod.sailorcast.DrawerFragment"
 		tools:layout="@layout/device_fragment"/>
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>

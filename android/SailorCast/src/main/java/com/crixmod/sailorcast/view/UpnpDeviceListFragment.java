@@ -20,9 +20,9 @@
 package com.crixmod.sailorcast.view;
 
 import android.app.DialogFragment;
-import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,7 +96,7 @@ public abstract class UpnpDeviceListFragment extends ListFragment implements IDe
 	{
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		DialogFragment newFragment = DeviceInfoDialog.newInstance(list.getItem(position));
-		newFragment.show(ft, "dialog");
+		//newFragment.show(ft, "dialog");
 	}
 
 	@Override

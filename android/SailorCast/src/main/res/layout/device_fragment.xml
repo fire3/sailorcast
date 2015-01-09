@@ -27,6 +27,7 @@
 	style="@style/drawer"
 	tools:context="org.droidupnp.DrawerFragment" >
 
+    <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
 	<TextView
 		android:id="@+id/label_renderer"
 		android:layout_width="wrap_content"
