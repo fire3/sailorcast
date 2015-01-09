@@ -10,6 +10,8 @@ import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.crixmod.sailorcast.controller.upnp.IUpnpServiceController;
+import com.crixmod.sailorcast.model.upnp.IFactory;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
@@ -31,6 +33,8 @@ public class SailorCast extends Application {
     private static Gson mGson;
     private static String FLV_API = "http://api.flvxz.com/token/9058e263a95c0dfbc1bdac83f4132822";
     private static final long SIZE_OF_HTTP_CACHE = 10 * 1024 * 1024;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -39,6 +43,8 @@ public class SailorCast extends Application {
         mGson = new Gson();
         initImageLoader(this);
         initHttpClient(mHttpClient,mContext);
+
+
     }
 
     private void initHttpClient(OkHttpClient client, Context context) {

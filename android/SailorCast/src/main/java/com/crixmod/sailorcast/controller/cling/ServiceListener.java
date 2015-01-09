@@ -105,7 +105,7 @@ public class ServiceListener implements IServiceListener
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service)
 		{
-			Log.i(TAG, "Service connexion");
+			Log.d(TAG, "Service connexion");
 			upnpService = (AndroidUpnpService) service;
 
 			for (IRegistryListener registryListener : waitingListener)
@@ -120,7 +120,7 @@ public class ServiceListener implements IServiceListener
 		@Override
 		public void onServiceDisconnected(ComponentName className)
 		{
-			Log.i(TAG, "Service disconnected");
+			Log.d(TAG, "Service disconnected");
 			upnpService = null;
 		}
 	};
@@ -128,7 +128,9 @@ public class ServiceListener implements IServiceListener
 	@Override
 	public ServiceConnection getServiceConnexion()
 	{
-		return serviceConnection;
+        Log.d(TAG,"getServiceConnexion");
+
+        return serviceConnection;
 	}
 
 	public AndroidUpnpService getUpnpService()

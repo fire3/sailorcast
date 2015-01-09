@@ -35,6 +35,7 @@ import android.view.MenuItem;
 
 import com.crixmod.sailorcast.controller.upnp.IUpnpServiceController;
 import com.crixmod.sailorcast.model.upnp.IFactory;
+import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.RendererFragment;
 
 import java.net.Inet4Address;
@@ -44,7 +45,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Observer;
 
-public class Main extends ActionBarActivity
+public class Main extends BaseToolbarActivity
 {
 	private static final String TAG = "Main";
 
@@ -52,7 +53,6 @@ public class Main extends ActionBarActivity
 	public static IUpnpServiceController upnpServiceController = null;
 	public static IFactory factory = null;
 
-	private static Menu actionBarMenu = null;
 
 	private DrawerFragment mDrawerFragment;
 	private CharSequence mTitle;
@@ -69,7 +69,6 @@ public class Main extends ActionBarActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
 
 		Log.d(TAG, "onCreated : " + savedInstanceState + factory + upnpServiceController);
 
@@ -100,7 +99,12 @@ public class Main extends ActionBarActivity
 		}
 	}
 
-	@Override
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
+    }
+
+    @Override
 	public void onDestroy()
 	{
 		super.onDestroy();
@@ -128,18 +132,9 @@ public class Main extends ActionBarActivity
 		upnpServiceController.getServiceListener().refresh();
 	}
 
-	public void restoreActionBar() {
-		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setTitle(mTitle);
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		actionBarMenu = menu;
-		restoreActionBar();
 		return true;
 	}
 
@@ -172,54 +167,4 @@ public class Main extends ActionBarActivity
         super.onBackPressed();
 	}
 
-	private static InetAddress getLocalIpAdressFromIntf(String intfName)
-	{
-		try
-		{
-			NetworkInterface intf = NetworkInterface.getByName(intfName);
-			if(intf.isUp())
-			{
-				for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();)
-				{
-					InetAddress inetAddress = enumIpAddr.nextElement();
-					if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address)
-						return inetAddress;
-				}
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Unable to get ip adress for interface " + intfName);
-		}
-		return null;
-	}
-
-	public static InetAddress getLocalIpAddress(Context ctx) throws UnknownHostException
-	{
-		WifiManager wifiManager = (WifiManager) ctx.getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		int ipAddress = wifiInfo.getIpAddress();
-		if(ipAddress!=0)
-			return InetAddress.getByName(String.format("%d.%d.%d.%d",
-				(ipAddress & 0xff), (ipAddress >> 8 & 0xff),
-				(ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff)));
-
-		Log.d(TAG, "No ip adress available throught wifi manager, try to get it manually");
-
-		InetAddress inetAddress;
-
-		inetAddress = getLocalIpAdressFromIntf("wlan0");
-		if(inetAddress!=null)
-		{
-			Log.d(TAG, "Got an ip for interfarce wlan0");
-			return inetAddress;
-		}
-
-		inetAddress = getLocalIpAdressFromIntf("usb0");
-		if(inetAddress!=null)
-		{
-			Log.d(TAG, "Got an ip for interfarce usb0");
-			return inetAddress;
-		}
-
-		return InetAddress.getByName("0.0.0.0");
-	}
 }
