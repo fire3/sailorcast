@@ -1,9 +1,12 @@
 package com.crixmod.sailorcast.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by fire3 on 2014/12/26.
  */
-public class SCVideo {
+public class SCVideo implements Parcelable {
     String mVideoID = null;
     String mVideoTitle = null;
     String mM3U8Nor = null;
@@ -122,4 +125,65 @@ public class SCVideo {
                 ", mSCSite=" + mSCSite +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        /*
+
+    String mVideoID = null;
+    String mVideoTitle = null;
+    String mM3U8Nor = null;
+    String mM3U8High = null;
+    String mM3U8Super = null;
+    String mHorPic = null;
+    String mVerPic = null;
+    String mAlbumID = null;
+    Integer mSeqInAlbum = 0;
+    String mVideoMID = null; //This is for Letv
+    SCSite mSCSite = new SCSite(SCSite.UNKNOWN);         */
+
+        parcel.writeString(mVideoID);
+        parcel.writeString(mVideoTitle);
+        parcel.writeString(mM3U8Nor);
+        parcel.writeString(mM3U8High);
+        parcel.writeString(mM3U8Super);
+        parcel.writeString(mHorPic);
+        parcel.writeString(mVerPic);
+        parcel.writeString(mAlbumID);
+        parcel.writeInt(mSeqInAlbum);
+        parcel.writeString(mVideoMID);
+        parcel.writeInt(mSCSite.getSiteID());
+
+    }
+    private SCVideo (Parcel in) {
+        this.mVideoID = in.readString();
+        this.mVideoTitle = in.readString();
+        this.mM3U8Nor = in.readString();
+        this.mM3U8High = in.readString();
+        this.mM3U8Super = in.readString();
+        this.mHorPic = in.readString();
+        this.mVerPic = in.readString();
+        this.mAlbumID = in.readString();
+        this.mSeqInAlbum = in.readInt();
+        this.mVideoMID = in.readString();
+        this.mSCSite = new SCSite(in.readInt());
+    }
+
+    public static final Parcelable.Creator<SCVideo> CREATOR = new Parcelable.Creator<SCVideo>() {
+
+        @Override
+        public SCVideo createFromParcel(Parcel source) {
+            return new SCVideo(source);
+        }
+
+        @Override
+        public SCVideo[] newArray(int size) {
+            return new SCVideo[size];
+        }
+    };
 }

@@ -164,23 +164,7 @@ public class SCAlbum implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        /*
-            private String mAlbumId = null;
-    private Integer mVideosCount = 0;
-    private Integer mVideosTotal = 0;
-    private String mTitle = null;
-    private String mSubTitle = null;
-    private String mDirector = null;
-    private String mMainActor = null;
-    private String mVerImageUrl = null;
-    private String mHorImageUrl = null;
-    private String mDesc = null;
-    private SCSite mSite = new SCSite(SCSite.UNKNOWN);
-    private String mTip = null;
-    private Boolean mIsCompleted = false;
-    private String mLetvStyle = null;
 
-         */
         parcel.writeString(mAlbumId);
         parcel.writeInt(mVideosCount);
         parcel.writeInt(mVideosTotal);

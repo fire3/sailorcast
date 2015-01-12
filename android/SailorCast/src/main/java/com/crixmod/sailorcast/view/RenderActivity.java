@@ -1,5 +1,7 @@
 package com.crixmod.sailorcast.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,16 +12,20 @@ import android.view.MenuItem;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCVideo;
 
 import java.util.Observer;
 
 public class RenderActivity extends ActionBarActivity {
 
     SCAlbum mAlbum;
+    SCVideo mVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAlbum = getIntent().getParcelableExtra("album");
+        mVideo = getIntent().getParcelableExtra("video");
         setContentView(R.layout.activity_render);
 
 		Fragment rendererFragment = getSupportFragmentManager().findFragmentById(R.id.RendererFragment);
@@ -53,4 +59,14 @@ public class RenderActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public static void launch(Activity activity, SCAlbum album, SCVideo video) {
+        Intent mpdIntent = new Intent(activity, RenderActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra("video",video)
+                .putExtra("album",album);
+
+        activity.startActivity(mpdIntent);
+    }
+
 }
