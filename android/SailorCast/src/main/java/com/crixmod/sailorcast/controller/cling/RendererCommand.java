@@ -352,6 +352,43 @@ public class RendererCommand implements Runnable, IRendererCommand {
 
 	}
 
+    private TrackMetadata fillSCVideoMetadata(final SCVideo video) {
+        final TrackMetadata trackMetadata =
+                new TrackMetadata(video.getVideoID(), video.getVideoTitle(),
+                        "", "", "", video.getVerPic(),
+                        "object.item.videoItem");
+        return trackMetadata;
+    }
+    public void lauchSCVideo(final SCVideo video, final String m3u8Url) {
+        if (getAVTransportService() == null)
+            return;
+        final TrackMetadata trackMetadata = fillSCVideoMetadata(video);
+     	// Stop playback before setting URI
+		controlPoint.execute(new Stop(getAVTransportService()) {
+			@Override
+			public void success(ActionInvocation invocation)
+			{
+				Log.v(TAG, "Success stopping ! ");
+				callback();
+			}
+
+			@Override
+			public void failure(ActionInvocation arg0, UpnpResponse arg1, String arg2)
+			{
+				Log.w(TAG, "Fail to stop ! " + arg2);
+				callback();
+			}
+
+			public void callback()
+			{
+				setURI(m3u8Url, trackMetadata);
+			}
+		});
+
+
+
+    }
+
     @Override
     public void lauchSCVideoHigh(final SCVideo video) {
         if (getAVTransportService() == null)
@@ -361,7 +398,8 @@ public class RendererCommand implements Runnable, IRendererCommand {
 		String type = "videoItem";
 
 		// TODO genre && artURI
-		final TrackMetadata trackMetadata = new TrackMetadata(video.getVideoID(), video.getVideoTitle(),
+		final TrackMetadata trackMetadata =
+                new TrackMetadata(video.getVideoID(), video.getVideoTitle(),
 				"", "", "", "",
 				"object.item." + type);
 

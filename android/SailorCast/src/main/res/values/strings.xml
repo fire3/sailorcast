@@ -34,51 +34,49 @@
     <string name="action_display_title">显示标题</string>
     <string name="action_display_button">显示按钮</string>
 
-	<!--  Menu -->
-	<string name="menu_settings">Settings</string>
-	<string name="menu_about">About</string>
-	<string name="menu_refresh">Refresh</string>
-	<string name="menu_quit">Quit</string>
-	<string name="menu_search">Search</string>
+    <!-- Menu -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_about">About</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_quit">Quit</string>
+    <string name="menu_search">Search</string>
 
+    <!-- Navigation drawer -->
+    <string name="contentdirectory">Content directory</string>
+    <string name="renderer">Renderer</string>
+    <string name="device_list_empty">No device available</string>
+    <string name="navigation_drawer_open">Open device list</string>
+    <string name="navigation_drawer_close">Close device list</string>
 
+    <!-- Popup -->
+    <string name="OK">OK</string>
+    <string name="loading">Loading...</string>
+    <string name="selectRenderer">Select a Renderer</string>
+    <string name="noRenderer">There is no renderer available</string>
+    <string name="selectContentDirectory">Select a Content directory</string>
 
-	<!-- Navigation drawer -->
-	<string name="contentdirectory">Content directory</string>
-	<string name="renderer">Renderer</string>
-	<string name="device_list_empty">No device available</string>
-	<string name="navigation_drawer_open">Open device list</string>
-	<string name="navigation_drawer_close">Close device list</string>
+    <!-- Now Playing -->
+    <string name="duration">00:00:00</string>
 
+    <!-- Now Playing Footer -->
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="mute">Mute</string>
 
-	<!-- Popup -->
-	<string name="OK">OK</string>
-	<string name="loading">Loading...</string>
-	<string name="selectRenderer">Select a Renderer</string>
-	<string name="noRenderer">There is no renderer available</string>
-	<string name="selectContentDirectory">Select a Content directory</string>
-
-	<!-- Now Playing -->
-	<string name="duration">00:00:00</string>
-
-	<!-- Now Playing Footer -->
-	<string name="play">Play</string>
-	<string name="pause">Pause</string>
-	<string name="stop">Stop</string>
-	<string name="next">Next</string>
-	<string name="back">Back</string>
-	<string name="mute">Mute</string>
-
-	<!-- Device Info -->
-	<string name="manufacturer">Manufacturer</string>
-	<string name="manufacturer_url">Manufacturer URL</string>
-	<string name="model_name">Model name</string>
-	<string name="model_url">Model URL</string>
-	<string name="model_number">Model number</string>
-	<string name="model_desc">Model description</string>
-	<string name="presention_url">Presentation URL</string>
-	<string name="desc_xml">Description XML</string>
-	<string name="udn">UDN</string>
-	<string name="separator"> : </string>
+    <!-- Device Info -->
+    <string name="manufacturer">Manufacturer</string>
+    <string name="manufacturer_url">Manufacturer URL</string>
+    <string name="model_name">Model name</string>
+    <string name="model_url">Model URL</string>
+    <string name="model_number">Model number</string>
+    <string name="model_desc">Model description</string>
+    <string name="presention_url">Presentation URL</string>
+    <string name="desc_xml">Description XML</string>
+    <string name="udn">UDN</string>
+    <string name="separator"> : </string>
+    <string name="title_activity_render">RenderActivity</string>
 
 </resources>
