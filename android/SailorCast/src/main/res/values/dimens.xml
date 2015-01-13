@@ -115,4 +115,7 @@
     <dimen name="imageview_search_result_height">120dp</dimen>
 
     <dimen name="navigation_drawer_width">240dp</dimen>
+
+    <!-- bottom toolbar -->
+    <dimen name="bottom_ic_image_size">32dp</dimen>
 </resources>

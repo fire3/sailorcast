@@ -127,4 +127,6 @@
     <color name="TransparentBlack">#B0000000</color>
 
     <color name="blue_trans">#77379293</color>
+
+    <color name="bottom_highlight_text">#009944</color>
 </resources>

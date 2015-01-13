@@ -529,6 +529,7 @@ public class AlbumActivity extends BaseToolbarActivity
 	{
 		IRendererCommand rendererCommand = SailorCast.factory.createRendererCommand(SailorCast.factory.createRendererState());
 		rendererCommand.lauchSCVideoHigh(video);
+        //RenderActivity.launch(this,mAlbum,video);
 	}
 
 }

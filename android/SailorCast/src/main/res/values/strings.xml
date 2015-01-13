@@ -78,5 +78,9 @@
     <string name="udn">UDN</string>
     <string name="separator"> : </string>
     <string name="title_activity_render">RenderActivity</string>
+    <string name="bookmark_button_text">收藏</string>
+    <string name="history_button_text">历史</string>
+    <string name="compass_button_text">发现</string>
+    <string name="title_activity_home">HomeActivity</string>
 
 </resources>

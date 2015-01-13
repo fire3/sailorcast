@@ -13,6 +13,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.upnp.IRendererCommand;
 
 import java.util.Observer;
 
@@ -28,6 +29,7 @@ public class RenderActivity extends ActionBarActivity {
         mVideo = getIntent().getParcelableExtra("video");
         setContentView(R.layout.activity_render);
 
+
 		Fragment rendererFragment = getSupportFragmentManager().findFragmentById(R.id.RendererFragment);
 		if (rendererFragment != null && rendererFragment instanceof Observer)
 
@@ -36,6 +38,22 @@ public class RenderActivity extends ActionBarActivity {
 			Log.w("fire3", "No rendererFragment yet !");
 
     }
+
+    @Override
+    protected void onResume() {
+        SailorCast.upnpServiceController.resume(this);
+
+        super.onResume();
+
+    }
+
+	@Override
+	public void onPause()
+	{
+		SailorCast.upnpServiceController.pause();
+		SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
+		super.onPause();
+	}
 
 
     @Override

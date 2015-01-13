@@ -441,7 +441,6 @@ public class RendererCommand implements Runnable, IRendererCommand {
 			@Override
 			public void received(ActionInvocation arg0, MediaInfo arg1)
 			{
-				Log.d(TAG, "Receive media info ! " + arg1);
 				rendererState.setMediaInfo(arg1);
 			}
 
@@ -462,7 +461,6 @@ public class RendererCommand implements Runnable, IRendererCommand {
 			@Override
 			public void received(ActionInvocation arg0, PositionInfo arg1)
 			{
-				Log.d(TAG, "Receive position info ! " + arg1);
 				rendererState.setPositionInfo(arg1);
 			}
 
@@ -489,7 +487,6 @@ public class RendererCommand implements Runnable, IRendererCommand {
 			@Override
 			public void received(ActionInvocation arg0, TransportInfo arg1)
 			{
-				Log.d(TAG, "Receive position info ! " + arg1);
 				rendererState.setTransportInfo(arg1);
 			}
 		});
@@ -601,7 +598,6 @@ public class RendererCommand implements Runnable, IRendererCommand {
 				{
 					if (!pause)
 					{
-						Log.d(TAG, "Update state !");
 
 						count++;
 

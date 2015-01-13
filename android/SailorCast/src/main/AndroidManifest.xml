@@ -20,11 +20,6 @@
         <activity
             android:name=".SearchActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Main"
@@ -44,6 +39,14 @@
         <activity
             android:name=".view.RenderActivity"
             android:label="@string/title_activity_render" >
+        </activity>
+        <activity
+            android:name=".view.HomeActivity"
+            android:label="@string/title_activity_home" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
