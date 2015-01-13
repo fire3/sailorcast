@@ -3,6 +3,8 @@ package com.crixmod.sailorcast.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.crixmod.sailorcast.SailorCast;
+
 /**
  * Created by fire3 on 2014/12/26.
  */
@@ -186,4 +188,17 @@ public class SCVideo implements Parcelable {
             return new SCVideo[size];
         }
     };
+
+
+    public String toJson() {
+        String ret = SailorCast.getGson().toJson(this);
+        return ret;
+    }
+
+    public static SCVideo fromJson(String json) {
+        SCVideo video = SailorCast.getGson().fromJson(json, SCVideo.class);
+        return video;
+    }
+
+
 }

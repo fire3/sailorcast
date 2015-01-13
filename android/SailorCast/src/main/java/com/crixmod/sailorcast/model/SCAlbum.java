@@ -3,6 +3,8 @@ package com.crixmod.sailorcast.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.crixmod.sailorcast.SailorCast;
+
 /**
  * Created by fire3 on 2014/12/26.
  */
@@ -20,7 +22,7 @@ public class SCAlbum implements Parcelable {
     private SCSite mSite = new SCSite(SCSite.UNKNOWN);
     private String mTip = null;
     private Boolean mIsCompleted = false;  /* 是否完结 */
-    private String mLetvStyle = null;
+    private String mLetvStyle = null;  /* Letv需要的字段, 其它站点不需要， 界面不显示 */
 
     public SCAlbum() {
     }
@@ -211,4 +213,14 @@ public class SCAlbum implements Parcelable {
             return new SCAlbum[size];
         }
     };
+
+    public String toJson() {
+        String ret = SailorCast.getGson().toJson(this);
+        return ret;
+    }
+
+    public static SCAlbum fromJson(String json) {
+        SCAlbum album  = SailorCast.getGson().fromJson(json,SCAlbum.class);
+        return album;
+    }
 }

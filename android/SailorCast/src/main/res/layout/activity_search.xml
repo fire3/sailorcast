@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:paddingLeft="@dimen/margin_medium"
-    android:paddingRight="@dimen/margin_medium"
     android:orientation="vertical"
-    android:background="@color/white">
+    >
 
     <LinearLayout
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
@@ -31,6 +29,17 @@
            android:background="@drawable/rect_text_edit"
            android:text="@string/search_button_text"
            />
-        </LinearLayout>
-
-</LinearLayout>
+    </LinearLayout>
+    <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+        android:layout_gravity="top"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:minHeight="?attr/actionBarSize"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:contentInsetLeft="72dp"
+    app:contentInsetStart="72dp"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+</FrameLayout>

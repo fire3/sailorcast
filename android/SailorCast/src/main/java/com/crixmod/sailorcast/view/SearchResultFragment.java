@@ -4,11 +4,12 @@ package com.crixmod.sailorcast.view;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +22,7 @@ import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
 
-public class SearchResultFragment extends ListFragment
+public class SearchResultFragment extends Fragment
 implements OnSearchRequestListener
 {
     private static final String ARG_KEYWORD = "key";
@@ -32,6 +33,8 @@ implements OnSearchRequestListener
 
     private SearchResultAdapter mAdapter;
     private String mFailReason;
+    private GridView mGrid;
+    private TextView mEmpty;
 
     /**
      * Use this factory method to create a new instance of
@@ -71,13 +74,22 @@ implements OnSearchRequestListener
         super.onDestroy();
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
 
+        View view =  inflater.inflate(R.layout.fragment_search_result, container, false);
+        mGrid = (GridView) view.findViewById(R.id.search_result_grid);
+        mEmpty = (TextView) view.findViewById(android.R.id.empty);
+        mGrid.setEmptyView(mEmpty);
+        mEmpty.setText(mFailReason);
+
+        return view;
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setListAdapter(mAdapter);
-        setEmptyText(mFailReason);
+        mGrid.setAdapter(mAdapter);
     }
 
 
@@ -100,8 +112,7 @@ implements OnSearchRequestListener
             @Override
             public void run() {
                 mFailReason = failReason;
-                if (isVisible())
-                    setEmptyText(failReason);
+                mEmpty.setText(mFailReason);
             }
         });
     }
@@ -187,7 +198,7 @@ implements OnSearchRequestListener
 
         private View getOneColumnVideoRowView(ViewGroup viewGroup, ViewHolder viewHolder) {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            View itemView = inflater.inflate(R.layout.item_listview_search_result,viewGroup,false);
+            View itemView = inflater.inflate(R.layout.item_gridview_search_result,viewGroup,false);
             viewHolder.videoImage = (ImageView) itemView.findViewById(R.id.video_image);
             viewHolder.videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);

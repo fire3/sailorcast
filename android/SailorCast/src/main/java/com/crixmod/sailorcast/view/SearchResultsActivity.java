@@ -95,7 +95,7 @@ public class SearchResultsActivity extends BaseToolbarActivity {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            return SearchResultGridFragment.newInstance(mKeyword, position);
+            return SearchResultFragment.newInstance(mKeyword, position);
         }
 
         @Override

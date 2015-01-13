@@ -19,14 +19,8 @@ public class SearchActivity extends BaseToolbarActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
-        setContentView(R.layout.activity_search);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(getString(R.string.app_name));
-        }
-
+        setActionBarIcon(R.drawable.ic_drawer);
+        setTitle(getString(R.string.app_name));
         fixEditTextPadding();
         setSearchButton();
 
