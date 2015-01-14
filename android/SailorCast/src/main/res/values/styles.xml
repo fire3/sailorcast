@@ -5,10 +5,12 @@
         <!-- Material theme -->
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <!--
         <item name="colorAccent">@color/color_accent</item>
         <item name="colorControlActivated">@color/color_control_activated</item>
         <item name="colorControlHighlight">@color/color_control_highlight</item>
 
+        -->
         <item name="android:windowBackground">@color/calypso_blue_light</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="windowActionBar">false</item>
@@ -16,12 +18,6 @@
         <item name="android:editTextStyle">@android:style/Widget.EditText</item>
         <item name="swipeToRefreshStyle">@style/SailorCast.SwipeToRefresh</item>
     </style>
-
-	<drawable name="play">@drawable/ic_action_play</drawable>
-	<drawable name="pause">@drawable/ic_action_pause</drawable>
-	<drawable name="stop">@drawable/ic_action_stop</drawable>
-	<drawable name="volume">@drawable/ic_action_volume_on</drawable>
-	<drawable name="volume_mute">@drawable/ic_action_volume_muted</drawable>
 
 	<!-- Drawer style -->
 	<style name="drawer">

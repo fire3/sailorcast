@@ -205,7 +205,7 @@ public class HomeActivity extends BaseToolbarActivity {
             mBookmarkIconText.setTextColor(getResources().getColor(R.color.bottom_text));
         }
         private void selectBookmark() {
-            mBookmarkIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark_hightlight));
+            mBookmarkIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark_highlight));
             mBookmarkIconText.setTextColor(getResources().getColor(R.color.bottom_text_hightlight));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.home_fragment_container, mBookmarkFragment);
