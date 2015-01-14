@@ -18,19 +18,16 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <include layout="@layout/bottom_toolbar" android:id="@+id/bottombar"/>
+
     <FrameLayout
+        android:id="@+id/home_fragment_container"
         android:layout_below="@id/toolbar"
         android:layout_above="@id/bottombar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:text="dfasfdas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    </FrameLayout>
 
-        </FrameLayout>
-
-    <include layout="@layout/bottom_toolbar" />
 
 </RelativeLayout>
 

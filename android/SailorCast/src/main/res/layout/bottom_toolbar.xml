@@ -22,7 +22,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/margin_medium"
-        android:paddingTop="@dimen/margin_small"
+        android:paddingTop="@dimen/margin_medium"
         android:stretchColumns="*">
 
         <TableRow
@@ -45,6 +45,7 @@
 
                 <TextView
                     android:id="@+id/bottom_action_search_text"
+                    android:textColor="@color/bottom_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
@@ -70,6 +71,7 @@
 
                 <TextView
                     android:id="@+id/bottom_action_bookmark_text"
+                    android:textColor="@color/bottom_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
@@ -93,7 +95,8 @@
                     android:src="@drawable/ic_history" />
 
                 <TextView
-                    android:id="@+id/bottom_action_history_ic_text"
+                    android:id="@+id/bottom_action_history_text"
+                    android:textColor="@color/bottom_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
@@ -117,6 +120,7 @@
 
                 <TextView
                     android:id="@+id/bottom_action_compass_text"
+                    android:textColor="@color/bottom_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"

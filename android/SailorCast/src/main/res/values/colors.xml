@@ -128,5 +128,6 @@
 
     <color name="blue_trans">#77379293</color>
 
-    <color name="bottom_highlight_text">#009944</color>
+    <color name="bottom_text_hightlight">#009944</color>
+    <color name="bottom_text">#999999</color>
 </resources>
