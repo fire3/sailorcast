@@ -17,7 +17,7 @@
  * along with DroidUPNP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crixmod.sailorcast.view;
+package com.crixmod.sailorcast.view.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -27,6 +27,7 @@ import android.widget.ListView;
 
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.upnp.IUpnpDevice;
+import com.crixmod.sailorcast.view.UpnpDeviceListFragment;
 
 import java.util.Observable;
 import java.util.Observer;

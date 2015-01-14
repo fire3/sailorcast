@@ -1,4 +1,4 @@
-package com.crixmod.sailorcast.view;
+package com.crixmod.sailorcast.view.fragments;
 
 
 import android.app.Activity;
@@ -21,6 +21,7 @@ import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
+import com.crixmod.sailorcast.view.AlbumActivity;
 
 public class SearchResultFragment extends Fragment
 implements OnSearchRequestListener
@@ -191,7 +192,7 @@ implements OnSearchRequestListener
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     AlbumActivity.launch((Activity)mContext,album);
+                     AlbumActivity.launch((Activity) mContext, album);
                 }
             });
         }

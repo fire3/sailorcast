@@ -1,4 +1,4 @@
-package com.crixmod.sailorcast.view;
+package com.crixmod.sailorcast.view.fragments;
 
 
 import android.os.Bundle;

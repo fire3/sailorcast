@@ -13,6 +13,10 @@ import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
+import com.crixmod.sailorcast.view.fragments.BookmarkFragment;
+import com.crixmod.sailorcast.view.fragments.CompassFragment;
+import com.crixmod.sailorcast.view.fragments.HistoryFragment;
+import com.crixmod.sailorcast.view.fragments.SearchFragment;
 
 public class HomeActivity extends BaseToolbarActivity {
     BottomBar mBottomBar;
@@ -92,10 +96,10 @@ public class HomeActivity extends BaseToolbarActivity {
         public BottomBar() {
             mFragContainer = (FrameLayout) findViewById(R.id.home_fragment_container);
 
-            mSearchFragment = SearchFragment.newInstance("","");
-            mBookmarkFragment = BookmarkFragment.newInstance("","");
-            mHistoryFragment = HistoryFragment.newInstance("","");
-            mCompassFragment = CompassFragment.newInstance("","");
+            mSearchFragment = SearchFragment.newInstance();
+            mBookmarkFragment = BookmarkFragment.newInstance("", "");
+            mHistoryFragment = HistoryFragment.newInstance("", "");
+            mCompassFragment = CompassFragment.newInstance("", "");
 
             mSearchLayout = (LinearLayout) findViewById(R.id.bottom_action_search);
             mSearchIcon = (ImageView) findViewById(R.id.bottom_action_search_ic);

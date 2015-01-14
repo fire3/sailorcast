@@ -5,7 +5,7 @@
     tools:context="com.crixmod.sailorcast.view.RenderActivity">
 		<fragment
 			android:id="@+id/ContentDirectoryFragment"
-			android:name="com.crixmod.sailorcast.view.RendererFragment"
+			android:name="com.crixmod.sailorcast.view.fragments.RendererFragment"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			tools:layout="@layout/renderer_fragment"/>

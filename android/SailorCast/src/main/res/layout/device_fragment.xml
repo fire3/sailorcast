@@ -41,7 +41,7 @@
 		style="@style/deviceListSeparator" />
 	<fragment
 		android:id="@+id/RendererDeviceFragment"
-		android:name="com.crixmod.sailorcast.view.RendererDeviceFragment"
+		android:name="com.crixmod.sailorcast.view.fragments.RendererDeviceFragment"
 		android:layout_weight="1"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"

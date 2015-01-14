@@ -15,6 +15,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
+import com.crixmod.sailorcast.view.fragments.SearchResultFragment;
 
 public class SearchResultsActivity extends BaseToolbarActivity {
 

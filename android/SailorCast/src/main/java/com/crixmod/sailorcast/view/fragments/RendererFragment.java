@@ -17,7 +17,7 @@
  * along with DroidUPNP.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crixmod.sailorcast.view;
+package com.crixmod.sailorcast.view.fragments;
 
 import android.app.Activity;
 import android.graphics.Color;

@@ -29,7 +29,7 @@
 
 		<fragment
 			android:id="@+id/RendererFragment"
-			android:name="com.crixmod.sailorcast.view.RendererFragment"
+			android:name="com.crixmod.sailorcast.view.fragments.RendererFragment"
 			android:layout_width="match_parent"
 			android:layout_height="120dp"
 			android:layout_weight="0"

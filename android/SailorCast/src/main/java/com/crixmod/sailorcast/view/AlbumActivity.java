@@ -34,6 +34,7 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.utils.ImageTools;
+import com.crixmod.sailorcast.view.fragments.AlbumPlayControlFragment;
 
 import java.util.HashMap;
 import java.util.Map;

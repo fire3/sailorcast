@@ -1,9 +1,33 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.crixmod.sailorcast.view.SearchFragment">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="search frag" />
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:weightSum="10"
+        >
+    <EditText
+        android:id="@+id/search_input"
+        android:layout_width="0dp"
+        android:layout_weight="7"
+        android:layout_height="match_parent"
+        android:background="@drawable/rect_text_edit"
+        android:singleLine="true"
+        />
+
+       <Button
+           android:id="@+id/search_ok"
+           android:layout_width="0dp"
+           android:layout_weight="3"
+           android:layout_height="match_parent"
+           android:background="@drawable/rect_text_edit"
+           android:text="@string/search_button_text"
+           />
+    </LinearLayout>
 
 </FrameLayout>
