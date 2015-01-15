@@ -120,7 +120,8 @@ public class AlbumPlayControlFragment extends Fragment implements OnGetVideosLis
 
                     if (positionOfView == item) {
                         View view = mGrid.getChildAt(i);
-                        view.requestFocus();
+                        if(isAdded())
+                            view.requestFocus();
                     }
                 }
             }

@@ -1,10 +1,23 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.crixmod.sailorcast.view.fragments.BookmarkFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="bookmark frag" />
-
+    tools:context="com.crixmod.sailorcast.view.fragments.SearchResultFragment">
+<GridView
+    android:id="@+id/search_result_grid"
+    android:numColumns="3"
+    android:padding="2dp"
+    android:verticalSpacing="2dp"
+    android:horizontalSpacing="2dp"
+    android:stretchMode="columnWidth"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</GridView>
+<TextView
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:id="@android:id/empty"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    />
 </FrameLayout>

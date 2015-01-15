@@ -89,7 +89,7 @@ public class ImageTools {
                         //.showImageOnLoading(failDrawable)
                         //.showImageOnFail(failDrawable)
                         //.displayer(new FadeInBitmapDisplayer(100))
-                        .delayBeforeLoading(10)
+                        //.delayBeforeLoading(10)
                         .imageScaleType(ImageScaleType.EXACTLY)
                         .bitmapConfig(Bitmap.Config.RGB_565)
                         .build();

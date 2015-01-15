@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_result"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:padding="@dimen/margin_small"
+        android:id="@+id/video_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.crixmod.sailorcast.uiutils.VerPosterImageView
+            android:id="@+id/video_image"
+            android:visibility="invisible"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/video_tip_overlay"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/gradient"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+        <TextView
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingBottom="@dimen/margin_small"
+            android:textColor="@color/white"
+            android:id="@+id/video_tip"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_alignParentBottom="true"
+            android:gravity="left"
+            android:textSize="@dimen/font_size_tiny"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+    <CheckBox
+        android:id="@+id/video_checkbox"
+        style="@style/CheckBoxStyle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_below="@id/video_container"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small"
+        android:paddingLeft="@dimen/margin_small"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:id="@+id/video_title"
+        android:textColor="@color/grey_medium"
+        android:lines="1"
+        android:textSize="@dimen/font_size_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

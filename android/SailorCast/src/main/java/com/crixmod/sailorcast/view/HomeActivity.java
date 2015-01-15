@@ -97,7 +97,7 @@ public class HomeActivity extends BaseToolbarActivity {
             mFragContainer = (FrameLayout) findViewById(R.id.home_fragment_container);
 
             mSearchFragment = SearchFragment.newInstance();
-            mBookmarkFragment = BookmarkFragment.newInstance("", "");
+            mBookmarkFragment = BookmarkFragment.newInstance();
             mHistoryFragment = HistoryFragment.newInstance("", "");
             mCompassFragment = CompassFragment.newInstance("", "");
 

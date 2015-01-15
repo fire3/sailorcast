@@ -64,4 +64,8 @@
     <style name="SailorCast.SwipeToRefresh">
         <item name="refreshIndicatorColor">@color/blue_new_kid</item>
     </style>
+
+    <style name="CheckBoxStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox_style</item>
+    </style>
 </resources>
