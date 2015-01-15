@@ -23,7 +23,9 @@ import android.widget.Toast;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
+import com.crixmod.sailorcast.database.BookmarkDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.model.upnp.IRendererCommand;
@@ -65,6 +67,8 @@ public class AlbumActivity extends BaseToolbarActivity
     private int mTabPageSize = TAB_SIZE_BUTTON;
     private int mInitialVideoNoInAlbum = 0;
     private boolean mIsShowTitle = false;
+    private BookmarkDbHelper mBookmarkDb;
+    private boolean mIsFav;
 
 
     @Override
@@ -75,6 +79,8 @@ public class AlbumActivity extends BaseToolbarActivity
         findViews();
         setupViewPager();
         setTitle(mAlbum.getTitle());
+        mBookmarkDb = new BookmarkDbHelper(this);
+        mIsFav =  mBookmarkDb.getAlbumById(mAlbum.getAlbumId(),mAlbum.getSite().getSiteID()) != null;
     }
 
     @Override
@@ -102,6 +108,15 @@ public class AlbumActivity extends BaseToolbarActivity
 
 
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem fave = menu.findItem(R.id.action_fav_button);
+        MenuItem unfave = menu.findItem(R.id.action_unfav_button);
+
+        fave.setVisible(mIsFav);
+        unfave.setVisible(!mIsFav);
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -147,6 +162,15 @@ public class AlbumActivity extends BaseToolbarActivity
                 });
             }
             return true;
+        }
+
+        if (id == R.id.action_unfav_button) {
+            mBookmarkDb.addAlbum(mAlbum);
+            mIsFav = true;
+            invalidateOptionsMenu();
+            Log.d("fire3","isFav:" + mIsFav);
+            SCAlbums albums = mBookmarkDb.getAllAlbums();
+            albums.debugLog();
         }
 
         if(id == android.R.id.home) {

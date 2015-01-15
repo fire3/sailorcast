@@ -82,5 +82,7 @@
     <string name="history_button_text">历史</string>
     <string name="compass_button_text">发现</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="action_unfav_button">收藏</string>
+    <string name="action_fav_button">已收藏</string>
 
 </resources>
