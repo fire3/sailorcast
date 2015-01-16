@@ -290,9 +290,8 @@ public class BookmarkFragment extends Fragment {
             for(int i : lstItem) {
                 SCAlbum a = mBookmarkAlbums.get(i).getAlbum();
                 mDb.deleteAlbum(a.getAlbumId(),a.getSite().getSiteID());
-                mBookmarkAlbums.remove(i);
-                mAlbums.remove(a);
             }
+            reloadBookmarks();
         }
 
 
