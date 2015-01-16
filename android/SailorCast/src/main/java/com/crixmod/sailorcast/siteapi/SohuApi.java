@@ -48,7 +48,6 @@ public class SohuApi extends BaseSiteApi {
             return;
         }
         String url = API_SEARCH + searchKey;
-        Log.d("fire3", url);
 
         HttpUtils.asyncGet(url, new Callback() {
             @Override

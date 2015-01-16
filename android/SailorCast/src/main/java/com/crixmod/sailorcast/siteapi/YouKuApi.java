@@ -57,6 +57,7 @@ public class YouKuApi extends BaseSiteApi {
     private static final String SHOW_VIDEOS_BASE =  "http://api.mobile.youku.com/shows/";
     private static final String SHOW_VIDEOS_PID = "/reverse/videos?pid=0865e0628a79dfbb&ver=4.4&guid=";
     private static final String SHOW_VIDEOS_FIELDS ="&fields=" + URLEncoder.encode("is_new|vid|titl|lim") + "&pg=";
+    //private static final String SHOW_VIDEOS_FIELDS ="&fields=" + URLEncoder.encode("is_new|vid|titl|lim") + "&pg=";
     private static final String SHOW_VIDEOS_PZ = "&pz=";
 
     //得到Video描述文件接口：  VIDEO_INFO_BASE + getGdid() + VIDEO_FORMAT_LAN_TYPE +  getGuid() + VIDEO_ID + videoID

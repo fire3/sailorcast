@@ -25,6 +25,7 @@ public class HttpUtils {
             Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
                     .addHeader("Cache-Control", "public, max-age=" + maxAge)
+                    //.addHeader("Cache-Control", "public, max-age=" + maxAge)
                     .url(url)
                     .build();
             Log.d("HttpUtils", "request Url: " + url);
@@ -54,10 +55,13 @@ public class HttpUtils {
     }
 
     public static void asyncGet(Request request, Callback callback) {
+        Log.d("HttpUtils", "request Url: " + request.urlString());
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
     }
 
     public static void asyncGet(Request request, final Activity activity, final Callback callback) {
+
+        Log.d("HttpUtils", "request Url: " + request.urlString());
 
         SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
             Handler mainHandler = new Handler(activity.getMainLooper());

@@ -179,7 +179,6 @@ public class LetvApi extends BaseSiteApi{
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String ret = response.body().string();
-                    Log.d("fire3",ret);
                     SCAlbums albums =  parseSearchResult(ret);
                     if(albums != null) {
                         albums.debugLog();
@@ -296,7 +295,6 @@ public class LetvApi extends BaseSiteApi{
     @Override
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
         String url = String.format(ALBUM_DESC_URL_FORMAT,album.getAlbumId());
-        Log.d("fire3", url);
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

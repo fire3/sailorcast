@@ -165,12 +165,20 @@ public class AlbumActivity extends BaseToolbarActivity
         }
 
         if (id == R.id.action_unfav_button) {
-            mBookmarkDb.addAlbum(mAlbum);
-            mIsFav = true;
-            invalidateOptionsMenu();
-            Log.d("fire3","isFav:" + mIsFav);
-            SCAlbums albums = mBookmarkDb.getAllAlbums();
-            albums.debugLog();
+            if(mIsFav == false) {
+                mBookmarkDb.addAlbum(mAlbum);
+                mIsFav = true;
+                invalidateOptionsMenu();
+            }
+        }
+
+
+        if (id == R.id.action_fav_button) {
+            if(mIsFav == true) {
+                mBookmarkDb.deleteAlbum(mAlbum.getAlbumId(),mAlbum.getSite().getSiteID());
+                mIsFav = false;
+                invalidateOptionsMenu();
+            }
         }
 
         if(id == android.R.id.home) {

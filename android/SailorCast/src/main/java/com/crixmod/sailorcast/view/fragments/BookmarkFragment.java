@@ -99,6 +99,29 @@ public class BookmarkFragment extends Fragment {
         mListener = null;
     }
 
+    public void deleteSelectedBookmark() {
+        mAdapter.deleteCheckedSCAlbums();
+        mAdapter.setShowChecker(false);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public boolean isShowDeleteChecker() {
+        return mAdapter.mShowChecker;
+    }
+
+    public void setShowDeleteChecker(boolean isShowChecker) {
+        if(isShowChecker == false) {
+            mAdapter.uncheckAllAlbums();
+        }
+        mAdapter.setShowChecker(isShowChecker);
+        mAdapter.notifyDataSetInvalidated();
+    }
+
+    public void reloadBookmarks() {
+        mAlbums = mDb.getAllAlbums();
+        mAdapter = new BookmarkAdapter(getActivity(),mAlbums);
+        mGrid.setAdapter(mAdapter);
+    }
 
 
     class BookmarkAdapter extends BaseAdapter {
@@ -150,19 +173,16 @@ public class BookmarkFragment extends Fragment {
             }
         }
 
-        BookmarkAdapter(Context mContext) {
-            this.mContext = mContext;
-            mAlbums = new SCAlbums();
-            this.mShowChecker = false;
+        public void uncheckAllAlbums() {
+            for(BookmarkAlbum a :mBookmarkAlbums) {
+                a.setUnChecked();
+            }
         }
 
         public void setShowChecker(boolean showChecker) {
             this.mShowChecker = showChecker;
         }
 
-        public void addAlbum(SCAlbum album) {
-            mAlbums.add(album);
-        }
 
         @Override
         public int getCount() {
@@ -231,16 +251,8 @@ public class BookmarkFragment extends Fragment {
                 viewHolder.resultContainer.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        mListener.onEnterBookMarkDeleteMode();
                         mAdapter.setShowChecker(true);
                         mAdapter.notifyDataSetChanged();
-                        final int numVisibleChildren = mGrid.getCount();
-                        for ( int i = 0; i < numVisibleChildren; i++ ) {
-                            if(mGrid.getChildAt(i) != null) {
-                                ViewHolder holder = (ViewHolder) mGrid.getChildAt(i).getTag();
-                                holder.videoChecker.setVisibility(View.VISIBLE);
-                            }
-                        }
                         return true;
                     }
                 });
@@ -268,12 +280,29 @@ public class BookmarkFragment extends Fragment {
             return lstItem;
         }
 
+        public void deleteCheckedSCAlbums() {
+            ArrayList<Integer> lstItem = new ArrayList<>();
+            for ( int i = 0; i < getCount(); i++) {
+                if (getItem(i).getChecked()){
+                    lstItem.add(i);
+                }
+            }
+            for(int i : lstItem) {
+                SCAlbum a = mBookmarkAlbums.get(i).getAlbum();
+                mDb.deleteAlbum(a.getAlbumId(),a.getSite().getSiteID());
+                mBookmarkAlbums.remove(i);
+                mAlbums.remove(a);
+            }
+        }
+
+
         private CompoundButton.OnCheckedChangeListener CheckBox_OnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 View view = (View)buttonView.getParent();
                 ViewHolder holder = (ViewHolder)view.getTag();
-                BookmarkAlbum item = BookmarkAdapter.this.getItem(holder.position);
+                BookmarkAlbum item = getItem(holder.position);
                 item.setChecked(isChecked);
+                //Log.d("fire3",String.format("checked changel album %s, checked %s",item.getAlbum().getTitle(), String.valueOf(isChecked)));
             }};
 
 
@@ -299,7 +328,6 @@ public class BookmarkFragment extends Fragment {
     }
 
     public interface OnBookMarkFragActionListener {
-        public void onEnterBookMarkDeleteMode();
     }
 
 

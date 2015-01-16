@@ -1,7 +1,8 @@
 package com.crixmod.sailorcast.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +40,13 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
         return R.layout.activity_home;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mBottomBar.mSeleted == mBottomBar.BOOKMARK) {
+            mBottomBar.mBookmarkFragment.reloadBookmarks();
+        }
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -67,15 +75,48 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             return true;
         }
 
+        if (id == R.id.action_delete) {
+            if(mBottomBar.mSeleted == mBottomBar.BOOKMARK) {
+                if(mBottomBar.mBookmarkFragment.isShowDeleteChecker() == true)
+                    alertDelete();
+                if(mBottomBar.mBookmarkFragment.isShowDeleteChecker() == false)
+                    mBottomBar.mBookmarkFragment.setShowDeleteChecker(true);
+            }
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onEnterBookMarkDeleteMode() {
+
+    public void alertDelete() {
+        DialogInterface.OnClickListener dialogClick = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch( which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        mBottomBar.mBookmarkFragment.deleteSelectedBookmark();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        mBottomBar.mBookmarkFragment.setShowDeleteChecker(false);
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure?")
+                .setPositiveButton("Yes", dialogClick)
+                .setNegativeButton("No", dialogClick).show();
+    }
+
+
+    private void showDeleteMenuIcon() {
         isShowDelete = true;
         invalidateOptionsMenu();
     }
-
+    private void hideDeleteMenuIcon() {
+        isShowDelete = false;
+        invalidateOptionsMenu();
+    }
 
     class BottomBar {
         private LinearLayout mSearchLayout;
@@ -103,10 +144,10 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
 
         private FrameLayout mFragContainer;
 
-        private Fragment mSearchFragment;
-        private Fragment mBookmarkFragment;
-        private Fragment mHistoryFragment;
-        private Fragment mCompassFragment;
+        private SearchFragment mSearchFragment;
+        private BookmarkFragment mBookmarkFragment;
+        private HistoryFragment mHistoryFragment;
+        private CompassFragment mCompassFragment;
 
         public BottomBar() {
             mFragContainer = (FrameLayout) findViewById(R.id.home_fragment_container);
@@ -200,8 +241,6 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
                 default:
                     break;
             }
-            isShowDelete = false;
-            invalidateOptionsMenu();
         }
 
         private void deselectSearch() {
@@ -220,6 +259,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
         private void deselectBookmark() {
             mBookmarkIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark));
             mBookmarkIconText.setTextColor(getResources().getColor(R.color.bottom_text));
+            hideDeleteMenuIcon();
         }
         private void selectBookmark() {
             mBookmarkIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark_highlight));
@@ -228,6 +268,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             ft.replace(R.id.home_fragment_container, mBookmarkFragment);
             ft.commit();
             getFragmentManager().executePendingTransactions();
+            showDeleteMenuIcon();
         }
 
         private void deselectHistory() {
