@@ -3,12 +3,16 @@ package com.crixmod.sailorcast.view.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +26,9 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumActivity;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +43,8 @@ public class BookmarkFragment extends Fragment {
     private GridView mGrid;
     private TextView mEmpty;
     private SCAlbums mAlbums;
+
+    private OnBookMarkFragActionListener mListener;
 
     public static BookmarkFragment newInstance() {
         BookmarkFragment fragment = new BookmarkFragment();
@@ -73,27 +82,82 @@ public class BookmarkFragment extends Fragment {
 
 
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnBookMarkFragActionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
 
     class BookmarkAdapter extends BaseAdapter {
 
         private Context mContext;
         private SCAlbums mAlbums;
+        private boolean mShowChecker  = false;
+        private ArrayList<BookmarkAlbum> mBookmarkAlbums;
+
+        private class BookmarkAlbum {
+            SCAlbum album;
+            boolean isChecked;
+            public BookmarkAlbum (SCAlbum a) {
+                this.album = a;
+                isChecked = false;
+            }
+            public SCAlbum getAlbum() {
+                return album;
+            }
+            public void setChecked(boolean checked) {
+                isChecked = checked;
+            }
+
+            public boolean getChecked() {
+                return isChecked;
+            }
+            public void setUnChecked() {
+                isChecked = false;
+            }
+        }
 
         private class ViewHolder {
+            int position;
             RelativeLayout resultContainer;
             ImageView videoImage;
+            ImageView videoTipOverlay;
             TextView videoTitle;
             TextView videoTip;
+            CheckBox videoChecker;
         }
 
         BookmarkAdapter(Context mContext, SCAlbums mResults) {
             this.mContext = mContext;
             this.mAlbums = mResults;
+            this.mShowChecker = false;
+            this.mBookmarkAlbums = new ArrayList<>();
+            for(SCAlbum a: mAlbums) {
+                mBookmarkAlbums.add(new BookmarkAlbum(a));
+            }
         }
 
         BookmarkAdapter(Context mContext) {
             this.mContext = mContext;
             mAlbums = new SCAlbums();
+            this.mShowChecker = false;
+        }
+
+        public void setShowChecker(boolean showChecker) {
+            this.mShowChecker = showChecker;
         }
 
         public void addAlbum(SCAlbum album) {
@@ -106,8 +170,8 @@ public class BookmarkFragment extends Fragment {
         }
 
         @Override
-        public SCAlbum getItem(int i) {
-            return mAlbums.get(i);
+        public BookmarkAlbum getItem(int i) {
+            return mBookmarkAlbums.get(i);
         }
 
         @Override
@@ -116,12 +180,25 @@ public class BookmarkFragment extends Fragment {
         }
 
         @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if(mShowChecker)
+                return 1;
+            else
+                return 0;
+        }
+
+        @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            SCAlbum album = getItem(i);
+            BookmarkAlbum album = getItem(i);
             ViewHolder viewHolder;
             if (view == null) {
                 viewHolder = new ViewHolder();
-                view = getOneColumnVideoRowView(viewGroup, viewHolder);
+                view = getOneColumnVideoRowView(i,viewGroup, viewHolder);
             }
             else {
                 viewHolder = (ViewHolder) view.getTag();
@@ -131,37 +208,98 @@ public class BookmarkFragment extends Fragment {
             return view;
         }
 
-        private void setupViewHolder(View view, int i, ViewHolder viewHolder, final SCAlbum album) {
+        private void setupViewHolder(View view, int i, final ViewHolder viewHolder, final BookmarkAlbum bookmarkAlbum) {
+            final SCAlbum album = bookmarkAlbum.getAlbum();
             viewHolder.videoTitle.setText(album.getTitle());
             viewHolder.videoTip.setText(album.getTip());
 
-            if(album.getVerImageUrl() != null) {
-                ImageTools.fixVerPosterRatio(viewHolder.videoImage);
-                ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl());
-            } else if(album.getHorImageUrl() != null) {
-                ImageTools.fixHorPosterRatio(viewHolder.videoImage);
-                ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl());
+            Point point = ImageTools.getGridVerPosterSize(mContext);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
+            params.width = point.x;
+            params.height = point.y;
+            ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
+            viewHolder.videoChecker.setChecked(bookmarkAlbum.getChecked());
+
+            if(mShowChecker == false) {
+                viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlbumActivity.launch((Activity) mContext, album);
+                    }
+                });
+
+                viewHolder.resultContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        mListener.onEnterBookMarkDeleteMode();
+                        mAdapter.setShowChecker(true);
+                        mAdapter.notifyDataSetChanged();
+                        final int numVisibleChildren = mGrid.getCount();
+                        for ( int i = 0; i < numVisibleChildren; i++ ) {
+                            if(mGrid.getChildAt(i) != null) {
+                                ViewHolder holder = (ViewHolder) mGrid.getChildAt(i).getTag();
+                                holder.videoChecker.setVisibility(View.VISIBLE);
+                            }
+                        }
+                        return true;
+                    }
+                });
             }
 
-            viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                     AlbumActivity.launch((Activity) mContext, album);
-                }
-            });
+            if(mShowChecker == true) {
+                viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean checked = getItem(viewHolder.position).getChecked();
+                        viewHolder.videoChecker.setChecked(!checked);
+                        getItem(viewHolder.position).setChecked(!checked);
+                    }
+                });
+            }
         }
 
-        private View getOneColumnVideoRowView(ViewGroup viewGroup, ViewHolder viewHolder) {
+        public SCAlbums getCheckedSCAlbums(){
+            SCAlbums lstItem = new SCAlbums();
+            for ( int i = 0; i < getCount(); i++) {
+                if (getItem(i).getChecked()){
+                    lstItem.add(getItem(i).getAlbum());
+                }
+            }
+            return lstItem;
+        }
+
+        private CompoundButton.OnCheckedChangeListener CheckBox_OnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                View view = (View)buttonView.getParent();
+                ViewHolder holder = (ViewHolder)view.getTag();
+                BookmarkAlbum item = BookmarkAdapter.this.getItem(holder.position);
+                item.setChecked(isChecked);
+            }};
+
+
+    private View getOneColumnVideoRowView(int position, ViewGroup viewGroup, ViewHolder viewHolder) {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             View itemView = inflater.inflate(R.layout.item_gridview_bookmark,viewGroup,false);
             viewHolder.videoImage = (ImageView) itemView.findViewById(R.id.video_image);
+            viewHolder.videoTipOverlay = (ImageView) itemView.findViewById(R.id.video_tip_overlay);
             viewHolder.videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);
-            viewHolder.resultContainer = (RelativeLayout)itemView.findViewById(R.id.search_result);
+            viewHolder.resultContainer = (RelativeLayout)itemView;
+            viewHolder.videoChecker = (CheckBox)itemView.findViewById(R.id.video_checkbox);
+            viewHolder.position = position;
+            if(mShowChecker)
+                viewHolder.videoChecker.setVisibility(View.VISIBLE);
+            else
+                viewHolder.videoChecker.setVisibility(View.GONE);
 
+            viewHolder.videoChecker.setOnCheckedChangeListener(CheckBox_OnCheckedChangeListener);
             itemView.setTag(viewHolder);
             return itemView;
         }
+    }
+
+    public interface OnBookMarkFragActionListener {
+        public void onEnterBookMarkDeleteMode();
     }
 
 

@@ -9,19 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.crixmod.sailorcast.uiutils.VerPosterImageView
+        <ImageView
             android:id="@+id/video_image"
-            android:visibility="invisible"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/video_tip_overlay"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/gradient"
-            android:layout_width="match_parent"
-            android:layout_height="30dp" />
         <TextView
             android:paddingLeft="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small"

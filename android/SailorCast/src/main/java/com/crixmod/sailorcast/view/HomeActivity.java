@@ -18,8 +18,9 @@ import com.crixmod.sailorcast.view.fragments.CompassFragment;
 import com.crixmod.sailorcast.view.fragments.HistoryFragment;
 import com.crixmod.sailorcast.view.fragments.SearchFragment;
 
-public class HomeActivity extends BaseToolbarActivity {
+public class HomeActivity extends BaseToolbarActivity implements BookmarkFragment.OnBookMarkFragActionListener {
     BottomBar mBottomBar;
+    private boolean isShowDelete = false;
 
     public HomeActivity() {
     }
@@ -36,6 +37,14 @@ public class HomeActivity extends BaseToolbarActivity {
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_home;
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem delete = menu.findItem(R.id.action_delete);
+        delete.setVisible(isShowDelete);
+        return true;
     }
 
 
@@ -59,6 +68,12 @@ public class HomeActivity extends BaseToolbarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onEnterBookMarkDeleteMode() {
+        isShowDelete = true;
+        invalidateOptionsMenu();
     }
 
 
@@ -185,6 +200,8 @@ public class HomeActivity extends BaseToolbarActivity {
                 default:
                     break;
             }
+            isShowDelete = false;
+            invalidateOptionsMenu();
         }
 
         private void deselectSearch() {

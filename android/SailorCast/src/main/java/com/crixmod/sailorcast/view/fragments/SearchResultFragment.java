@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.view.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
@@ -182,11 +184,19 @@ implements OnSearchRequestListener
             viewHolder.videoTip.setText(album.getTip());
 
             if(album.getVerImageUrl() != null) {
-                ImageTools.fixVerPosterRatio(viewHolder.videoImage);
-                ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl());
+
+                Point point = ImageTools.getGridVerPosterSize(mContext);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
+                params.width = point.x;
+                params.height = point.y;
+                ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
             } else if(album.getHorImageUrl() != null) {
-                ImageTools.fixHorPosterRatio(viewHolder.videoImage);
-                ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl());
+
+                Point point = ImageTools.getGridHorPosterSize(mContext);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
+                params.width = point.x;
+                params.height = point.y;
+                ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
             }
 
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {

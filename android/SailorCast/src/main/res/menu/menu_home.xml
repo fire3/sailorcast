@@ -4,4 +4,6 @@
     tools:context="com.crixmod.sailorcast.view.HomeActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_delete" android:title="@string/action_delete"
+        android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/ic_header_delete" />
 </menu>

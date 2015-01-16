@@ -1,8 +1,14 @@
 package com.crixmod.sailorcast.utils;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.crixmod.sailorcast.R;
@@ -10,8 +16,12 @@ import com.crixmod.sailorcast.SailorCast;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
+import com.squareup.picasso.Picasso;
+
+import java.util.Random;
 
 /**
  * Created by fire3 on 2015/1/7.
@@ -20,97 +30,15 @@ public class ImageTools {
     public static final float VER_POSTER_RATIO = 0.73f;
     public static final float HOR_POSTER_RATIO = 1.5f;
 
-    public static void displayImage(ImageView view, String picUrl, final DisplayImageOptions displayImageOptions) {
-        final String pic = picUrl;
-        final ImageView imageView = view;
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                ImageAware imageAware = new ImageViewAware(imageView, false);
 
-                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-                /*
-                if (SailorCast.isNetworkMobile()) {
-                    //mobile
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("drawable://" + R.drawable.pic_defaultposter, imageAware, displayImageOptions);
-                } else if (SailorCast.isNetworkFWifi()) {
-                    //wifi
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-                }
-                */
-            }
-        });
-    }
+    public static void displayImage(ImageView view, String picUrl, int height, int width) {
 
-    public static void displayImage(ImageView view, String picUrl, Drawable failDrawable) {
-        final String pic = picUrl;
-        final ImageView imageView = view;
-        final DisplayImageOptions displayImageOptions =
-                new DisplayImageOptions.Builder()
-                        .resetViewBeforeLoading(true)
-                        .cacheInMemory(true)
-                        .cacheOnDisk(true)
-                        .showImageOnLoading(failDrawable)
-                        .showImageOnFail(failDrawable)
-                        //.displayer(new FadeInBitmapDisplayer(100))
-                        .delayBeforeLoading(10)
-                        //.imageScaleType(ImageScaleType.EXACTLY)
-                        .bitmapConfig(Bitmap.Config.RGB_565)
-                        .build();
-
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                ImageAware imageAware = new ImageViewAware(imageView, false);
-
-                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-                /*
-                if (SailorCast.isNetworkMobile()) {
-                    //mobile
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("drawable://" + R.drawable.pic_defaultposter, imageAware, displayImageOptions);
-                } else if (SailorCast.isNetworkFWifi()) {
-                    //wifi
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-                }
-                */
-            }
-        });
+        Picasso.with(view.getContext()).load(picUrl).resize(height,width).centerCrop().into(view);
     }
 
     public static void displayImage(ImageView view, String picUrl) {
-        final String pic = picUrl;
-        //Drawable failDrawable = view.getContext().getResources().getDrawable(R.drawable.sohu_pic_defaultposter);
-        final ImageView imageView = view;
-        final DisplayImageOptions displayImageOptions =
-                new DisplayImageOptions.Builder()
-                        .resetViewBeforeLoading(true)
-                        .cacheInMemory(true)
-                        .cacheOnDisk(true)
-                        //.showImageOnLoading(failDrawable)
-                        //.showImageOnFail(failDrawable)
-                        //.displayer(new FadeInBitmapDisplayer(100))
-                        //.delayBeforeLoading(10)
-                        .imageScaleType(ImageScaleType.EXACTLY)
-                        .bitmapConfig(Bitmap.Config.RGB_565)
-                        .build();
 
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                ImageAware imageAware = new ImageViewAware(imageView, false);
-
-                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-                /*
-                if (SailorCast.isNetworkMobile()) {
-                    //mobile
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage("drawable://" + R.drawable.pic_defaultposter, imageAware, displayImageOptions);
-                } else if (SailorCast.isNetworkFWifi()) {
-                    //wifi
-                com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic, imageAware, displayImageOptions);
-               }
-                */
-            }
-        });
+        Picasso.with(view.getContext()).load(picUrl).into(view);
     }
 
 
@@ -124,7 +52,7 @@ public class ImageTools {
                     image.setVisibility(View.VISIBLE);
                 }
             });
-        }
+    }
 
 
     public static void fixVerPosterRatio(final ImageView image) {
@@ -139,7 +67,55 @@ public class ImageTools {
         });
     }
 
+    public static Point getGridVerPosterSize(Context mContext) {
+        int width = getScreenWidthPixels(mContext)/3;
+        width = width - 2 * mContext.getResources().getDimensionPixelSize(R.dimen.margin_small);
+        int height = Math.round((float) width / VER_POSTER_RATIO);
+        Point point = new Point();
+        point.x = width;
+        point.y = height;
+        return point;
+    }
+    public static Point getGridHorPosterSize(Context mContext) {
+        int width = getScreenWidthPixels(mContext)/3;
+        width = width - 2 * mContext.getResources().getDimensionPixelSize(R.dimen.margin_small);
+        int height = Math.round((float) width / HOR_POSTER_RATIO);
+        Point point = new Point();
+        point.x = width;
+        point.y = height;
+        return point;
+    }
 
 
+    public static int getScreenWidthPixels(Context mContext) {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        return width;
+    }
+
+    public static int getScreenHeightPixels(Context mContext) {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+        return height;
+    }
+
+
+    public static float convertPixelsToDp(float px){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float dp = px / (metrics.densityDpi / 160f);
+        return Math.round(dp);
+    }
+
+    public static float convertDpToPixel(float dp){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
+    }
 
 }
