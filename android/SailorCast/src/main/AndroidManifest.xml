@@ -29,10 +29,7 @@
         <service android:name=".model.cling.UpnpService" />
 
         <activity
-            android:name=".view.RenderActivity"
-            android:label="@string/title_activity_render" >
-        </activity>
-        <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".view.HomeActivity"
             android:label="@string/app_name" >
             <intent-filter>
