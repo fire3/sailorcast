@@ -28,6 +28,7 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
     private static final String KEY_ALBUM_ID = "albumID";
     private static final String KEY_ALBUM_SITE = "albumSite";
     private static final String KEY_CREATED_AT = "createdAt";
+    private static final String LOG_TAG = "SailorCast:BookmarkDbHelper";
 
     public BookmarkDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,14 +74,14 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
 
     public void addAlbum(SCAlbum album) {
 
-        SCAlbum old = getAlbumById(album.getAlbumId(),album.getSite().getSiteID());
+        SCAlbum old = getAlbumById(album.getAlbumId(), album.getSite().getSiteID());
         SQLiteDatabase db = this.getWritableDatabase();
 
         if (old == null) {
             ContentValues values = new ContentValues();
             values.put(KEY_ALBUM_ID, album.getAlbumId());
-            values.put(KEY_ALBUM_SITE,album.getSite().getSiteID());
-            values.put(KEY_ALBUM_JSON,album.toJson());
+            values.put(KEY_ALBUM_SITE, album.getSite().getSiteID());
+            values.put(KEY_ALBUM_JSON, album.toJson());
             values.put(KEY_CREATED_AT, getDateTime());
             // Inserting Row
             db.insert(TABLE_BOOKMARK, null, values);
@@ -92,10 +93,10 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
     public SCAlbum getAlbumById(String albumId, int siteID) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_BOOKMARK, new String[] {
+        Cursor cursor = db.query(TABLE_BOOKMARK, new String[]{
                         KEY_ALBUM_ID, KEY_ALBUM_SITE,
                         KEY_ALBUM_JSON}, KEY_ALBUM_ID + "=? AND " + KEY_ALBUM_SITE + "=?",
-                new String[] { String.valueOf(albumId), String.valueOf(siteID) }, null, null, null, null);
+                new String[]{String.valueOf(albumId), String.valueOf(siteID)}, null, null, null, null);
         if (cursor != null) {
             if (cursor.moveToFirst() == true) {
                 String json = cursor.getString(2);
@@ -116,10 +117,11 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
 
     public void deleteAlbum(String albumID, int siteID) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_BOOKMARK, KEY_ALBUM_ID + " = ? AND " + KEY_ALBUM_SITE  + " = ?",
-                new String[] { String.valueOf(albumID), String.valueOf(siteID) });
+        db.delete(TABLE_BOOKMARK, KEY_ALBUM_ID + " = ? AND " + KEY_ALBUM_SITE + " = ?",
+                new String[]{String.valueOf(albumID), String.valueOf(siteID)});
         db.close();
     }
+
     public int getTotalCount() {
         String countQuery = "SELECT * FROM " + TABLE_BOOKMARK;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -132,7 +134,7 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
         SCAlbums albums = new SCAlbums();
         try {
             // Select All Query
-            String selectQuery = "SELECT * FROM " + TABLE_BOOKMARK + " ORDER BY datetime("+KEY_CREATED_AT+") DESC";
+            String selectQuery = "SELECT * FROM " + TABLE_BOOKMARK + " ORDER BY datetime(" + KEY_CREATED_AT + ") DESC";
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery(selectQuery, null);
             // looping through all rows and adding to list
@@ -146,9 +148,34 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
             db.close();
             return albums;
         } catch (Exception e) {
-            Log.e("all_contact", "" + e);
+            Log.e(LOG_TAG, "" + e);
         }
         return null;
-   }
+    }
+
+    public SCAlbums getAlbumsByPage(int PageNo, int PageSize) {
+         SCAlbums albums = new SCAlbums();
+        try {
+            // Select All Query
+            String selectQuery = "SELECT * FROM " + TABLE_BOOKMARK +
+                    " Limit "+String.valueOf(PageSize)+ " Offset " +String.valueOf(PageNo*PageSize) +
+                    " ORDER BY datetime(" + KEY_CREATED_AT + ") DESC";
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
+                    SCAlbum album = SCAlbum.fromJson(cursor.getString(3));
+                    albums.add(album);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return albums;
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "" + e);
+        }
+        return null;
+    }
 
 }
