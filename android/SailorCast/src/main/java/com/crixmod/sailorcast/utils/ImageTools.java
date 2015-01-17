@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -33,12 +34,14 @@ public class ImageTools {
 
     public static void displayImage(ImageView view, String picUrl, int height, int width) {
 
-        Picasso.with(view.getContext()).load(picUrl).resize(height,width).centerCrop().into(view);
+        if(picUrl != null && !picUrl.isEmpty() && view != null  && height > 0 && width > 0)
+            Picasso.with(view.getContext()).load(picUrl).resize(height,width).centerCrop().into(view);
     }
 
     public static void displayImage(ImageView view, String picUrl) {
 
-        Picasso.with(view.getContext()).load(picUrl).into(view);
+        if(picUrl != null && !picUrl.isEmpty() && view != null)
+            Picasso.with(view.getContext()).load(picUrl).into(view);
     }
 
 

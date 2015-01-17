@@ -142,11 +142,11 @@ public class LetvApi extends BaseSiteApi{
                             a.setTip(albumJson.getString("categoryName"));
                         if (albumJson.optJSONObject("images") != null) {
                             JSONObject jsonImage = albumJson.getJSONObject("images");
-                            if (jsonImage.optString("150*200") != null) {
+                            if (jsonImage.optString("150*200") != null && !jsonImage.optString("150*200").isEmpty()) {
                                 a.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("150*200")));
-                            } else if (jsonImage.optString("300*400") != null) {
+                            } else if (jsonImage.optString("300*400") != null && !jsonImage.optString("300*400").isEmpty()) {
                                 a.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("300*400")));
-                            } else if (jsonImage.optString("120*160") != null) {
+                            } else if (jsonImage.optString("120*160") != null && !jsonImage.optString("120*160").isEmpty()) {
                                 a.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("120*160")));
                             }
                         }

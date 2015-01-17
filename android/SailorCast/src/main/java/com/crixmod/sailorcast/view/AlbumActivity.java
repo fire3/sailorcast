@@ -540,7 +540,7 @@ public class AlbumActivity extends BaseToolbarActivity
         if(url != null) {
             //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
             //BaiduPlayerActivity.launch(this,url);
-            Log.d("fire3","play " + url);
+            Log.d("fire3","play " + v.toString());
         }
         else
             Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
