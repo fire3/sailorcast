@@ -11,9 +11,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/SailorCast" />
             <option value="$PROJECT_DIR$/decapi" />
-            <option value="$PROJECT_DIR$/libs" />
-            <option value="$PROJECT_DIR$/libs/utils" />
-            <option value="$PROJECT_DIR$/libs/utils/SailorCastUtils" />
           </set>
         </option>
       </GradleProjectSettings>

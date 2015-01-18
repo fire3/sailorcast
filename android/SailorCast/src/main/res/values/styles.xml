@@ -16,7 +16,6 @@
         <item name="windowActionBar">false</item>
 
         <item name="android:editTextStyle">@android:style/Widget.EditText</item>
-        <item name="swipeToRefreshStyle">@style/SailorCast.SwipeToRefresh</item>
     </style>
 
 	<!-- Drawer style -->
@@ -59,10 +58,6 @@
         <!-- work around a bug that causes weird styling of the dialog title on Android 5 -->
         <item name="android:windowNoTitle">false</item>
         <item name="windowActionBar">false</item>
-    </style>
-
-    <style name="SailorCast.SwipeToRefresh">
-        <item name="refreshIndicatorColor">@color/blue_new_kid</item>
     </style>
 
     <style name="CheckBoxStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
