@@ -15,7 +15,6 @@ import com.crixmod.sailorcast.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BaseAlbumListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * create an instance of this fragment.
  */
@@ -27,7 +26,6 @@ public abstract class BaseAlbumListFragment extends Fragment {
     private View mListViewFooter;
     private MultiSwipeRefreshLayout mSwipeRefreshLayout;
 
-    private OnFragmentInteractionListener mListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public abstract class BaseAlbumListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-                mCurrentPage = 1;
+        mCurrentPage = 1;
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_base_list, container, false);
@@ -107,18 +105,11 @@ public abstract class BaseAlbumListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     /**
@@ -131,8 +122,4 @@ public abstract class BaseAlbumListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
-    }
-
 }

@@ -119,4 +119,8 @@
 
     <!-- bottom toolbar -->
     <dimen name="bottom_ic_image_size">32dp</dimen>
+    <dimen name="vertical_image_padding">3dp</dimen>
+    <dimen name="horizontal_image_height">90dp</dimen>
+    <dimen name="horizontal_topbanner_image_height">170dp</dimen>
+    <dimen name="vertical_image_height">135dp</dimen>
 </resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:numColumns="3"
+    android:padding="2dp"
+    android:verticalSpacing="2dp"
+    android:horizontalSpacing="2dp"
+    android:stretchMode="columnWidth"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TableRow
+        android:id="@+id/base_list_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+    </TableRow>
+</TableLayout>

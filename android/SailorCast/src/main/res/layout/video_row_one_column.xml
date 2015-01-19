@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/video_1"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:weightSum="8"
+    android:gravity="center"
+    android:paddingLeft="@dimen/vertical_image_padding"
+    android:paddingRight="@dimen/vertical_image_padding"
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_small"
+    android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_weight="3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/video_image_1"
+                android:visibility="invisible"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/horizontal_image_height" />
+
+            <ImageView
+                android:id="@+id/video_tip_overlay_1"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/gradient"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+        </RelativeLayout>
+
+    <RelativeLayout
+        android:padding="@dimen/padding_small"
+        android:layout_weight="5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:padding="@dimen/padding_small"
+            android:id="@+id/video_title_1"
+            android:maxLines="2"
+            android:lines="2"
+            android:textSize="@dimen/font_size_normal"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+                android:padding="@dimen/padding_small"
+                android:alpha="87"
+                android:id="@+id/video_tip_1"
+                android:layout_alignParentBottom="true"
+                android:gravity="left"
+                android:textSize="@dimen/font_size_tiny"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</LinearLayout>
+
