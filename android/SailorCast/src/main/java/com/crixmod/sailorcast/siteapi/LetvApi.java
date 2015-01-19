@@ -192,6 +192,7 @@ public class LetvApi extends BaseSiteApi{
 
     @Override
     public void doGetAlbumVideos(final SCAlbum album, final int pageNo, final int pageSize, final OnGetVideosListener listener) {
+        /* pageNo start from 1 */
         String order = ALBUM_VIDEOS_ORDER_ASCENDING;
         String url;
         if(album.getLetvStyle().equals("2"))
@@ -236,7 +237,7 @@ public class LetvApi extends BaseSiteApi{
                                         v.setHorPic(p.getString("120*90"));
                                 }
 
-                                v.setSeqInAlbum(pageNo * pageSize + i);
+                                v.setSeqInAlbum((pageNo -1) * pageSize + i + 1);
                                 //MID设置是Letv解析真实链接必须的。
                                 if(!j.optString("mid").isEmpty())
                                     v.setLetvVideoMID(j.optString("mid"));

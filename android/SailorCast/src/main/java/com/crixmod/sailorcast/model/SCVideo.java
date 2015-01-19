@@ -17,7 +17,7 @@ public class SCVideo implements Parcelable {
     String mHorPic = null;
     String mVerPic = null;
     String mAlbumID = null;
-    Integer mSeqInAlbum = 0;
+    Integer mSeqInAlbum = 0;  // Start from 1
     String mVideoMID = null; //This is for Letv
     SCSite mSCSite = new SCSite(SCSite.UNKNOWN);
     public SCVideo() {

@@ -8,7 +8,10 @@ import com.crixmod.sailorcast.model.SCVideo;
  */
 abstract public class BaseSiteApi {
     abstract public void doSearch(String key, OnGetAlbumsListener listener);
+
+    /* pageNo start from 1 */
     abstract public void doGetAlbumVideos(SCAlbum album, int pageNo, int pageSize,  OnGetVideosListener listener);
+
     abstract public void doGetAlbumDesc(SCAlbum album, OnGetAlbumDescListener listener);
     abstract public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener);
 }

@@ -125,6 +125,9 @@ public class AlbumActivity extends BaseToolbarActivity
         if(mAlbum.getVideosCount() <= 1) {
             showTitle.setVisible(false);
             showButton.setVisible(false);
+        } else {
+            showTitle.setVisible(true);
+            showButton.setVisible(true);
         }
         return true;
     }
@@ -312,6 +315,7 @@ public class AlbumActivity extends BaseToolbarActivity
 
     @Override
     public void onGetAlbumDescSuccess(final SCAlbum album) {
+        mAlbum = album;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
