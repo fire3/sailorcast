@@ -82,6 +82,12 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
                 if(mBottomBar.mBookmarkFragment.isShowDeleteChecker() == false)
                     mBottomBar.mBookmarkFragment.setShowDeleteChecker(true);
             }
+            if(mBottomBar.mSeleted == mBottomBar.HISTORY) {
+                if(mBottomBar.mHistoryFragment.isShowDeleteChecker() == true)
+                    alertDelete();
+                if(mBottomBar.mHistoryFragment.isShowDeleteChecker() == false)
+                    mBottomBar.mHistoryFragment.setShowDeleteChecker(true);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -94,10 +100,17 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             public void onClick(DialogInterface dialog, int which) {
                 switch( which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        mBottomBar.mBookmarkFragment.deleteSelectedBookmark();
+                        if(mBottomBar.mSeleted == mBottomBar.BOOKMARK)
+                            mBottomBar.mBookmarkFragment.deleteSelectedBookmark();
+                        if(mBottomBar.mSeleted == mBottomBar.HISTORY)
+                            mBottomBar.mHistoryFragment.deleteSelectedBookmark();
+
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
-                        mBottomBar.mBookmarkFragment.setShowDeleteChecker(false);
+                        if(mBottomBar.mSeleted == mBottomBar.BOOKMARK)
+                            mBottomBar.mBookmarkFragment.setShowDeleteChecker(false);
+                        if(mBottomBar.mSeleted == mBottomBar.HISTORY)
+                            mBottomBar.mHistoryFragment.setShowDeleteChecker(false);
                         break;
                 }
             }
@@ -154,7 +167,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
 
             mSearchFragment = SearchFragment.newInstance();
             mBookmarkFragment = BookmarkFragment.newInstance();
-            mHistoryFragment = HistoryFragment.newInstance("", "");
+            mHistoryFragment = HistoryFragment.newInstance();
             mCompassFragment = CompassFragment.newInstance("", "");
 
             mSearchLayout = (LinearLayout) findViewById(R.id.bottom_action_search);
@@ -274,6 +287,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
         private void deselectHistory() {
             mHistoryIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_history));
             mHistoryIconText.setTextColor(getResources().getColor(R.color.bottom_text));
+            hideDeleteMenuIcon();
         }
         private void selectHistory() {
             mHistoryIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_history_hightlight));
@@ -283,6 +297,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             ft.replace(R.id.home_fragment_container, mHistoryFragment);
             ft.commit();
             getFragmentManager().executePendingTransactions();
+            showDeleteMenuIcon();
         }
 
         private void deselectCompass() {

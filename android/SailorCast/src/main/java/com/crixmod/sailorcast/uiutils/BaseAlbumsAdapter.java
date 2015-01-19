@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.uiutils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -221,7 +222,6 @@ public abstract class BaseAlbumsAdapter extends BaseAdapter{
 
     private View getThreeColumnsRow(int i, View view, ViewGroup viewGroup) {
         ArrayList<AdapterAlbum> albums = getItem(i);
-        LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
         ViewHolder viewHolder;
         if (view == null) {
             viewHolder = new ViewHolder();
@@ -236,6 +236,7 @@ public abstract class BaseAlbumsAdapter extends BaseAdapter{
     }
 
     private void setupViewHolder(View view, int i, ViewHolder viewHolder, ArrayList<AdapterAlbum> albums) {
+        Log.d("fire3", "setupViewHolder " + i);
         int columns = viewHolder.videoTitle.size();
         for (int j = 0; j < columns; j++) {
             setupVideoTitleTextView(viewHolder.videoTitle.get(j), albums.get(j).getAlbum());
@@ -244,7 +245,7 @@ public abstract class BaseAlbumsAdapter extends BaseAdapter{
     }
 
     private void setupVideoImageView(ImageView imageView, SCAlbum album) {
-        Point point = ImageTools.getGridVerPosterSize(mContext);
+        Point point = ImageTools.getGridVerPosterSize(mContext, 3);
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
         params.width = point.x;
         params.height = point.y;

@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     tools:context="com.crixmod.sailorcast.view.fragments.SearchResultFragment">
 <GridView
-    android:id="@+id/search_result_grid"
+    android:id="@+id/result_grid"
     android:numColumns="3"
     android:padding="2dp"
     android:verticalSpacing="2dp"

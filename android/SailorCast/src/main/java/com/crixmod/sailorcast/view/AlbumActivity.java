@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.database.BookmarkDbHelper;
+import com.crixmod.sailorcast.database.HistoryDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCVideo;
@@ -68,6 +69,7 @@ public class AlbumActivity extends BaseToolbarActivity
     private int mInitialVideoNoInAlbum = 0;
     private boolean mIsShowTitle = false;
     private BookmarkDbHelper mBookmarkDb;
+    private HistoryDbHelper mHistoryDb;
     private boolean mIsFav;
 
 
@@ -75,11 +77,13 @@ public class AlbumActivity extends BaseToolbarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAlbum = getIntent().getParcelableExtra("album");
+        mInitialVideoNoInAlbum = getIntent().getIntExtra("videoNo",0);
         SiteApi.doGetAlbumDesc(mAlbum, this);
         findViews();
         setupViewPager();
         setTitle(mAlbum.getTitle());
         mBookmarkDb = new BookmarkDbHelper(this);
+        mHistoryDb = new HistoryDbHelper(this);
         mIsFav =  mBookmarkDb.getAlbumById(mAlbum.getAlbumId(),mAlbum.getSite().getSiteID()) != null;
     }
 
@@ -191,6 +195,16 @@ public class AlbumActivity extends BaseToolbarActivity
     public static void launch(Activity activity, SCAlbum album) {
         Intent mpdIntent = new Intent(activity, AlbumActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra("album",album);
+
+        activity.startActivity(mpdIntent);
+    }
+
+
+    public static void launch(Activity activity, SCAlbum album, int videoNo) {
+        Intent mpdIntent = new Intent(activity, AlbumActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra("videoNo",videoNo)
                 .putExtra("album",album);
 
         activity.startActivity(mpdIntent);
@@ -525,6 +539,7 @@ public class AlbumActivity extends BaseToolbarActivity
             //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
             //BaiduPlayerActivity.launch(this,url);
             Log.d("fire3","play " + url);
+            mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
         else
             Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();

@@ -70,8 +70,8 @@ public class ImageTools {
         });
     }
 
-    public static Point getGridVerPosterSize(Context mContext) {
-        int width = getScreenWidthPixels(mContext)/3;
+    public static Point getGridVerPosterSize(Context mContext, int columns) {
+        int width = getScreenWidthPixels(mContext)/columns;
         width = width - 2 * mContext.getResources().getDimensionPixelSize(R.dimen.margin_small);
         int height = Math.round((float) width / VER_POSTER_RATIO);
         Point point = new Point();
@@ -79,8 +79,9 @@ public class ImageTools {
         point.y = height;
         return point;
     }
-    public static Point getGridHorPosterSize(Context mContext) {
-        int width = getScreenWidthPixels(mContext)/3;
+
+    public static Point getGridHorPosterSize(Context mContext, int columns) {
+        int width = getScreenWidthPixels(mContext)/columns;
         width = width - 2 * mContext.getResources().getDimensionPixelSize(R.dimen.margin_small);
         int height = Math.round((float) width / HOR_POSTER_RATIO);
         Point point = new Point();

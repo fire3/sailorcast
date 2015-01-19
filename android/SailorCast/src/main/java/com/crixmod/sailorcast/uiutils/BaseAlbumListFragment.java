@@ -3,11 +3,12 @@ package com.crixmod.sailorcast.uiutils;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.crixmod.sailorcast.R;
@@ -69,7 +70,7 @@ public abstract class BaseAlbumListFragment extends Fragment {
         return view;
     }
 
-    public abstract void setListAdapter();
+    public abstract BaseAdapter getListAdapter();
     public abstract void initiateRefresh();
     public abstract void loadContents(int pageNo);
 
@@ -77,7 +78,7 @@ public abstract class BaseAlbumListFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setListAdapter();
+        mListView.setAdapter(getListAdapter());
 
         mListView.removeFooterView(mListViewFooter);
         mListView.setEmptyView(mEmptyView);

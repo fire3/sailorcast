@@ -9,6 +9,8 @@
 
     <!--style="@android:style/Widget.ProgressBar.Small.Inverse" -->
     <ProgressBar
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_marginLeft="100dp"
         android:id="@+id/pull_to_refresh_load_progress"
         style="@android:style/Widget.ProgressBar.Small.Inverse"

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,7 +24,6 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumActivity;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -71,7 +68,7 @@ public class BookmarkFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_bookmark, container, false);
-        mGrid = (GridView) view.findViewById(R.id.search_result_grid);
+        mGrid = (GridView) view.findViewById(R.id.result_grid);
         mEmpty = (TextView) view.findViewById(android.R.id.empty);
         mGrid.setEmptyView(mEmpty);
         mEmpty.setText(mFailReason);
@@ -233,7 +230,7 @@ public class BookmarkFragment extends Fragment {
             viewHolder.videoTitle.setText(album.getTitle());
             viewHolder.videoTip.setText(album.getTip());
 
-            Point point = ImageTools.getGridVerPosterSize(mContext);
+            Point point = ImageTools.getGridVerPosterSize(mContext,3);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
             params.width = point.x;
             params.height = point.y;

@@ -21,7 +21,7 @@ import java.util.Locale;
  */
 public class HistoryDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String DATABASE_NAME = "HistoryManager";
     private static final String TABLE_HISTORY = "histories";
@@ -42,13 +42,13 @@ public class HistoryDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_HISTORY + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_ALBUM_ID + " TEXT,"
-                + KEY_ALBUM_SITE + " INTEGER,"
-                + KEY_ALBUM_JSON + " TEXT,"
-                + KEY_CREATED_AT + " TEXT"
-                + KEY_VIDEO_JSON + " TEXT"
-                + KEY_VIDEO_NO_IN_ALBUM + " INTEGER"
+                + KEY_ID + " INTEGER PRIMARY KEY" + ","
+                + KEY_ALBUM_ID + " TEXT" + ","
+                + KEY_ALBUM_SITE + " INTEGER" + ","
+                + KEY_ALBUM_JSON + " TEXT" + ","
+                + KEY_CREATED_AT + " TEXT" + ","
+                + KEY_VIDEO_JSON + " TEXT" + ","
+                + KEY_VIDEO_NO_IN_ALBUM + " INTEGER" + ","
                 + KEY_VIDEO_PLAY_TIME + " INTEGER"
                 + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);

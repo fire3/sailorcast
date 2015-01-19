@@ -81,7 +81,7 @@ implements OnSearchRequestListener
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_search_result, container, false);
-        mGrid = (GridView) view.findViewById(R.id.search_result_grid);
+        mGrid = (GridView) view.findViewById(R.id.result_grid);
         mEmpty = (TextView) view.findViewById(android.R.id.empty);
         mGrid.setEmptyView(mEmpty);
         mEmpty.setText(mFailReason);
@@ -185,14 +185,14 @@ implements OnSearchRequestListener
 
             if(album.getVerImageUrl() != null) {
 
-                Point point = ImageTools.getGridVerPosterSize(mContext);
+                Point point = ImageTools.getGridVerPosterSize(mContext,3);
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
                 params.width = point.x;
                 params.height = point.y;
                 ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
             } else if(album.getHorImageUrl() != null) {
 
-                Point point = ImageTools.getGridHorPosterSize(mContext);
+                Point point = ImageTools.getGridHorPosterSize(mContext,3);
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
                 params.width = point.x;
                 params.height = point.y;
