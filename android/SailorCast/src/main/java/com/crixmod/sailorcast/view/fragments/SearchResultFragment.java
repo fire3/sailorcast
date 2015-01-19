@@ -101,6 +101,7 @@ implements OnSearchRequestListener
         for(SCAlbum a : albums) {
             mAdapter.addAlbum(a);
         }
+        albums.debugLog();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

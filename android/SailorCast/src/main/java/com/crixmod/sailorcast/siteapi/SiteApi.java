@@ -8,6 +8,8 @@ import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.HttpUtils;
 
+import org.fourthline.cling.support.model.DIDLObject;
+
 /**
  * Created by fire3 on 14-12-30.
  */
@@ -15,6 +17,15 @@ public class SiteApi {
     public static int SITE_ID_YOUKU = SCSite.YOUKU;
     public static int SITE_ID_SOHU = SCSite.SOHU;
     public static int SITE_ID_LETV = SCSite.LETV;
+
+    public static enum Channel {
+        CHANNEL_SHOW,
+        CHANNEL_MOVIE,
+        CHANNEL_COMIC,
+        CHANNEL_ENT,
+        CHANNEL_DOCUMENTARY
+    }
+
 
     public static void cancel() {
         HttpUtils.cancelAll();

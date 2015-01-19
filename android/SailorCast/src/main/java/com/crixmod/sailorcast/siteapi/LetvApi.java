@@ -181,7 +181,6 @@ public class LetvApi extends BaseSiteApi{
                     String ret = response.body().string();
                     SCAlbums albums =  parseSearchResult(ret);
                     if(albums != null) {
-                        albums.debugLog();
                         listener.onSearchSuccess(albums);
                     } else
                         listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
