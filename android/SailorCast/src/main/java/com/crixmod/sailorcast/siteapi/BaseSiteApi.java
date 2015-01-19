@@ -1,6 +1,10 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.support.v4.util.ArrayMap;
+
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCVideo;
 
 /**
@@ -14,4 +18,8 @@ abstract public class BaseSiteApi {
 
     abstract public void doGetAlbumDesc(SCAlbum album, OnGetAlbumDescListener listener);
     abstract public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener);
+
+    /* pageNo start from 1 */
+    abstract public void doGetChannelVideos(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener);
+    abstract public void doGetChannelVideosByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener);
 }

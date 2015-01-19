@@ -4,6 +4,8 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -421,6 +423,16 @@ public class LetvApi extends BaseSiteApi{
                 }
             });
         }
+    }
+
+    @Override
+    public void doGetChannelVideos(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+
+    }
+
+    @Override
+    public void doGetChannelVideosByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+
     }
 
 }
