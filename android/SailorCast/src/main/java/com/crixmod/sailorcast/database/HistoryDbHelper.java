@@ -198,4 +198,36 @@ public class HistoryDbHelper extends SQLiteOpenHelper {
         }
         return null;
    }
+
+     public ArrayList<History> getHistoriesByPage(int pageNo, int pageSize) {
+        ArrayList<History> histories = new ArrayList<>();
+        try {
+            // Select All Query
+            String selectQuery = "SELECT * FROM " + TABLE_HISTORY
+                    + " Limit "+String.valueOf(pageSize)+ " Offset " +String.valueOf(pageNo*pageSize)
+                    + " ORDER BY datetime("+KEY_CREATED_AT+") DESC";
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
+                    SCAlbum album = SCAlbum.fromJson(cursor.getString(3));
+                    String createAt = cursor.getString(4);
+                    SCVideo video = SCVideo.fromJson(cursor.getString(5));
+                    int videoSeq = cursor.getInt(6);
+                    int playTime = cursor.getInt(7);
+                    History history = new History(album,video,videoSeq,playTime,createAt);
+                    histories.add(history);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            db.close();
+            return histories;
+        } catch (Exception e) {
+            Log.e("allHistories", "" + e);
+        }
+        return null;
+   }
+
+
 }

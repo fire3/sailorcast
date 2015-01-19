@@ -156,13 +156,11 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
     public SCAlbums getAlbumsByPage(int PageNo, int PageSize) {
          SCAlbums albums = new SCAlbums();
         try {
-            // Select All Query
             String selectQuery = "SELECT * FROM " + TABLE_BOOKMARK +
                     " Limit "+String.valueOf(PageSize)+ " Offset " +String.valueOf(PageNo*PageSize) +
                     " ORDER BY datetime(" + KEY_CREATED_AT + ") DESC";
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery(selectQuery, null);
-            // looping through all rows and adding to list
             if (cursor.moveToFirst()) {
                 do {
                     SCAlbum album = SCAlbum.fromJson(cursor.getString(3));
@@ -177,5 +175,7 @@ public class BookmarkDbHelper extends SQLiteOpenHelper {
         }
         return null;
     }
+
+
 
 }
