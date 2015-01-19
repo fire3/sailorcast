@@ -117,8 +117,15 @@ public class AlbumActivity extends BaseToolbarActivity
         MenuItem fave = menu.findItem(R.id.action_fav_button);
         MenuItem unfave = menu.findItem(R.id.action_unfav_button);
 
+        MenuItem showTitle = menu.findItem(R.id.action_display_title);
+        MenuItem showButton = menu.findItem(R.id.action_display_button);
         fave.setVisible(mIsFav);
         unfave.setVisible(!mIsFav);
+
+        if(mAlbum.getVideosCount() <= 1) {
+            showTitle.setVisible(false);
+            showButton.setVisible(false);
+        }
         return true;
     }
 
@@ -288,6 +295,7 @@ public class AlbumActivity extends BaseToolbarActivity
             openAlbumDesc(null);
             hideAlbumCloseButton();
             SiteApi.doGetAlbumVideos(mAlbum,1,1,this);
+            invalidateOptionsMenu();
         }
     }
 

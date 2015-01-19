@@ -1,7 +1,5 @@
 package com.crixmod.sailorcast.siteapi;
 
-import android.util.Log;
-
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -37,7 +35,7 @@ public class SohuApi extends BaseSiteApi {
     private static int ORDER_ASCENDING = 0;
 
     @Override
-    public void doSearch(String key, final OnSearchRequestListener listener) {
+    public void doSearch(String key, final OnGetAlbumsListener listener) {
 
         String searchKey = null;
         try {

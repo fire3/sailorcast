@@ -8,8 +8,6 @@ import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.HttpUtils;
 
-import org.fourthline.cling.support.model.DIDLObject;
-
 /**
  * Created by fire3 on 14-12-30.
  */
@@ -19,11 +17,11 @@ public class SiteApi {
     public static int SITE_ID_LETV = SCSite.LETV;
 
     public static enum Channel {
-        CHANNEL_SHOW,
-        CHANNEL_MOVIE,
-        CHANNEL_COMIC,
-        CHANNEL_ENT,
-        CHANNEL_DOCUMENTARY
+        CHANNEL_SHOW,  //电视剧
+        CHANNEL_MOVIE, //电影
+        CHANNEL_COMIC, //动漫
+        CHANNEL_ENT, //综艺
+        CHANNEL_DOCUMENTARY  //纪录片
     }
 
 
@@ -31,7 +29,7 @@ public class SiteApi {
         HttpUtils.cancelAll();
     }
 
-    public static void doSearch(int siteID, String key, OnSearchRequestListener listener) {
+    public static void doSearch(int siteID, String key, OnGetAlbumsListener listener) {
         if(siteID == SITE_ID_SOHU)
             new SohuApi().doSearch(key,listener);
         if(siteID == SITE_ID_YOUKU)
@@ -40,7 +38,7 @@ public class SiteApi {
             new LetvApi().doSearch(key,listener);
     }
 
-    public static void doSearchAll(String key, OnSearchRequestListener listener) {
+    public static void doSearchAll(String key, OnGetAlbumsListener listener) {
         new SohuApi().doSearch(key,listener);
         new YouKuApi().doSearch(key,listener);
         new LetvApi().doSearch(key,listener);

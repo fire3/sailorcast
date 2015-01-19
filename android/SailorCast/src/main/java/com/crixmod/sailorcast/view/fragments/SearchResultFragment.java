@@ -20,13 +20,13 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
-import com.crixmod.sailorcast.siteapi.OnSearchRequestListener;
+import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumActivity;
 
 public class SearchResultFragment extends Fragment
-implements OnSearchRequestListener
+implements OnGetAlbumsListener
 {
     private static final String ARG_KEYWORD = "key";
     private static final String ARG_SITEID = "siteID";

@@ -1,7 +1,5 @@
 package com.crixmod.sailorcast.siteapi;
 
-import android.util.Log;
-
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -165,7 +163,7 @@ public class LetvApi extends BaseSiteApi{
     }
 
     @Override
-    public void doSearch(String key, final OnSearchRequestListener listener) {
+    public void doSearch(String key, final OnGetAlbumsListener listener) {
         try {
             String pageNo = "0";
             String pageSize = "30";

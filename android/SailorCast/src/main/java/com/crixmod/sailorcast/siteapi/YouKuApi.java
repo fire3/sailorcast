@@ -1,7 +1,6 @@
 package com.crixmod.sailorcast.siteapi;
 
 import android.util.Base64;
-import android.util.Log;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
@@ -135,7 +134,7 @@ public class YouKuApi extends BaseSiteApi {
 
 
     @Override
-    public void doSearch(String key, final OnSearchRequestListener listener) {
+    public void doSearch(String key, final OnGetAlbumsListener listener) {
 
         String searchUrl = getSearchUrl(key);
 
