@@ -8,30 +8,47 @@ public class SCChannel {
     public static final int   SHOW = 1;  //电视剧
     public static final int   MOVIE = 2;  //电影
     public static final int   COMIC = 3;  //动漫
-    public static final int   ENT = 4;  //综艺
+    public static final int   ENT = 4;  //娱乐
     public static final int   DOCUMENTARY = 5;  //纪录片
+    public static final int   SPORT = 6;  //体育
+    public static final int   MUSIC = 7;  //音乐
+    public static final int   VARIETY = 8;  //综艺
 
     private String mChannelName = "unknown";
 
     private int mChannelID = 0;
 
     public SCChannel(int mChannelID) {
-        if(mChannelID >= SHOW && mChannelID <= DOCUMENTARY)
+        if(mChannelID >= SHOW && mChannelID <= VARIETY)
             this.mChannelID = mChannelID;
 
         if(mChannelID == SHOW)
             mChannelName = "show";
-        if(mChannelID == MOVIE)
+        else if(mChannelID == MOVIE)
             mChannelName = "movie";
-        if(mChannelID == COMIC)
+        else if(mChannelID == COMIC)
             mChannelName = "comic";
-        if(mChannelID == ENT)
+        else if(mChannelID == ENT)
             mChannelName = "entertainment";
-        if(mChannelID == DOCUMENTARY)
+        else if(mChannelID == DOCUMENTARY)
             mChannelName = "documentary";
+        else if(mChannelID == SPORT)
+            mChannelName = "sport";
+        else if(mChannelID == MUSIC)
+            mChannelName = "music";
+        else if(mChannelID == VARIETY)
+            mChannelName = "variety";
         else
             mChannelName = "unknown";
 
+    }
+
+    public int getChannelID() {
+        return mChannelID;
+    }
+
+    public void setChannelID(int mChannelID) {
+        this.mChannelID = mChannelID;
     }
 
     @Override

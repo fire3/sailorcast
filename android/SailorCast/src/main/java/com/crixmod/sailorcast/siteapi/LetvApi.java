@@ -60,6 +60,21 @@ public class LetvApi extends BaseSiteApi{
     private final static int QUALITY_HIGH = 2;
     private final static int QUALITY_SUPER = 3;
 
+
+    private final static int CID_MOVIE = 1; //电影
+    private final static int CID_SHOW = 2; //电视剧
+    private final static int CID_ENT = 3; //娱乐
+    private final static int CID_SPORT = 4; //体育
+    private final static int CID_COMIC = 5; //动漫
+    private final static int CID_MUSIC = 9; //音乐
+    private final static int CID_VARIETY = 11; //综艺
+    private final static int CID_CAR = 14; //汽车
+    private final static int CID_DOCUMENTARY = 16; //纪录片
+    private final static int CID_CLASS = 17; //公开课
+
+    private final static String ALBUM_LIST_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -423,6 +438,25 @@ public class LetvApi extends BaseSiteApi{
                 }
             });
         }
+    }
+
+    private String getAlbumListUrl(int cid, int pageNo, int pageSize) {
+       return String.format(ALBUM_LIST_URL_FORMAT,cid,pageNo,pageSize);
+    }
+
+    private int channelToCid(SCChannel channel) {
+        if(channel.getChannelID() == SCChannel.MOVIE)
+            return CID_MOVIE;
+        if(channel.getChannelID() == SCChannel.SHOW)
+            return CID_SHOW;
+        if(channel.getChannelID() == SCChannel.DOCUMENTARY)
+            return CID_DOCUMENTARY;
+        if(channel.getChannelID() == SCChannel.ENT)
+            return CID_ENT;
+        if(channel.getChannelID() == SCChannel.COMIC)
+            return CID_COMIC;
+
+        return 0;
     }
 
     @Override
