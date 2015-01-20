@@ -8,13 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCSite;
+import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
+import com.crixmod.sailorcast.siteapi.SiteApi;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CompassFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CompassFragment extends Fragment {
+public class CompassFragment extends Fragment implements OnGetAlbumsListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -54,6 +59,9 @@ public class CompassFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        SiteApi.doGetChannelAlbums(SCSite.LETV, SCChannel.DOCUMENTARY,1,10,this);
+        SiteApi.doGetChannelAlbums(SCSite.LETV, SCChannel.MOVIE,1,10,this);
+        SiteApi.doGetChannelAlbums(SCSite.LETV, SCChannel.SHOW,1,10,this);
     }
 
     @Override
@@ -64,4 +72,13 @@ public class CompassFragment extends Fragment {
     }
 
 
+    @Override
+    public void onGetAlbumsSuccess(SCAlbums albums) {
+        albums.debugLog();
+    }
+
+    @Override
+    public void onGetAlbumsFailed(String failReason) {
+
+    }
 }

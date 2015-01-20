@@ -166,6 +166,12 @@ public class LetvApi extends BaseSiteApi{
                             } else if (jsonImage.optString("120*160") != null && !jsonImage.optString("120*160").isEmpty()) {
                                 a.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("120*160")));
                             }
+
+                            if (jsonImage.optString("400*300") != null && !jsonImage.optString("400*300").isEmpty()) {
+                                a.setHorImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("400*300")));
+                            } else if (jsonImage.optString("200*150") != null && !jsonImage.optString("200*150").isEmpty()) {
+                                a.setHorImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("200*150")));
+                            }
                         }
                         albums.add(a);
                     //}

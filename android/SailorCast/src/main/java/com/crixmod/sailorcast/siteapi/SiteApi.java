@@ -79,16 +79,16 @@ public class SiteApi {
         return null;
     }
 
-    public void doGetChannelAlbumsByFilter(int siteID, SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+    public static void doGetChannelAlbumsByFilter(int siteID, SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
 
     }
-    public void doGetChannelAlbums(int siteID, SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+    public static void doGetChannelAlbums(int siteID, int channelID, int pageNo, int pageSize, OnGetAlbumsListener listener) {
         if(siteID == SCSite.LETV)
-            new LetvApi().doGetChannelAlbums(channel,pageNo,pageSize,listener);
+            new LetvApi().doGetChannelAlbums(new SCChannel(channelID),pageNo,pageSize,listener);
         if(siteID == SCSite.YOUKU)
-            new YouKuApi().doGetChannelAlbums(channel,pageNo,pageSize,listener);
+            new YouKuApi().doGetChannelAlbums(new SCChannel(channelID),pageNo,pageSize,listener);
         if(siteID == SCSite.SOHU)
-            new SohuApi().doGetChannelAlbums(channel,pageNo,pageSize,listener);
+            new SohuApi().doGetChannelAlbums(new SCChannel(channelID),pageNo,pageSize,listener);
 
     }
 
