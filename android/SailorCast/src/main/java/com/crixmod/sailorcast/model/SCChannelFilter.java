@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class SCChannelFilter {
 
-    ArrayMap<String,ArrayList<SCChannelFilterItem>> filters;
+    private ArrayMap<String,ArrayList<SCChannelFilterItem>> filters;
 
     public SCChannelFilter(ArrayMap<String, ArrayList<SCChannelFilterItem>> filters) {
         this.filters = filters;
@@ -32,4 +32,10 @@ public class SCChannelFilter {
         return filters.get(key);
     }
 
+    @Override
+    public String toString() {
+        return "SCChannelFilter{" +
+                "filters=" + filters +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.view.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
+import com.crixmod.sailorcast.siteapi.OnGetChannelFilterListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 
 /**
@@ -19,7 +22,7 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
  * Use the {@link CompassFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CompassFragment extends Fragment implements OnGetAlbumsListener {
+public class CompassFragment extends Fragment implements OnGetAlbumsListener, OnGetChannelFilterListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,6 +65,8 @@ public class CompassFragment extends Fragment implements OnGetAlbumsListener {
         SiteApi.doGetChannelAlbums(SCSite.LETV, SCChannel.DOCUMENTARY,1,10,this);
         SiteApi.doGetChannelAlbums(SCSite.LETV, SCChannel.MOVIE,1,10,this);
         SiteApi.doGetChannelAlbums(SCSite.LETV, SCChannel.SHOW,1,10,this);
+        SiteApi.doGetChannelFilter(SCSite.LETV, SCChannel.SHOW,this);
+        SiteApi.doGetChannelFilter(SCSite.LETV, SCChannel.MOVIE,this);
     }
 
     @Override
@@ -79,6 +84,16 @@ public class CompassFragment extends Fragment implements OnGetAlbumsListener {
 
     @Override
     public void onGetAlbumsFailed(String failReason) {
+
+    }
+
+    @Override
+    public void onGetChannelFilterSuccess(SCChannelFilter filter) {
+        Log.d("fire3", filter.toString());
+    }
+
+    @Override
+    public void onGetChannelFilterFailed(String failReason) {
 
     }
 }

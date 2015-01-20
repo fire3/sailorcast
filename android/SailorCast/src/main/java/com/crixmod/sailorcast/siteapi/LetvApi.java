@@ -1,11 +1,14 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.util.Log;
+
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
+import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -23,6 +26,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * Created by fire3 on 2014/12/30.
@@ -508,8 +512,57 @@ public class LetvApi extends BaseSiteApi{
     }
 
     @Override
-    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
+    public void doGetChannelFilter(final SCChannel channel, final OnGetChannelFilterListener listener) {
 
+        String url = FILTER_URL;
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                listener.onGetChannelFilterFailed("http failure");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONArray filters = retJson.optJSONObject("body").optJSONArray("filter");
+                    for (int i = 0; i < filters.length(); i++) {
+                        JSONObject filter = filters.getJSONObject(i);
+                        Log.d("fire3", filter.toString());
+                        int cid = Integer.parseInt(filter.optString("cid"));
+                        if(cid == channelToCid(channel)) {
+                            SCChannelFilter scfilter = new SCChannelFilter();
+                            JSONArray filterArray = filter.optJSONArray("filter");
+
+                            for (int j = 0; j < filterArray.length(); j++) {
+
+                                String key = filterArray.getJSONObject(j).optString("key");
+                                JSONArray valArray = filterArray.getJSONObject(j).optJSONArray("val");
+                                ArrayList<SCChannelFilterItem> items = new ArrayList<SCChannelFilterItem>();
+                                for (int k = 0; k < valArray.length() ; k++) {
+                                    String name = valArray.getJSONObject(k).optString("name");
+                                    String searchVal = valArray.getJSONObject(k).optString("id");
+                                    SCChannelFilterItem item = new SCChannelFilterItem(searchVal,name);
+                                    String searchKey = valArray.getJSONObject(k).optString("key") ;
+                                    if(searchKey != null && !searchKey.isEmpty()) {
+                                        item.setSearchKey(valArray.getJSONObject(k).optString("key"));
+                                    } else
+                                        item.setSearchKey(key);
+                                    items.add(item);
+                                }
+                                scfilter.addFilter(key,items);
+                            }
+
+                            listener.onGetChannelFilterSuccess(scfilter);
+                            break;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }
