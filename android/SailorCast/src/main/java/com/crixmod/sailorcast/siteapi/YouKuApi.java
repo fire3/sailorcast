@@ -496,4 +496,9 @@ public class YouKuApi extends BaseSiteApi {
 
     }
 
+    @Override
+    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
+
+    }
+
 }

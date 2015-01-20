@@ -22,4 +22,6 @@ abstract public class BaseSiteApi {
     /* pageNo start from 1 */
     abstract public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener);
     abstract public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener);
+    abstract public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener);
+
 }

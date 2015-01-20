@@ -75,6 +75,9 @@ public class LetvApi extends BaseSiteApi{
     private final static String ALBUM_LIST_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
             "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
+    private final static String FILTER_URL = "http://static.meizi.app.m.letv.com/android/mod/mob/ctl/filter/act/" +
+            "index/pcode/010110263/version/5.6.2.mindex.html";
+
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -467,7 +470,7 @@ public class LetvApi extends BaseSiteApi{
         if(channel.getChannelID() == SCChannel.VARIETY)
             return CID_VARIETY;
         if(channel.getChannelID() == SCChannel.MUSIC)
-            return CID_MOVIE;
+            return CID_MUSIC;
         if(channel.getChannelID() == SCChannel.SPORT)
             return CID_SPORT;
         if(channel.getChannelID() == SCChannel.UNKNOWN)
@@ -501,6 +504,11 @@ public class LetvApi extends BaseSiteApi{
 
     @Override
     public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+
+    }
+
+    @Override
+    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
 
     }
 

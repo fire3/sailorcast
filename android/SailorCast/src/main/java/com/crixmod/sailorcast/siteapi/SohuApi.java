@@ -182,6 +182,11 @@ public class SohuApi extends BaseSiteApi {
 
     }
 
+    @Override
+    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
+
+    }
+
     private SCAlbums toSCAlbums(SearchResults results) {
         if(results.getData().getSearchResultAlbums() == null)
             return null;
