@@ -5,6 +5,7 @@ package com.crixmod.sailorcast.model;
  */
 public class SCChannel {
 
+    public static final int   UNKNOWN = -1;  //未知
     public static final int   SHOW = 1;  //电视剧
     public static final int   MOVIE = 2;  //电影
     public static final int   COMIC = 3;  //动漫
@@ -16,7 +17,7 @@ public class SCChannel {
 
     private String mChannelName = "unknown";
 
-    private int mChannelID = 0;
+    private int mChannelID = UNKNOWN;
 
     public SCChannel(int mChannelID) {
         if(mChannelID >= SHOW && mChannelID <= VARIETY)

@@ -153,6 +153,8 @@ public class LetvApi extends BaseSiteApi{
                             a.setAlbumId(albumJson.getString("aid"));
                         if (!albumJson.optString("name").isEmpty())
                             a.setTitle(albumJson.getString("name"));
+                        if (!albumJson.optString("subname").isEmpty())
+                            a.setSubTitle(albumJson.getString("subname"));
                         if (!albumJson.optString("categoryName").isEmpty())
                             a.setTip(albumJson.getString("categoryName"));
                         if (albumJson.optJSONObject("images") != null) {
@@ -188,7 +190,7 @@ public class LetvApi extends BaseSiteApi{
             HttpUtils.asyncGet(url,new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    listener.onSearchFailed("Search Failed");
+                    listener.onGetAlbumsFailed("Search Failed");
                 }
 
                 @Override
@@ -196,9 +198,9 @@ public class LetvApi extends BaseSiteApi{
                     String ret = response.body().string();
                     SCAlbums albums =  parseSearchResult(ret);
                     if(albums != null) {
-                        listener.onSearchSuccess(albums);
+                        listener.onGetAlbumsSuccess(albums);
                     } else
-                        listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
                 }
             });
         } catch (UnsupportedEncodingException e) {
@@ -440,11 +442,12 @@ public class LetvApi extends BaseSiteApi{
         }
     }
 
-    private String getAlbumListUrl(int cid, int pageNo, int pageSize) {
-       return String.format(ALBUM_LIST_URL_FORMAT,cid,pageNo,pageSize);
+    private String getAlbumListUrl(SCChannel channel, int pageNo, int pageSize) {
+       return String.format(ALBUM_LIST_URL_FORMAT,channelToCid(channel),pageNo,pageSize);
     }
 
     private int channelToCid(SCChannel channel) {
+
         if(channel.getChannelID() == SCChannel.MOVIE)
             return CID_MOVIE;
         if(channel.getChannelID() == SCChannel.SHOW)
@@ -455,17 +458,43 @@ public class LetvApi extends BaseSiteApi{
             return CID_ENT;
         if(channel.getChannelID() == SCChannel.COMIC)
             return CID_COMIC;
+        if(channel.getChannelID() == SCChannel.VARIETY)
+            return CID_VARIETY;
+        if(channel.getChannelID() == SCChannel.MUSIC)
+            return CID_MOVIE;
+        if(channel.getChannelID() == SCChannel.SPORT)
+            return CID_SPORT;
+        if(channel.getChannelID() == SCChannel.UNKNOWN)
+            return -1;
+        return -1;
+    }
 
-        return 0;
+
+    @Override
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getAlbumListUrl(channel,pageNo,pageSize);
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                listener.onGetAlbumsFailed("Http failure");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                SCAlbums albums =  parseSearchResult(ret);
+                if(albums != null) {
+                    listener.onGetAlbumsSuccess(albums);
+                } else
+                    listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+
+            }
+        });
+
     }
 
     @Override
-    public void doGetChannelVideos(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
-
-    }
-
-    @Override
-    public void doGetChannelVideosByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
 
     }
 

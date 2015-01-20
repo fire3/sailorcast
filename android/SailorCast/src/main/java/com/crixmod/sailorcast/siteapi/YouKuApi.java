@@ -141,19 +141,19 @@ public class YouKuApi extends BaseSiteApi {
         String searchUrl = getSearchUrl(key);
 
         if(searchUrl == null) {
-            listener.onSearchFailed("error search url");
+            listener.onGetAlbumsFailed("error search url");
         } else {
             HttpUtils.asyncGet(searchUrl,new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
                     e.printStackTrace();
-                    listener.onSearchFailed("http failure");
+                    listener.onGetAlbumsFailed("http failure");
                 }
 
                 @Override
                 public void onResponse(Response response) {
                     if (!response.isSuccessful()) {
-                        listener.onSearchFailed("http response fail");
+                        listener.onGetAlbumsFailed("http response fail");
                         return;
                     }
                     try {
@@ -161,14 +161,14 @@ public class YouKuApi extends BaseSiteApi {
                         if(results.getStatus().equals(SUCCESS)) {
                             SCAlbums albums = toSCAlbums(results);
                             if(albums != null)
-                                listener.onSearchSuccess(albums);
+                                listener.onGetAlbumsSuccess(albums);
                             else
-                                listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                                listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
                         }
                         else
-                            listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                            listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
                     } catch (IOException e) {
-                        listener.onSearchFailed("io Exception");
+                        listener.onGetAlbumsFailed("io Exception");
                         e.printStackTrace();
                     }
                 }
@@ -487,12 +487,12 @@ public class YouKuApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetChannelVideos(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
 
     }
 
     @Override
-    public void doGetChannelVideosByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
 
     }
 

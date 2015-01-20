@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.HttpUtils;
@@ -15,15 +17,6 @@ public class SiteApi {
     public static int SITE_ID_YOUKU = SCSite.YOUKU;
     public static int SITE_ID_SOHU = SCSite.SOHU;
     public static int SITE_ID_LETV = SCSite.LETV;
-
-    public static enum Channel {
-        CHANNEL_SHOW,  //电视剧
-        CHANNEL_MOVIE, //电影
-        CHANNEL_COMIC, //动漫
-        CHANNEL_ENT, //综艺
-        CHANNEL_DOCUMENTARY  //纪录片
-    }
-
 
     public static void cancel() {
         HttpUtils.cancelAll();
@@ -85,5 +78,19 @@ public class SiteApi {
             return mContext.getResources().getString(R.string.site_sohu);
         return null;
     }
+
+    public void doGetChannelAlbumsByFilter(int siteID, SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+
+    }
+    public void doGetChannelAlbums(int siteID, SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+        if(siteID == SCSite.LETV)
+            new LetvApi().doGetChannelAlbums(channel,pageNo,pageSize,listener);
+        if(siteID == SCSite.YOUKU)
+            new YouKuApi().doGetChannelAlbums(channel,pageNo,pageSize,listener);
+        if(siteID == SCSite.SOHU)
+            new SohuApi().doGetChannelAlbums(channel,pageNo,pageSize,listener);
+
+    }
+
 
 }

@@ -97,7 +97,7 @@ implements OnGetAlbumsListener
 
 
     @Override
-    public void onSearchSuccess(SCAlbums albums) {
+    public void onGetAlbumsSuccess(SCAlbums albums) {
         for(SCAlbum a : albums) {
             mAdapter.addAlbum(a);
         }
@@ -111,7 +111,7 @@ implements OnGetAlbumsListener
     }
 
     @Override
-    public void onSearchFailed(final String failReason) {
+    public void onGetAlbumsFailed(final String failReason) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

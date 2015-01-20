@@ -20,6 +20,6 @@ abstract public class BaseSiteApi {
     abstract public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener);
 
     /* pageNo start from 1 */
-    abstract public void doGetChannelVideos(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener);
-    abstract public void doGetChannelVideosByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener);
+    abstract public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener);
+    abstract public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener);
 }

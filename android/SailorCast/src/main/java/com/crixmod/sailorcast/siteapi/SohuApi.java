@@ -43,7 +43,7 @@ public class SohuApi extends BaseSiteApi {
         try {
             searchKey = URLEncoder.encode(key, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            listener.onSearchFailed("Error search key");
+            listener.onGetAlbumsFailed("Error search key");
             e.printStackTrace();
             return;
         }
@@ -53,13 +53,13 @@ public class SohuApi extends BaseSiteApi {
             @Override
             public void onFailure(Request request, IOException e) {
                 e.printStackTrace();
-                listener.onSearchFailed("http failure");
+                listener.onGetAlbumsFailed("http failure");
             }
 
             @Override
             public void onResponse(Response response) {
                 if (!response.isSuccessful()) {
-                    listener.onSearchFailed("response failed");
+                    listener.onGetAlbumsFailed("response failed");
                     return;
                 }
                 SearchResults results = null;
@@ -68,9 +68,9 @@ public class SohuApi extends BaseSiteApi {
 
                     SCAlbums albums = toSCAlbums(results);
                     if(albums != null)
-                        listener.onSearchSuccess(albums);
+                        listener.onGetAlbumsSuccess(albums);
                     else
-                        listener.onSearchFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -173,12 +173,12 @@ public class SohuApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetChannelVideos(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
 
     }
 
     @Override
-    public void doGetChannelVideosByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
 
     }
 
