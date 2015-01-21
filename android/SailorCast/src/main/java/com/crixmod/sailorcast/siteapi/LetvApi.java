@@ -164,6 +164,8 @@ public class LetvApi extends BaseSiteApi{
                             a.setSubTitle(albumJson.getString("subname"));
                         if (!albumJson.optString("categoryName").isEmpty())
                             a.setTip(albumJson.getString("categoryName"));
+
+                    Log.d("fire3", albumJson.toString());
                         if (albumJson.optJSONObject("images") != null) {
                             JSONObject jsonImage = albumJson.getJSONObject("images");
                             if (jsonImage.optString("150*200") != null && !jsonImage.optString("150*200").isEmpty()) {
@@ -314,6 +316,25 @@ public class LetvApi extends BaseSiteApi{
                     else
                         album.setIsCompleted(false);
                 }
+                if (albumJsonBody.optJSONObject("picCollections") != null) {
+                    JSONObject jsonImage = albumJsonBody.getJSONObject("picCollections");
+                    if (jsonImage.optString("150*200") != null && !jsonImage.optString("150*200").isEmpty()) {
+                        album.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("150*200")));
+                    } else if (jsonImage.optString("300*400") != null && !jsonImage.optString("300*400").isEmpty()) {
+                        album.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("300*400")));
+                    } else if (jsonImage.optString("120*160") != null && !jsonImage.optString("120*160").isEmpty()) {
+                        album.setVerImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("120*160")));
+                    }
+
+                    if (jsonImage.optString("400*300") != null && !jsonImage.optString("400*300").isEmpty()) {
+                        album.setHorImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("400*300")));
+                    } else if (jsonImage.optString("200*150") != null && !jsonImage.optString("200*150").isEmpty()) {
+                        album.setHorImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("200*150")));
+                    } else if (jsonImage.optString("320*200") != null && !jsonImage.optString("320*200").isEmpty()) {
+                        album.setHorImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("320*200")));
+                    }
+                }
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -529,7 +550,6 @@ public class LetvApi extends BaseSiteApi{
                     JSONArray filters = retJson.optJSONObject("body").optJSONArray("filter");
                     for (int i = 0; i < filters.length(); i++) {
                         JSONObject filter = filters.getJSONObject(i);
-                        Log.d("fire3", filter.toString());
                         int cid = Integer.parseInt(filter.optString("cid"));
                         if(cid == channelToCid(channel)) {
                             SCChannelFilter scfilter = new SCChannelFilter();

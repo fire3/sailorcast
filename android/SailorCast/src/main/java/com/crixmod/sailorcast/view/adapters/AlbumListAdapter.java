@@ -79,17 +79,15 @@ public class AlbumListAdapter extends BaseAdapter {
 
         if(album.getVerImageUrl() != null) {
 
-            Point point = ImageTools.getGridVerPosterSize(mContext, 3);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
-            params.width = point.x;
-            params.height = point.y;
+            Point point = ImageTools.getGridVerPosterSize(mContext, mColumns);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
+            viewHolder.videoImage.setLayoutParams(params);
             ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
         } else if(album.getHorImageUrl() != null) {
 
-            Point point = ImageTools.getGridHorPosterSize(mContext,3);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
-            params.width = point.x;
-            params.height = point.y;
+            Point point = ImageTools.getGridHorPosterSize(mContext,mColumns);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
+            viewHolder.videoImage.setLayoutParams(params);
             ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
         }
 
@@ -103,7 +101,12 @@ public class AlbumListAdapter extends BaseAdapter {
 
     private View getOneColumnVideoRowView(ViewGroup viewGroup, ViewHolder viewHolder) {
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-        View itemView = inflater.inflate(R.layout.item_gridview_search_result,viewGroup,false);
+        View itemView;
+        if(mColumns == 2)
+            itemView = inflater.inflate(R.layout.item_gridview_albumlist_2,viewGroup,false);
+        else
+            itemView = inflater.inflate(R.layout.item_gridview_albumlist_3,viewGroup,false);
+
         viewHolder.videoImage = (ImageView) itemView.findViewById(R.id.video_image);
         viewHolder.videoTitle = (TextView) itemView.findViewById(R.id.video_title);
         viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);
@@ -112,4 +115,9 @@ public class AlbumListAdapter extends BaseAdapter {
         itemView.setTag(viewHolder);
         return itemView;
     }
+
+    public void setColumns(int mColumns) {
+        this.mColumns = mColumns;
+    }
+
 }

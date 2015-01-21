@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
@@ -59,6 +61,9 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
             mChannelID = getArguments().getInt(ARG_CHANNEL_ID);
             loadMoreAlbums();
             mAdapter = new AlbumListAdapter(getActivity());
+            if(mSiteID == SCSite.LETV)
+                mAdapter.setColumns(2);
+
         }
     }
 
@@ -68,7 +73,16 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_album_list, container, false);
         mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
+        if(mSiteID == SCSite.LETV)
+            mGridView.setNumColumns(2);
         mGridView.setAdapter(mAdapter);
+        mGridView.setHasMoreItems(true);
+        mGridView.setPagingableListener(new PagingGridView.Pagingable() {
+            @Override
+            public void onLoadMoreItems() {
+                loadMoreAlbums();
+            }
+        });
         return view;
     }
 
@@ -83,11 +97,24 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
         for(SCAlbum a : albums) {
             mAdapter.addAlbum(a);
         }
-        mAdapter.notifyDataSetChanged();
+        mGridView.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+                mGridView.setIsLoading(false);
+            }
+        });
     }
 
     @Override
     public void onGetAlbumsFailed(String failReason) {
 
+        mGridView.post(new Runnable() {
+            @Override
+            public void run() {
+                mGridView.setIsLoading(false);
+                mGridView.setHasMoreItems(false);
+            }
+        });
     }
 }

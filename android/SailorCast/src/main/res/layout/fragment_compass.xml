@@ -3,8 +3,14 @@
     android:layout_height="match_parent"
     tools:context="com.crixmod.sailorcast.view.fragments.CompassFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="compass frag" />
-
+<GridView
+    android:id="@+id/grid"
+    android:padding="2dp"
+    android:verticalSpacing="2dp"
+    android:horizontalSpacing="2dp"
+    android:numColumns="3"
+    android:stretchMode="columnWidth"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</GridView>
 </FrameLayout>

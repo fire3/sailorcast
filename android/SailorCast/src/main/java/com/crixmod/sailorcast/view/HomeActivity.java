@@ -168,7 +168,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             mSearchFragment = SearchFragment.newInstance();
             mBookmarkFragment = BookmarkFragment.newInstance();
             mHistoryFragment = HistoryFragment.newInstance();
-            mCompassFragment = CompassFragment.newInstance("", "");
+            mCompassFragment = CompassFragment.newInstance();
 
             mSearchLayout = (LinearLayout) findViewById(R.id.bottom_action_search);
             mSearchIcon = (ImageView) findViewById(R.id.bottom_action_search_ic);

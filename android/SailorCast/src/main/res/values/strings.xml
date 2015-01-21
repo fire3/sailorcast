@@ -86,5 +86,13 @@
     <string name="action_fav_button">已收藏</string>
     <string name="action_delete">删除</string>
     <string name="title_activity_album_list">AlbumListActivity</string>
+    <string name="channel_show">电视剧</string>
+    <string name="channel_movie">电影</string>
+    <string name="channel_comic">动漫</string>
+    <string name="channel_ent">娱乐</string>
+    <string name="channel_documentary">纪录片</string>
+    <string name="channel_sport">体育</string>
+    <string name="channel_music">音乐</string>
+    <string name="channel_variety">综艺</string>
 
 </resources>
