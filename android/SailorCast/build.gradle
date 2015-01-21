@@ -43,9 +43,6 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-client', version:'8.1.12.v20130726'
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.5'
 
-    compile 'com.github.nicolasjafelle:paginggridview:1.0'
-    compile 'com.github.nicolasjafelle:paginglistview:1.2'
-
     compile 'commons-lang:commons-lang:2.6'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.picasso:picasso:2.4.0'

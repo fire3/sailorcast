@@ -123,4 +123,10 @@
     <dimen name="horizontal_image_height">90dp</dimen>
     <dimen name="horizontal_topbanner_image_height">170dp</dimen>
     <dimen name="vertical_image_height">135dp</dimen>
+
+
+    <!-- Paging GridView -->
+    <dimen name="loading_view_progress_size">50dp</dimen>
+    <dimen name="loading_view_margin_layout">10dp</dimen>
+    <dimen name="loading_view_margin_right">5dp</dimen>
 </resources>
