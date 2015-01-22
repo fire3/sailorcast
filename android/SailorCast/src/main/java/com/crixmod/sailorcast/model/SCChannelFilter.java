@@ -28,7 +28,7 @@ public class SCChannelFilter {
         return filters.keySet();
     }
 
-    public ArrayList<SCChannelFilterItem> getFilterItems(String key ) {
+    public ArrayList<SCChannelFilterItem> getFilterItemsByKey(String key ) {
         return filters.get(key);
     }
 
@@ -38,4 +38,31 @@ public class SCChannelFilter {
                 "filters=" + filters +
                 '}';
     }
+
+    public void selectFilterItem(SCChannelFilterItem item) {
+        String key = item.getSearchKey();
+        ArrayList<SCChannelFilterItem> items = getFilterItemsByKey(key);
+        for(SCChannelFilterItem i : items) {
+            i.setChecked(false);
+        }
+        item.setChecked(true);
+    }
+
+    public ArrayList<SCChannelFilterItem> getSelectedItems() {
+        Set<String> keys = getFilterKeys();
+        ArrayList<SCChannelFilterItem> items = new ArrayList<>();
+        for (int i = 0; i < keys.size(); i++) {
+            String key = (String) keys.toArray()[i];
+            ArrayList<SCChannelFilterItem> is = getFilterItemsByKey(key);
+            for(SCChannelFilterItem it : is) {
+                if(it.isChecked())
+                    items.add(it);
+            }
+        }
+        if(items.size() > 0) {
+            return items;
+        }
+        return null;
+    }
+
 }

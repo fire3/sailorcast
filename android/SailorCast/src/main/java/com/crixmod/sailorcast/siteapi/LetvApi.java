@@ -574,6 +574,7 @@ public class LetvApi extends BaseSiteApi{
                                     String searchKey = valArray.getJSONObject(k).optString("key") ;
                                     if(searchKey != null && !searchKey.isEmpty()) {
                                         item.setSearchKey(valArray.getJSONObject(k).optString("key"));
+                                        key = searchKey;
                                     } else
                                         item.setSearchKey(key);
                                     items.add(item);
