@@ -66,6 +66,11 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
                 mColumns = 2;
                 mAdapter.setColumns(mColumns);
             }
+
+            if(mChannelID == SCChannel.SPORT || mChannelID == SCChannel.MUSIC) {
+                mColumns = 2;
+                mAdapter.setColumns(mColumns);
+            }
         }
     }
 
