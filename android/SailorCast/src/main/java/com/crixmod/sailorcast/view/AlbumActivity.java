@@ -325,6 +325,7 @@ public class AlbumActivity extends BaseToolbarActivity
             public void run() {
                 fillAlbumDescView(album);
                 fillAlbumPlayControl(album);
+                invalidateOptionsMenu();
             }
         });
 

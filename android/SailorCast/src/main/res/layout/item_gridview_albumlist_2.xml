@@ -13,19 +13,14 @@
             android:id="@+id/video_image"
             android:layout_width="match_parent"
             android:layout_height="120dp" />
-
-        <ImageView
-            android:visibility="gone"
-            android:id="@+id/video_tip_overlay"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/gradient"
-            android:layout_width="match_parent"
-            android:layout_height="30dp" />
         <TextView
             android:paddingLeft="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small"
+            android:paddingTop="30dp"
             android:textColor="@color/white"
             android:id="@+id/video_tip"
+            android:visibility="invisible"
+            android:background="@drawable/gradient"
             android:maxLines="1"
             android:singleLine="true"
             android:ellipsize="end"

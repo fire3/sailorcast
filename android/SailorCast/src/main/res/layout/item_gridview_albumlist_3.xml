@@ -9,21 +9,17 @@
         android:layout_height="wrap_content">
         <ImageView
             android:scaleType="fitXY"
+            android:background="@drawable/loading"
             android:id="@+id/video_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
-        <ImageView
-            android:visibility="gone"
-            android:id="@+id/video_tip_overlay"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/gradient"
-            android:layout_width="match_parent"
-            android:layout_height="30dp" />
         <TextView
             android:paddingLeft="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small"
+            android:paddingTop="@dimen/margin_medium"
             android:textColor="@color/white"
+            android:visibility="invisible"
+            android:background="@drawable/gradient"
             android:id="@+id/video_tip"
             android:maxLines="1"
             android:singleLine="true"

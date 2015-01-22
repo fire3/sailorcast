@@ -73,9 +73,8 @@ public class AlbumListAdapter extends BaseAdapter {
         return view;
     }
 
-    private void setupViewHolder(View view, int i, ViewHolder viewHolder, final SCAlbum album) {
+    private void setupViewHolder(View view, int i, final ViewHolder viewHolder, final SCAlbum album) {
         viewHolder.videoTitle.setText(album.getTitle());
-        viewHolder.videoTip.setText(album.getTip());
 
         if(mColumns == 3 && album.getVerImageUrl() != null) {
 
@@ -89,6 +88,15 @@ public class AlbumListAdapter extends BaseAdapter {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
             viewHolder.videoImage.setLayoutParams(params);
             ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
+        }
+        if(album.getTip() != null && !album.getTip().isEmpty()) {
+            viewHolder.videoTip.setText(album.getTip());
+            viewHolder.videoTip.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    viewHolder.videoTip.setVisibility(View.VISIBLE);
+                }
+            }, 1100);
         }
 
         viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
