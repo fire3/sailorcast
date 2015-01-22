@@ -59,8 +59,10 @@ public class SohuApi extends BaseSiteApi {
             return CID_SHOW;
         if(channel.getChannelID() == SCChannel.DOCUMENTARY)
             return CID_DOCUMENTARY;
+        /*
         if(channel.getChannelID() == SCChannel.ENT)
             return CID_ENT;
+        */
         if(channel.getChannelID() == SCChannel.COMIC)
             return CID_COMIC;
         if(channel.getChannelID() == SCChannel.VARIETY)
@@ -293,11 +295,8 @@ public class SohuApi extends BaseSiteApi {
                 sa.setSubTitle(a.getTip());
                 if(a.getAid() != null) {
                     sa.setAlbumId(a.getAid().toString());
+                    albums.add(sa);
                 }
-                if(a.getVid() != null) {
-                    sa.setAlbumId(a.getVid().toString());
-                }
-                albums.add(sa);
             }
             if(albums.size() > 0)
                 return albums;

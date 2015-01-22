@@ -62,9 +62,10 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
             mChannelID = getArguments().getInt(ARG_CHANNEL_ID);
             loadMoreAlbums();
             mAdapter = new AlbumListAdapter(getActivity());
-            if(mSiteID == SCSite.LETV)
-                mAdapter.setColumns(2);
-
+            if(mSiteID == SCSite.LETV) {
+                mColumns = 2;
+                mAdapter.setColumns(mColumns);
+            }
         }
     }
 
@@ -74,8 +75,7 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_album_list, container, false);
         mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
-        if(mSiteID == SCSite.LETV)
-            mGridView.setNumColumns(2);
+        mGridView.setNumColumns(mColumns);
         mGridView.setAdapter(mAdapter);
         mGridView.setHasMoreItems(true);
         mGridView.setPagingableListener(new PagingGridView.Pagingable() {
@@ -96,15 +96,19 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
     @Override
     public synchronized void onGetAlbumsSuccess(SCAlbums albums) {
 
-        if (mColumns == 3 && albums.get(0).getVerImageUrl() == null) {
-            mColumns = 2;
-            mGridView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mGridView.setNumColumns(mColumns);
-                    mAdapter.setColumns(mColumns);
+        if (mColumns == 3) {
+            if (albums.size() > 0) {
+                if (albums.get(0).getVerImageUrl() == null) {
+                    mColumns = 2;
+                    mGridView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGridView.setNumColumns(mColumns);
+                            mAdapter.setColumns(mColumns);
+                        }
+                    });
                 }
-            });
+            }
         }
 
         for(SCAlbum a : albums) {

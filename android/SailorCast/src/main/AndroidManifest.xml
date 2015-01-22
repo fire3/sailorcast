@@ -43,7 +43,7 @@
         <activity
             android:name=".view.AlbumListActivity"
             android:label="@string/title_activity_album_list"
-            android:parentActivityName=".view.HomeActivity" >
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.crixmod.sailorcast.view.HomeActivity" />

@@ -27,10 +27,12 @@ import com.crixmod.sailorcast.database.BookmarkDbHelper;
 import com.crixmod.sailorcast.database.HistoryDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.model.upnp.IRendererCommand;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
+import com.crixmod.sailorcast.siteapi.OnGetChannelFilterListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
@@ -275,6 +277,8 @@ public class AlbumActivity extends BaseToolbarActivity
 
         if(album.getVerImageUrl() != null) {
             ImageTools.displayImage(albumImage,album.getVerImageUrl());
+        } else if(album.getHorImageUrl() != null) {
+            ImageTools.displayImage(albumImage,album.getHorImageUrl());
         }
     }
 
@@ -383,8 +387,19 @@ public class AlbumActivity extends BaseToolbarActivity
     }
 
     @Override
-    public void onGetVideosFailed(String failReason) {
-
+    public void onGetVideosFailed(final String failReason) {
+        final Context mContext = this;
+        final OnGetVideoPlayUrlListener listener = this;
+        if(mAlbum.getSite().getSiteID() == SCSite.YOUKU) {
+            //Youku音乐、体育频道剧集列表获得的Album信息其实是video信息，用getAlbumVideos接口无法获得剧集信息。
+            //在这里补救一下直接获取播放链接
+            SCVideo video = new SCVideo();
+            video.setVideoID(mAlbum.getAlbumId());
+            video.setAlbumID(mAlbum.getAlbumId());
+            video.setSCSite(SCSite.YOUKU);
+            video.setSeqInAlbum(1);
+            SiteApi.doGetVideoPlayUrl(video,listener);
+        }
     }
 
     @Override

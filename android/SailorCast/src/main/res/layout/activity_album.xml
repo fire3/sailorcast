@@ -26,12 +26,12 @@
             android:weightSum="7">
 
             <ImageView
+                android:layout_margin="@dimen/margin_small"
                 android:id="@+id/album_image"
-                android:padding="@dimen/margin_small"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:scaleType="fitXY" />
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_width="0dp"

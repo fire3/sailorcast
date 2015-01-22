@@ -82,6 +82,10 @@ public class LetvApi extends BaseSiteApi{
     private final static String FILTER_URL = "http://static.meizi.app.m.letv.com/android/mod/mob/ctl/filter/act/" +
             "index/pcode/010110263/version/5.6.2.mindex.html";
 
+    private final static String ALBUM_LIST_URL_DOCUMENTARY_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/3/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+
+
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -475,7 +479,10 @@ public class LetvApi extends BaseSiteApi{
     }
 
     private String getAlbumListUrl(SCChannel channel, int pageNo, int pageSize) {
-       return String.format(ALBUM_LIST_URL_FORMAT,channelToCid(channel),pageNo,pageSize);
+       if(channel.getChannelID() == SCChannel.DOCUMENTARY)
+           return String.format(ALBUM_LIST_URL_DOCUMENTARY_FORMAT,channelToCid(channel),pageNo,pageSize);
+        else
+           return String.format(ALBUM_LIST_URL_FORMAT,channelToCid(channel),pageNo,pageSize);
     }
 
     private int channelToCid(SCChannel channel) {
@@ -486,8 +493,10 @@ public class LetvApi extends BaseSiteApi{
             return CID_SHOW;
         if(channel.getChannelID() == SCChannel.DOCUMENTARY)
             return CID_DOCUMENTARY;
+        /*
         if(channel.getChannelID() == SCChannel.ENT)
             return CID_ENT;
+        */
         if(channel.getChannelID() == SCChannel.COMIC)
             return CID_COMIC;
         if(channel.getChannelID() == SCChannel.VARIETY)

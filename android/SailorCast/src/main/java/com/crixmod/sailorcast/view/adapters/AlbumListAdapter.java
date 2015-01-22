@@ -77,13 +77,13 @@ public class AlbumListAdapter extends BaseAdapter {
         viewHolder.videoTitle.setText(album.getTitle());
         viewHolder.videoTip.setText(album.getTip());
 
-        if(album.getVerImageUrl() != null) {
+        if(mColumns == 3 && album.getVerImageUrl() != null) {
 
             Point point = ImageTools.getGridVerPosterSize(mContext, mColumns);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
             viewHolder.videoImage.setLayoutParams(params);
             ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
-        } else if(album.getHorImageUrl() != null) {
+        } else if(mColumns == 2 && album.getHorImageUrl() != null) {
 
             Point point = ImageTools.getGridHorPosterSize(mContext,mColumns);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);

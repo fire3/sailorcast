@@ -109,8 +109,10 @@ public class YouKuApi extends BaseSiteApi {
             return CID_SHOW;
         if(channel.getChannelID() == SCChannel.DOCUMENTARY)
             return CID_DOCUMENTARY;
+        /*
         if(channel.getChannelID() == SCChannel.ENT)
             return CID_ENT;
+        */
         if(channel.getChannelID() == SCChannel.COMIC)
             return CID_COMIC;
         if(channel.getChannelID() == SCChannel.VARIETY)
@@ -132,8 +134,10 @@ public class YouKuApi extends BaseSiteApi {
             return SUB_CHANNEL_ID_SHOW;
         if(channel.getChannelID() == SCChannel.DOCUMENTARY)
             return SUB_CHANNEL_ID_DOCUMENTARY;
+        /*
         if(channel.getChannelID() == SCChannel.ENT)
             return SUB_CHANNEL_ID_ENT;
+        */
         if(channel.getChannelID() == SCChannel.COMIC)
             return SUB_CHANNEL_ID_COMIC;
         if(channel.getChannelID() == SCChannel.VARIETY)
@@ -411,7 +415,10 @@ public class YouKuApi extends BaseSiteApi {
                     v.setAlbumID(album.getAlbumId());
                     scVideos.add(v);
                 }
-                listener.onGetVideosSuccess(scVideos);
+                if(scVideos.size() > 0)
+                    listener.onGetVideosSuccess(scVideos);
+                else
+                    listener.onGetVideosFailed("null videos");
             }
         });
 

@@ -115,9 +115,11 @@ public class CompassFragment extends Fragment {
                 case    SCChannel.VARIETY:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_variety));
                     break;
+                /*
                 case    SCChannel.ENT:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_ent));
                     break;
+                */
             }
 
             textView.setText(channel.toString());

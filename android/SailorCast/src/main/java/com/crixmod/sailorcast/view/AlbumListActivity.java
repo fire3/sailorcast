@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
@@ -38,6 +39,9 @@ public class AlbumListActivity extends BaseToolbarActivity {
         mPagerAdapter = new SitePagerAdapter(getSupportFragmentManager(), this, mChannelID);
         mViewPager.setAdapter(mPagerAdapter);
         mSlidingTabLayout.setViewPager(mViewPager);
+
+        SCChannel channel = new SCChannel(mChannelID);
+        setTitle(channel.toString());
     }
 
     @Override
