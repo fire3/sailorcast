@@ -89,6 +89,8 @@ public class AlbumListAdapter extends BaseAdapter {
             viewHolder.videoImage.setLayoutParams(params);
             ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
         }
+        viewHolder.videoTip.setText("");
+        viewHolder.videoTip.setVisibility(View.GONE);
         if(album.getTip() != null && !album.getTip().isEmpty()) {
             viewHolder.videoTip.setText(album.getTip());
             viewHolder.videoTip.setVisibility(View.VISIBLE);

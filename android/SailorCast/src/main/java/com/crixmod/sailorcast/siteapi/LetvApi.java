@@ -165,8 +165,8 @@ public class LetvApi extends BaseSiteApi{
                             a.setTitle(albumJson.getString("name"));
                         if (!albumJson.optString("subname").isEmpty())
                             a.setSubTitle(albumJson.getString("subname"));
-                        if (!albumJson.optString("categoryName").isEmpty())
-                            a.setTip(albumJson.getString("categoryName"));
+                        if (!albumJson.optString("subname").isEmpty())
+                            a.setTip(albumJson.getString("subname"));
 
                         if (albumJson.optJSONObject("images") != null) {
                             JSONObject jsonImage = albumJson.getJSONObject("images");
