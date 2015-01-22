@@ -19,6 +19,8 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -35,6 +37,47 @@ public class SohuApi extends BaseSiteApi {
 
     private static int ORDER_DESCENDING = 1;
     private static int ORDER_ASCENDING = 0;
+
+    private final static String API_CHANNEL_ALBUM_FORMAT = "http://api.tv.sohu.com/v4/search/channel.json" +
+            "?cid=%s&o=1&plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&" +
+            "sver=4.5.0&sysver=4.4.2&partner=47&page=%s&page_size=%s";
+
+    private final static int CID_SHOW = 2;
+    private final static int CID_MOVIE = 1;
+    private final static int CID_COMIC = 16;
+    private final static int CID_VARIETY = 7;
+    private final static int CID_DOCUMENTARY = 8;
+    private final static int CID_MUSIC = 24;
+    private final static int CID_ENT = 13;
+    private final static int CID_SPORT = 9009;
+
+    private int channelToCid(SCChannel channel) {
+
+        if(channel.getChannelID() == SCChannel.MOVIE)
+            return CID_MOVIE;
+        if(channel.getChannelID() == SCChannel.SHOW)
+            return CID_SHOW;
+        if(channel.getChannelID() == SCChannel.DOCUMENTARY)
+            return CID_DOCUMENTARY;
+        if(channel.getChannelID() == SCChannel.ENT)
+            return CID_ENT;
+        if(channel.getChannelID() == SCChannel.COMIC)
+            return CID_COMIC;
+        if(channel.getChannelID() == SCChannel.VARIETY)
+            return CID_VARIETY;
+        if(channel.getChannelID() == SCChannel.MUSIC)
+            return CID_MUSIC;
+        if(channel.getChannelID() == SCChannel.SPORT)
+            return CID_SPORT;
+        if(channel.getChannelID() == SCChannel.UNKNOWN)
+            return -1;
+        return -1;
+    }
+
+
+    private String getChannelAlbumUrl(SCChannel channel, int pageNo, int pageSize) {
+        return String.format(API_CHANNEL_ALBUM_FORMAT,channelToCid(channel),pageNo,pageSize);
+    }
 
     @Override
     public void doSearch(String key, final OnGetAlbumsListener listener) {
@@ -173,8 +216,35 @@ public class SohuApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getChannelAlbumUrl(channel, pageNo, pageSize);
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                listener.onGetAlbumsFailed("Http failure");
+            }
 
+            @Override
+            public void onResponse(Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    listener.onGetAlbumsFailed("response failed");
+                    return;
+                }
+                SearchResults results = null;
+                try {
+                    results = SailorCast.getGson().fromJson(response.body().string(), SearchResults.class);
+
+                    SCAlbums albums = toSCAlbums(results);
+                    if(albums != null)
+                        listener.onGetAlbumsSuccess(albums);
+                    else
+                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -190,23 +260,49 @@ public class SohuApi extends BaseSiteApi {
     private SCAlbums toSCAlbums(SearchResults results) {
         if(results.getData().getSearchResultAlbums() == null)
             return null;
-        if(results.getData().getSearchResultAlbums().size() == 0)
+        if(results.getData().getSearchResultAlbums().size() == 0 && results.getData().getSearchResultVideos().size() == 0)
             return null;
 
-        SCAlbums albums = new SCAlbums();
-        for(SearchResultAlbum a : results.getData().getSearchResultAlbums()) {
-            SCAlbum sa = new SCAlbum(SCSite.SOHU);
-            sa.setDesc(a.getTvDesc());
-            sa.setDirector(a.getDirector());
-            sa.setHorImageUrl(a.getHorHighPic());
-            sa.setVerImageUrl(a.getVerHighPic());
-            sa.setMainActor(a.getMainActor());
-            sa.setTitle(a.getAlbumName());
-            sa.setSubTitle(a.getTip());
-            sa.setAlbumId(a.getAid().toString());
-            albums.add(sa);
+        if(results.getData().getSearchResultAlbums().size() > 0) {
+            SCAlbums albums = new SCAlbums();
+            for (SearchResultAlbum a : results.getData().getSearchResultAlbums()) {
+                SCAlbum sa = new SCAlbum(SCSite.SOHU);
+                sa.setDesc(a.getTvDesc());
+                sa.setDirector(a.getDirector());
+                sa.setHorImageUrl(a.getHorHighPic());
+                sa.setVerImageUrl(a.getVerHighPic());
+                sa.setMainActor(a.getMainActor());
+                sa.setTitle(a.getAlbumName());
+                sa.setSubTitle(a.getTip());
+                sa.setAlbumId(a.getAid().toString());
+                albums.add(sa);
+            }
+            return albums;
         }
 
-        return albums;
+        if(results.getData().getSearchResultVideos().size() > 0) {
+            SCAlbums albums = new SCAlbums();
+            for (SearchResultAlbum a : results.getData().getSearchResultVideos()) {
+                SCAlbum sa = new SCAlbum(SCSite.SOHU);
+                sa.setDesc(a.getTvDesc());
+                sa.setDirector(a.getDirector());
+                sa.setHorImageUrl(a.getHorHighPic());
+                sa.setVerImageUrl(a.getVerHighPic());
+                sa.setMainActor(a.getMainActor());
+                sa.setTitle(a.getAlbumName());
+                sa.setSubTitle(a.getTip());
+                if(a.getAid() != null) {
+                    sa.setAlbumId(a.getAid().toString());
+                }
+                if(a.getVid() != null) {
+                    sa.setAlbumId(a.getVid().toString());
+                }
+                albums.add(sa);
+            }
+            if(albums.size() > 0)
+                return albums;
+        }
+
+        return null;
     }
 }

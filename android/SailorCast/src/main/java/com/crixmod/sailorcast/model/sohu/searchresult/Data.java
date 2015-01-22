@@ -14,6 +14,8 @@ public class Data {
     @SerializedName("albums")
     private List<SearchResultAlbum> searchResultAlbums = new ArrayList<SearchResultAlbum>();
 
+    @SerializedName("videos")
+    private List<SearchResultAlbum> searchResultVideos = new ArrayList<SearchResultAlbum>();
     /**
      *
      * @return
@@ -39,6 +41,10 @@ public class Data {
      */
     public List<SearchResultAlbum> getSearchResultAlbums() {
         return searchResultAlbums;
+    }
+
+    public List<SearchResultAlbum> getSearchResultVideos() {
+        return searchResultVideos;
     }
 
     /**
