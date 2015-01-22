@@ -195,8 +195,7 @@ public class SohuApi extends BaseSiteApi {
 
         SCAlbums albums = new SCAlbums();
         for(SearchResultAlbum a : results.getData().getSearchResultAlbums()) {
-            SCAlbum sa = new SCAlbum();
-            sa.setSite(SCSite.SOHU);
+            SCAlbum sa = new SCAlbum(SCSite.SOHU);
             sa.setDesc(a.getTvDesc());
             sa.setDirector(a.getDirector());
             sa.setHorImageUrl(a.getHorHighPic());

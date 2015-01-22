@@ -45,13 +45,17 @@ import javax.crypto.spec.SecretKeySpec;
 public class YouKuApi extends BaseSiteApi {
 
     private static final String SUCCESS = "success";
+    private static final String YOUKU_PID = "0865e0628a79dfbb";
     //YouKu Search:  SEARCH_URL_BASE + URLEncode(key) + PID + GUID
     private static final String SEARCH_URL_BASE = "http://search.api.3g.youku.com/layout/android/v4/search/direct_all/";
     private static final String PID = "?pid=0865e0628a79dfbb&guid=";
 
+    private static final String SEARCH_URL_BASE_FORMAT = "http://search.api.3g.youku.com/layout/android" +
+            "/v4/search/direct_all/%s?pid=%s&guid=%s";
     //YouKu Show Info: SHOW_INFO_BASE + GUID + SHOW_ID + showId
     //Show Info中返回剧集的详细信息，比如导演、演员，描述等等。
-    private static final String SHOW_INFO_BASE = "http://api.mobile.youku.com/layout/android3_0/play/detail?pid=0865e0628a79dfbb&guid=";
+    private static final String SHOW_INFO_BASE = "http://api.mobile.youku.com/layout/android3_0/play/detail?" +
+            "pid=0865e0628a79dfbb&guid=";
     private static final String SHOW_ID = "&id=";
 
     //得到剧集中每一个video的ID接口： SHOW_VIDEOS_BASE + showid +  SHOW_VIDEOS_PID  + GUID + SHOW_VIDEOS_FIELDS + pageNo + SHOW_VIDEOS_PZ + pageSize
@@ -68,6 +72,90 @@ public class YouKuApi extends BaseSiteApi {
     private static final String VIDEO_ID = "&id=";
 
     private static final String YOUKU_KEY = "9e3633aadde6bfec";
+
+    private static final int CID_SHOW = 97;
+    private static final int SUB_CHANNEL_ID_SHOW = 404;
+
+    private static final int CID_MOVIE = 96;
+    private static final int SUB_CHANNEL_ID_MOVIE = 567;
+
+    private static final int CID_DOCUMENTARY = 84;
+    private static final int SUB_CHANNEL_ID_DOCUMENTARY = 16;
+
+    private static final int CID_VARIETY = 85;
+    private static final int SUB_CHANNEL_ID_VARIETY = 10;
+
+    private static final int CID_COMIC = 100;
+    private static final int SUB_CHANNEL_ID_COMIC = 7;
+
+    private static final int CID_MUSIC = 95;
+    private static final int SUB_CHANNEL_ID_MUSIC = 13;
+
+    private static final int CID_ENT = 86;
+    private static final int SUB_CHANNEL_ID_ENT = 25;
+
+    private static final int CID_SPORT = 98;
+    private static final int SUB_CHANNEL_ID_SPORT = 148;
+
+    private static final String CHANNEL_ALBUMS_LIST_FORMAT = "http://api.mobile.youku.com/layout/" +
+            "android/channel/subpage?pid=%s&guid=%s&ver=4.4&cid=%s&" +
+            "sub_channel_id=%s&sub_channel_type=4&filter=&ob=2&pg=%s&pz=%s";
+
+    private int channelToCid(SCChannel channel) {
+
+        if(channel.getChannelID() == SCChannel.MOVIE)
+            return CID_MOVIE;
+        if(channel.getChannelID() == SCChannel.SHOW)
+            return CID_SHOW;
+        if(channel.getChannelID() == SCChannel.DOCUMENTARY)
+            return CID_DOCUMENTARY;
+        if(channel.getChannelID() == SCChannel.ENT)
+            return CID_ENT;
+        if(channel.getChannelID() == SCChannel.COMIC)
+            return CID_COMIC;
+        if(channel.getChannelID() == SCChannel.VARIETY)
+            return CID_VARIETY;
+        if(channel.getChannelID() == SCChannel.MUSIC)
+            return CID_MUSIC;
+        if(channel.getChannelID() == SCChannel.SPORT)
+            return CID_SPORT;
+        if(channel.getChannelID() == SCChannel.UNKNOWN)
+            return -1;
+        return -1;
+    }
+
+    private int channelToSubChannelID(SCChannel channel) {
+
+        if(channel.getChannelID() == SCChannel.MOVIE)
+            return SUB_CHANNEL_ID_MOVIE;
+        if(channel.getChannelID() == SCChannel.SHOW)
+            return SUB_CHANNEL_ID_SHOW;
+        if(channel.getChannelID() == SCChannel.DOCUMENTARY)
+            return SUB_CHANNEL_ID_DOCUMENTARY;
+        if(channel.getChannelID() == SCChannel.ENT)
+            return SUB_CHANNEL_ID_ENT;
+        if(channel.getChannelID() == SCChannel.COMIC)
+            return SUB_CHANNEL_ID_COMIC;
+        if(channel.getChannelID() == SCChannel.VARIETY)
+            return SUB_CHANNEL_ID_VARIETY;
+        if(channel.getChannelID() == SCChannel.MUSIC)
+            return SUB_CHANNEL_ID_MUSIC;
+        if(channel.getChannelID() == SCChannel.SPORT)
+            return SUB_CHANNEL_ID_SPORT;
+        if(channel.getChannelID() == SCChannel.UNKNOWN)
+            return -1;
+        return -1;
+    }
+
+
+    private String getChannelAlbumsListUrl(SCChannel channel, int pageNo, int pageSize) {
+        int cid = channelToCid(channel);
+        int subCid = channelToSubChannelID(channel);
+        String pid = YOUKU_PID;
+        String gid = getGUID();
+        String url = String.format(CHANNEL_ALBUMS_LIST_FORMAT,pid,gid,cid,subCid,pageNo,pageSize);
+        return url;
+    }
 
     private String md5(String s) {
         try {
@@ -111,7 +199,9 @@ public class YouKuApi extends BaseSiteApi {
 
     private String getSearchUrl(String key) {
         try {
-            return SEARCH_URL_BASE + URLEncoder.encode(key,"UTF-8") + PID + getGUID();
+            String enKey = URLEncoder.encode(key,"UTF-8");
+            return String.format(SEARCH_URL_BASE_FORMAT,enKey,YOUKU_PID,getGUID());
+            //return SEARCH_URL_BASE + URLEncoder.encode(key,"UTF-8") + PID + getGUID();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -181,14 +271,13 @@ public class YouKuApi extends BaseSiteApi {
         SCAlbums albums = new SCAlbums();
         for(Result r : results.getResults()) {
             if(r.getIsYouku() == 1) {
-                SCAlbum sa = new SCAlbum();
+                SCAlbum sa = new SCAlbum(SCSite.YOUKU);
                 sa.setTitle(StringEscapeUtils.unescapeJava(r.getShowname()));
                 sa.setHorImageUrl(StringEscapeUtils.unescapeJava(r.getShowThumburl()));
                 sa.setVerImageUrl(StringEscapeUtils.unescapeJava(r.getShowVthumburl()));
                 sa.setAlbumId(r.getShowid());
                 sa.setSubTitle(StringEscapeUtils.unescapeJava(r.getSummary()));
                 sa.setTip(StringEscapeUtils.unescapeJava(r.getCats()));
-                sa.setSite(SCSite.YOUKU);
                 albums.add(sa);
             }
         }
@@ -487,8 +576,74 @@ public class YouKuApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getChannelAlbumsListUrl(channel,pageNo,pageSize);
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                listener.onGetAlbumsFailed("Http failure");
+            }
 
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                SCAlbums albums =  parseAlbumListResult(ret);
+                if(albums != null) {
+                    listener.onGetAlbumsSuccess(albums);
+                } else
+                    listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+
+
+            }
+        });
+
+
+    }
+
+    private SCAlbums parseAlbumListResult(String ret) {
+        try {
+            JSONObject retJson = new JSONObject(ret);
+            JSONArray results = retJson.optJSONArray("results");
+            SCAlbums albums = new SCAlbums();
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject result = results.getJSONObject(i);
+                SCAlbum album = new SCAlbum(SCSite.YOUKU);
+                String tmp;
+
+                tmp = result.optString("title");
+                if( tmp != null && !tmp.isEmpty())
+                    album.setTitle(tmp);
+
+                int type = result.optInt("type");
+
+                tmp = result.optString("img");
+                if( tmp != null && !tmp.isEmpty()) {
+                    if (type == 1)
+                        album.setHorImageUrl(tmp);
+                    if (type == 2)
+                        album.setVerImageUrl(tmp);
+                }
+
+                tmp = result.optString("tid");
+                if( tmp != null && !tmp.isEmpty())
+                    album.setAlbumId(tmp);
+
+                tmp = result.optString("subtitle");
+                if( tmp != null && !tmp.isEmpty())
+                    album.setSubTitle(tmp);
+
+                tmp = result.optString("stripe");
+                if( tmp != null && !tmp.isEmpty())
+                    album.setTip(tmp);
+
+                albums.add(album);
+            }
+
+            return albums;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

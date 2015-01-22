@@ -24,7 +24,8 @@ public class SCAlbum implements Parcelable {
     private Boolean mIsCompleted = false;  /* 是否完结 */
     private String mLetvStyle = null;  /* Letv需要的字段, 其它站点不需要， 界面不显示 */
 
-    public SCAlbum() {
+    public SCAlbum(int siteID) {
+        this.mSite = new SCSite(siteID);
     }
 
     public String getAlbumId() {

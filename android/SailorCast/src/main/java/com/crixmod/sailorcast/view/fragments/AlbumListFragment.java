@@ -32,6 +32,7 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
     private int mPageNo = 0;
     private int mPageSize = 30;
     private AlbumListAdapter mAdapter;
+    private int mColumns = 3;
 
 
     /**
@@ -93,7 +94,19 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
 
 
     @Override
-    public void onGetAlbumsSuccess(SCAlbums albums) {
+    public synchronized void onGetAlbumsSuccess(SCAlbums albums) {
+
+        if (mColumns == 3 && albums.get(0).getVerImageUrl() == null) {
+            mColumns = 2;
+            mGridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mGridView.setNumColumns(mColumns);
+                    mAdapter.setColumns(mColumns);
+                }
+            });
+        }
+
         for(SCAlbum a : albums) {
             mAdapter.addAlbum(a);
         }

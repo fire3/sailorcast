@@ -150,8 +150,7 @@ public class LetvApi extends BaseSiteApi{
                     //没有 vidEpisode 的album，利用 videolist 接口无法返回有效的数据。需要提前生成SCVideos。
                     //if(albumJson.optJSONArray("vidEpisode").length() > 0) {
 
-                        SCAlbum a = new SCAlbum();
-                        a.setSite(SCSite.LETV);
+                        SCAlbum a = new SCAlbum(SCSite.LETV);
                         if (!albumJson.optString("directory").isEmpty())
                             a.setDirector(albumJson.getString("directory"));
                         if (!albumJson.optString("starring").isEmpty())
