@@ -94,5 +94,6 @@
     <string name="channel_sport">体育</string>
     <string name="channel_music">音乐</string>
     <string name="channel_variety">综艺</string>
+    <string name="title_activity_album_detail">AlbumDetailActivity</string>
 
 </resources>

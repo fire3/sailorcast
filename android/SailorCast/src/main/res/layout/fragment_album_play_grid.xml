@@ -1,0 +1,25 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment">
+
+<com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView
+    android:id="@+id/result_grid"
+    android:numColumns="6"
+    android:verticalSpacing="1dp"
+    android:choiceMode="singleChoice"
+    android:horizontalSpacing="1dp"
+    android:stretchMode="columnWidth"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView>
+<TextView
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:id="@android:id/empty"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:ellipsize="end"
+    />
+
+</FrameLayout>

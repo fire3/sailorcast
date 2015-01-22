@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/square_border"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+    <Button
+        android:background="@drawable/item_album_play_grid"
+        android:textSize="@dimen/abc_text_size_small_material"
+        android:id="@+id/album_play_grid_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

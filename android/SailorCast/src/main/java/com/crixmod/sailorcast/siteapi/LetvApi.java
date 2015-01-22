@@ -85,7 +85,8 @@ public class LetvApi extends BaseSiteApi{
     private final static String ALBUM_LIST_URL_DOCUMENTARY_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
             "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/3/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
-
+    private final static String ALBUM_LIST_URL_SHOW_FORMAT =   "http://static.meizi.app.m.letv.com/android/" +
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/20/vt/180001/ph/420003,420004/pt/-141003/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -280,11 +281,19 @@ public class LetvApi extends BaseSiteApi{
 
                                 videos.add(v);
                             }
-                            listener.onGetVideosSuccess(videos);
-                        }
+                            if(videos.size() > 0) {
+                                listener.onGetVideosSuccess(videos);
+                                return;
+                            }
+                            else
+                                listener.onGetVideosFailed("null videos");
 
+                        }
+                        listener.onGetVideosFailed("null videos");
                     }
+                    listener.onGetVideosFailed("null videos");
                 } catch (JSONException e) {
+                    listener.onGetVideosFailed("Wrong Json");
                     e.printStackTrace();
                 }
 
@@ -481,7 +490,9 @@ public class LetvApi extends BaseSiteApi{
     private String getAlbumListUrl(SCChannel channel, int pageNo, int pageSize) {
        if(channel.getChannelID() == SCChannel.DOCUMENTARY)
            return String.format(ALBUM_LIST_URL_DOCUMENTARY_FORMAT,channelToCid(channel),pageNo,pageSize);
-        else
+       else if(channel.getChannelID() == SCChannel.SHOW) {
+           return String.format(ALBUM_LIST_URL_SHOW_FORMAT,channelToCid(channel),pageNo,pageSize);
+       }
            return String.format(ALBUM_LIST_URL_FORMAT,channelToCid(channel),pageNo,pageSize);
     }
 

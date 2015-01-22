@@ -17,6 +17,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumActivity;
+import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
 /**
  * Created by fire3 on 15-1-21.
@@ -99,7 +100,7 @@ public class AlbumListAdapter extends BaseAdapter {
         viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlbumActivity.launch((Activity) mContext, album);
+                AlbumDetailActivity.launch((Activity) mContext, album);
             }
         });
     }

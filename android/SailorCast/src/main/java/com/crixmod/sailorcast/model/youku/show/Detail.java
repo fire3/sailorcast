@@ -36,8 +36,6 @@ public class Detail {
     @SerializedName("img_default")
     @Expose
     private String imgDefault;
-    @Expose
-    private Long publicType;
     @SerializedName("showtotal_search")
     @Expose
     private String showtotalSearch;
@@ -296,23 +294,6 @@ public class Detail {
         this.imgDefault = imgDefault;
     }
 
-    /**
-     *
-     * @return
-     * The publicType
-     */
-    public Long getPublicType() {
-        return publicType;
-    }
-
-    /**
-     *
-     * @param publicType
-     * The publicType
-     */
-    public void setPublicType(Long publicType) {
-        this.publicType = publicType;
-    }
 
     /**
      *

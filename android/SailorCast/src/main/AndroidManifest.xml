@@ -42,11 +42,14 @@
         </activity>
         <activity
             android:name=".view.AlbumListActivity"
-            android:label="@string/title_activity_album_list"
-            >
+            android:label="@string/title_activity_album_list" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.crixmod.sailorcast.view.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".view.AlbumDetailActivity"
+            android:label="@string/title_activity_album_detail" >
         </activity>
     </application>
 
