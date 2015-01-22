@@ -91,12 +91,7 @@ public class AlbumListAdapter extends BaseAdapter {
         }
         if(album.getTip() != null && !album.getTip().isEmpty()) {
             viewHolder.videoTip.setText(album.getTip());
-            viewHolder.videoTip.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    viewHolder.videoTip.setVisibility(View.VISIBLE);
-                }
-            }, 1100);
+            viewHolder.videoTip.setVisibility(View.VISIBLE);
         }
 
         viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
