@@ -3,6 +3,8 @@ package com.crixmod.sailorcast.model;
 
 import android.support.v4.util.ArrayMap;
 
+import com.crixmod.sailorcast.SailorCast;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -40,7 +42,7 @@ public class SCChannelFilter {
     }
 
     public void selectFilterItem(SCChannelFilterItem item) {
-        String key = item.getSearchKey();
+        String key = item.getParentKey();
         ArrayList<SCChannelFilterItem> items = getFilterItemsByKey(key);
         for(SCChannelFilterItem i : items) {
             i.setChecked(false);
@@ -64,5 +66,16 @@ public class SCChannelFilter {
         }
         return null;
     }
+
+    public String toJson() {
+        String ret = SailorCast.getGson().toJson(this);
+        return ret;
+    }
+
+    public static SCChannelFilter fromJson(String json) {
+        SCChannelFilter filter  = SailorCast.getGson().fromJson(json,SCChannelFilter.class);
+        return filter;
+    }
+
 
 }

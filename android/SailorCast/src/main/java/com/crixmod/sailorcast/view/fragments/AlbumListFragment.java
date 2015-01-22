@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.view.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,10 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
+import com.crixmod.sailorcast.siteapi.OnGetChannelFilterListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.adapters.AlbumListAdapter;
@@ -22,7 +25,7 @@ import com.crixmod.sailorcast.view.adapters.AlbumListAdapter;
  * Use the {@link AlbumListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
+public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, OnGetChannelFilterListener{
     private static final String ARG_CHANNEL_ID = "channelID";
     private static final String ARG_SITE_ID = "siteID";
 
@@ -71,6 +74,7 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
                 mColumns = 2;
                 mAdapter.setColumns(mColumns);
             }
+            SiteApi.doGetChannelFilter(mSiteID,mChannelID,this);
         }
     }
 
@@ -138,5 +142,16 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener{
                 mGridView.setHasMoreItems(false);
             }
         });
+    }
+
+    @Override
+    public void onGetChannelFilterSuccess(SCChannelFilter filter) {
+        Log.d("fire3", filter.toJson());
+
+    }
+
+    @Override
+    public void onGetChannelFilterFailed(String failReason) {
+
     }
 }
