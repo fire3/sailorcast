@@ -25,10 +25,13 @@ import com.crixmod.sailorcast.view.adapters.AlbumPlayGridAdapter;
  * Use the {@link AlbumPlayGridFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlbumPlayGridFragment extends Fragment implements OnGetVideosListener {
+public class AlbumPlayGridFragment extends Fragment implements
+        OnGetVideosListener ,AlbumPlayGridAdapter.AlbumPlayGridSelectedListener
+{
 
     private static final String ARG_ALBUM = "album";
     private static final String ARG_IS_SHOW_TITLE = "isShowTitle";
+    private static final String ARG_INITIAL_POSITION = "initialPosition";
 
 
     private SCAlbum mAlbum;
@@ -36,6 +39,8 @@ public class AlbumPlayGridFragment extends Fragment implements OnGetVideosListen
     private int mPageNo = 0;
     private int mPageSize = 50;
     private AlbumPlayGridAdapter mAdapter;
+    private int mInitialVideoNoInAlbum = 0;
+    private boolean mFirstSelection = true;
 
     private OnAlbumPlayGridListener mListener;
     private PagingGridView mGridView;
@@ -47,11 +52,12 @@ public class AlbumPlayGridFragment extends Fragment implements OnGetVideosListen
      * @return A new instance of fragment AlbumPlayGridFragment.
      */
 
-    public static AlbumPlayGridFragment newInstance(SCAlbum album, boolean isShowTitle) {
+    public static AlbumPlayGridFragment newInstance(SCAlbum album, boolean isShowTitle, int initialVideoPosition) {
         AlbumPlayGridFragment fragment = new AlbumPlayGridFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_ALBUM, album);
         args.putBoolean(ARG_IS_SHOW_TITLE, isShowTitle);
+        args.putInt(ARG_INITIAL_POSITION, initialVideoPosition);
 
         fragment.setArguments(args);
         return fragment;
@@ -67,7 +73,8 @@ public class AlbumPlayGridFragment extends Fragment implements OnGetVideosListen
         if (getArguments() != null) {
             mAlbum = getArguments().getParcelable(ARG_ALBUM);
             mIsShowTitle = getArguments().getBoolean(ARG_IS_SHOW_TITLE);
-            mAdapter = new AlbumPlayGridAdapter(getActivity());
+            mAdapter = new AlbumPlayGridAdapter(getActivity(), this);
+            mInitialVideoNoInAlbum = getArguments().getInt(ARG_INITIAL_POSITION);
             loadMoreVideos();
         }
     }
@@ -111,19 +118,37 @@ public class AlbumPlayGridFragment extends Fragment implements OnGetVideosListen
     }
 
     @Override
-    public void onGetVideosSuccess(SCVideos videos) {
+    public void onGetVideosSuccess(final SCVideos videos) {
         if(videos.size() > 0) {
             for (SCVideo v : videos) {
                 mAdapter.addVideo(v);
             }
+            if(mInitialVideoNoInAlbum > mAdapter.getCount())
+                loadMoreVideos();
 
             mGridView.post(new Runnable() {
                 @Override
                 public void run() {
+                    if(mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                        mGridView.setSelection(mInitialVideoNoInAlbum);
+                        mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
+                        mListener.onVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
+                    }
                     mAdapter.notifyDataSetChanged();
                     mGridView.setIsLoading(false);
                 }
             });
+
+            mGridView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                        mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                        mFirstSelection = false;
+                    }
+                }
+            },200);
+
         }
         else {
 
@@ -146,6 +171,13 @@ public class AlbumPlayGridFragment extends Fragment implements OnGetVideosListen
                 mGridView.setHasMoreItems(false);
             }
         });
+    }
+
+    @Override
+    public void onVideoSelected(int position, SCVideo v) {
+        mGridView.setSelection(position);
+        mGridView.setItemChecked(position,true);
+        mListener.onVideoSelected(v,position);
     }
 
     /**

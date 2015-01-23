@@ -23,7 +23,7 @@ import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
-import com.crixmod.sailorcast.view.AlbumActivity;
+import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
 public class SearchResultFragment extends Fragment
 implements OnGetAlbumsListener
@@ -203,7 +203,7 @@ implements OnGetAlbumsListener
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     AlbumActivity.launch((Activity) mContext, album);
+                     AlbumDetailActivity.launch((Activity) mContext, album);
                 }
             });
         }

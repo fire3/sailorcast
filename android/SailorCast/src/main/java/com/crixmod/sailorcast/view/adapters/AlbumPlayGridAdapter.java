@@ -15,20 +15,24 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 
+import java.util.concurrent.Callable;
+
 /**
  * Created by fire3 on 2015/1/22.
  */
 public class AlbumPlayGridAdapter extends BaseAdapter {
     private Context mContext;
     private SCVideos mVideos = new SCVideos();
+    private AlbumPlayGridSelectedListener mListener;
 
     private class ViewHolder {
             LinearLayout resultContainer;
             Button videoTitle;
     }
 
-    public AlbumPlayGridAdapter(Context mContext) {
+    public AlbumPlayGridAdapter(Context mContext , AlbumPlayGridSelectedListener mListener) {
         this.mContext = mContext;
+        this.mListener = mListener;
     }
 
     public void addVideo(SCVideo v) {
@@ -65,12 +69,13 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
         return view;
     }
 
-    private void setupViewHolder(View view, int position, final ViewHolder viewHolder, SCVideo video) {
+    private void setupViewHolder(View view, final int position, final ViewHolder viewHolder, final SCVideo video) {
         viewHolder.videoTitle.setText("" + (position + 1));
         viewHolder.videoTitle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                viewHolder.videoTitle.setSelected( !viewHolder.videoTitle.isSelected());
+            public void onClick(View view) {
+                SCVideo v = getItem(position);
+                mListener.onVideoSelected(position,v);
             }
         });
     }
@@ -85,5 +90,9 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
 
         itemView.setTag(viewHolder);
         return itemView;
+    }
+
+    public interface AlbumPlayGridSelectedListener {
+        public void onVideoSelected(int position, SCVideo v);
     }
 }

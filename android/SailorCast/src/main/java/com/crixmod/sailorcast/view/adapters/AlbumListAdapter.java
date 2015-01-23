@@ -16,7 +16,6 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.utils.ImageTools;
-import com.crixmod.sailorcast.view.AlbumActivity;
 import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
 /**

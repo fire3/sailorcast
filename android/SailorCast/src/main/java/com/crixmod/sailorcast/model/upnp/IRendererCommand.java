@@ -63,4 +63,6 @@ public interface IRendererCommand {
     // SCVideo
     public void lauchSCVideoHigh(final SCVideo video);
 
+    // SCVideo
+    public void lauchSCVideo(final SCVideo video, final String url);
 }

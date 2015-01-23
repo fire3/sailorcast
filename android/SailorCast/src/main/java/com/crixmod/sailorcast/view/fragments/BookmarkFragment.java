@@ -23,7 +23,7 @@ import com.crixmod.sailorcast.database.BookmarkDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.utils.ImageTools;
-import com.crixmod.sailorcast.view.AlbumActivity;
+import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
 import java.util.ArrayList;
 
@@ -241,7 +241,7 @@ public class BookmarkFragment extends Fragment {
                 viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        AlbumActivity.launch((Activity) mContext, album);
+                        AlbumDetailActivity.launch((Activity) mContext, album);
                     }
                 });
 

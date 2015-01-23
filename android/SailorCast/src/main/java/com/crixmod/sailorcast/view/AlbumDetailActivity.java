@@ -3,10 +3,12 @@ package com.crixmod.sailorcast.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,26 +17,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.database.BookmarkDbHelper;
 import com.crixmod.sailorcast.database.HistoryDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.upnp.IRendererCommand;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
+import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment;
 
+import java.util.concurrent.Callable;
+
 public class AlbumDetailActivity extends BaseToolbarActivity implements
         OnGetAlbumDescListener, AlbumPlayGridFragment.OnAlbumPlayGridListener
+    , OnGetVideoPlayUrlListener
 {
 
     private SCAlbum mAlbum;
     private SCVideo mCurrentVideo;
-    private int mVideoInAlbum; /* start from 0 */
+    private int mVideoInAlbum; /* start from 0, item position */
 
 
     private Button mPlaySuperButton;
@@ -261,7 +270,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 fillAlbumDescView(album);
                 invalidateOptionsMenu();
 
-                mFragment = AlbumPlayGridFragment.newInstance(mAlbum,mIsShowTitle);
+                mFragment = AlbumPlayGridFragment.newInstance(mAlbum,mIsShowTitle,mInitialVideoNoInAlbum);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, mFragment);
                 ft.commit();
@@ -278,6 +287,138 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
     @Override
     public void onVideoSelected(SCVideo v, int videoNoInAlbum) {
+        mCurrentVideo = v;
+        mVideoInAlbum = videoNoInAlbum;
+        hideAllPlayButton();
+        SiteApi.doGetVideoPlayUrl(v, this);
 
     }
+
+    @Override
+    public void onGetVideoPlayUrlNormal(final SCVideo v, final String urlNormal) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDlnaNorButton.setVisibility(View.VISIBLE);
+                mPlayNorButton.setVisibility(View.VISIBLE);
+
+                mPlayNorButton.setTag(R.id.key_video_url, urlNormal);
+                mPlayNorButton.setTag(R.id.key_video, v);
+                mPlayNorButton.setTag(R.id.key_video_number_in_album, mVideoInAlbum);
+                mDlnaNorButton.setTag(R.id.key_video_url, urlNormal);
+                mDlnaNorButton.setTag(R.id.key_video, v);
+                mDlnaNorButton.setTag(R.id.key_video_number_in_album, mVideoInAlbum);
+            }
+        });
+    }
+
+    @Override
+    public void onGetVideoPlayUrlHigh(final SCVideo v, final String urlHigh) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDlnaHighButton.setVisibility(View.VISIBLE);
+                mPlayHighButton.setVisibility(View.VISIBLE);
+
+                mPlayHighButton.setTag(R.id.key_video_url,urlHigh);
+                mPlayHighButton.setTag(R.id.key_video,v);
+                mPlayHighButton.setTag(R.id.key_video_number_in_album,mVideoInAlbum);
+                mDlnaHighButton.setTag(R.id.key_video_url,urlHigh);
+                mDlnaHighButton.setTag(R.id.key_video,v);
+                mDlnaHighButton.setTag(R.id.key_video_number_in_album,mVideoInAlbum);
+            }
+        });
+    }
+
+    @Override
+    public void onGetVideoPlayUrlSuper(final SCVideo v, final String urlSuper) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDlnaSuperButton.setVisibility(View.VISIBLE);
+                mPlaySuperButton.setVisibility(View.VISIBLE);
+
+                mPlaySuperButton.setTag(R.id.key_video_url, urlSuper);
+                mPlaySuperButton.setTag(R.id.key_video, v);
+                mPlaySuperButton.setTag(R.id.key_video_number_in_album, mVideoInAlbum);
+                mDlnaSuperButton.setTag(R.id.key_video_url,urlSuper);
+                mDlnaSuperButton.setTag(R.id.key_video,v);
+                mDlnaSuperButton.setTag(R.id.key_video_number_in_album, mVideoInAlbum);
+            }
+        });
+    }
+
+    @Override
+    public void onGetVideoPlayUrlFailed(String reason) {
+        hideAllPlayButton();
+    }
+
+
+    @Override
+    protected void onResume() {
+        SailorCast.upnpServiceController.resume(this);
+        super.onResume();
+
+    }
+
+	@Override
+	public void onPause()
+	{
+		SailorCast.upnpServiceController.pause();
+		SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
+		super.onPause();
+	}
+
+
+    /**
+     * 该函数触发播放动作
+     * @param button
+     */
+    public void onPlayButtonClick(View button) {
+        String url = (String) button.getTag(R.id.key_video_url);
+        if(url != null) {
+            //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
+            //BaiduPlayerActivity.launch(this,url);
+            Log.d("fire3", "play " + url);
+            mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
+        }
+        else
+            Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 该函数触发播放动作
+     * @param button
+     */
+    public void onDlnaButtonClick(View button) {
+        final String url = (String) button.getTag(R.id.key_video_url);
+        final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
+        if(url != null) {
+            //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
+            //BaiduPlayerActivity.launch(this,url);
+            Log.d("fire3","play " + v.toString());
+        }
+        else
+            Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
+
+        FragmentManager fm = getSupportFragmentManager();
+        RendererDialog dialog = new RendererDialog();
+        dialog.setCallback(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                launchRenderer(v,url);
+                return null;
+            }
+        });
+        dialog.show(fm,"Render");
+    }
+
+
+	private void launchRenderer(SCVideo video, String url)
+	{
+		IRendererCommand rendererCommand = SailorCast.factory.createRendererCommand(SailorCast.factory.createRendererState());
+		rendererCommand.lauchSCVideo(video,url);
+        //RenderActivity.launch(this,mAlbum,video);
+	}
+
 }

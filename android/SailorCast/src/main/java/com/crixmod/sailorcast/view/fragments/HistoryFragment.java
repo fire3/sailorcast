@@ -26,7 +26,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.ImageTools;
-import com.crixmod.sailorcast.view.AlbumActivity;
+import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
 import java.util.ArrayList;
 
@@ -243,7 +243,7 @@ public class HistoryFragment extends Fragment {
                 viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        AlbumActivity.launch((Activity) mContext, album,video.getSeqInAlbum() - 1);
+                        AlbumDetailActivity.launch((Activity) mContext, album, video.getSeqInAlbum() - 1);
                     }
                 });
 
