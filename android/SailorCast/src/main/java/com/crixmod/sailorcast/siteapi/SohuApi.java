@@ -152,7 +152,6 @@ public class SohuApi extends BaseSiteApi {
                         scVideo.setHorPic(v.getHorHighPic());
                         scVideo.setVerPic(v.getVerHighPic());
                         scVideo.setVideoID(v.getVid().toString());
-                        scVideo.setSeqInAlbum((pageNo - 1) * pageSize + i);
                         scVideo.setVideoTitle(v.getVideoName());
                         scVideo.setM3U8Nor(v.getUrlNor());
                         scVideo.setM3U8High(v.getUrlHigh());

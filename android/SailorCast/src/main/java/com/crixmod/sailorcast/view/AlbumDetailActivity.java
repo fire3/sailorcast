@@ -311,6 +311,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onVideoSelected(SCVideo v, int videoNoInAlbum) {
         mCurrentVideo = v;
         mVideoInAlbum = videoNoInAlbum;
+        v.setSeqInAlbum(videoNoInAlbum + 1);
         hideAllPlayButton();
         SiteApi.doGetVideoPlayUrl(v, this);
 
@@ -401,7 +402,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         if(url != null) {
             //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
             //BaiduPlayerActivity.launch(this,url);
-            Log.d("fire3", "play " + url);
+            Log.d("fire3", "play " + mCurrentVideo.toString());
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
         else
