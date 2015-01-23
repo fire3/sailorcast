@@ -221,7 +221,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         albumImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openAlbumDesc(view);
+                openAlbumDesc();
             }
         });
 
@@ -231,12 +231,12 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             ImageTools.displayImage(albumImage,album.getHorImageUrl());
         }
     }
-    public void closeAlbumDesc(View view) {
+    public void closeAlbumDesc() {
         RelativeLayout albumDescContainer = (RelativeLayout) findViewById(R.id.album_desc_container);
         albumDescContainer.setVisibility(View.GONE);
     }
 
-    public void openAlbumDesc(View view) {
+    public void openAlbumDesc() {
         RelativeLayout albumDescContainer = (RelativeLayout) findViewById(R.id.album_desc_container);
         albumDescContainer.setVisibility(View.VISIBLE);
     }
@@ -275,6 +275,11 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 ft.replace(R.id.fragment_container, mFragment);
                 ft.commit();
                 getFragmentManager().executePendingTransactions();
+
+                if(mAlbum.getVideosTotal() == 1) {
+                    hideAlbumCloseButton();
+                    openAlbumDesc();
+                }
             }
         });
 
