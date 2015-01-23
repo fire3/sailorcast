@@ -167,6 +167,7 @@ public class AlbumFilterDialog extends DialogFragment {
 
             LinearLayout buttonContainer = new LinearLayout(getActivity());
             p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            p.setMargins(0,20,0,5);
             buttonContainer.setLayoutParams(p);
             buttonContainer.setOrientation(LinearLayout.HORIZONTAL);
             buttonContainer.setGravity(Gravity.CENTER_HORIZONTAL);

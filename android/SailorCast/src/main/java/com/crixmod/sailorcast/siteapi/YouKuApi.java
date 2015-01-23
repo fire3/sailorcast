@@ -8,6 +8,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
+import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -32,6 +33,7 @@ import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -101,6 +103,16 @@ public class YouKuApi extends BaseSiteApi {
             "android/channel/subpage?pid=%s&guid=%s&ver=4.4&cid=%s&" +
             "sub_channel_id=%s&sub_channel_type=4&filter=&ob=2&pg=%s&pz=%s";
 
+    private static final String CHANNEL_FILTER_FORMAT = "http://api.mobile.youku.com/layout/android3_0/channel/filter?pid=" +
+            "0865e0628a79dfbb&guid=%s&ver=4.4&cid=%s";
+
+
+    private static final String CHANNEL_ALBUMS_LIST_FILTER_FORMAT = "http://api.mobile.youku.com/layout/" +
+            "android/channel/subpage?pid=%s&guid=%s&ver=4.4&cid=%s&" +
+            "sub_channel_id=%s&sub_channel_type=4&filter=%s&ob=2&pg=%s&pz=%s";
+
+    /* filter = 中是类似  area:|movie_genre:|releaseyear:2015|pay_type:|paid:  字段，经过URLencode escape */
+
     private int channelToCid(SCChannel channel) {
 
         if(channel.getChannelID() == SCChannel.MOVIE)
@@ -159,6 +171,29 @@ public class YouKuApi extends BaseSiteApi {
         String gid = getGUID();
         String url = String.format(CHANNEL_ALBUMS_LIST_FORMAT,pid,gid,cid,subCid,pageNo,pageSize);
         return url;
+    }
+
+
+    private String getChannelAlbumsListUrlByFilter(SCChannel channel, SCChannelFilter filter, int pageNo, int pageSize) {
+        ArrayList<SCChannelFilterItem> items = filter.getSelectedItems();
+        String filterString = "";
+        int cid = channelToCid(channel);
+        int subCid = channelToSubChannelID(channel);
+        String pid = YOUKU_PID;
+        String gid = getGUID();
+        for(SCChannelFilterItem item: items) {
+            if(item.getSearchKey() != null)
+                filterString += item.getSearchKey() + ":" + item.getSearchVal() + "|";
+        }
+        String finalFilter =  URLEncoder.encode(filterString);
+
+        String url = String.format(CHANNEL_ALBUMS_LIST_FILTER_FORMAT,pid,gid,cid,subCid,finalFilter,pageNo,pageSize);
+        return url;
+    }
+
+
+    private String getChannelFilterUrl(SCChannel channel) {
+        return String.format(CHANNEL_FILTER_FORMAT,getGUID(),channelToCid(channel));
     }
 
     private String md5(String s) {
@@ -584,9 +619,7 @@ public class YouKuApi extends BaseSiteApi {
         );
     }
 
-    @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
-        String url = getChannelAlbumsListUrl(channel,pageNo,pageSize);
+    private  void doGetChannelAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -605,7 +638,12 @@ public class YouKuApi extends BaseSiteApi {
 
             }
         });
+    }
 
+    @Override
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getChannelAlbumsListUrl(channel,pageNo,pageSize);
+        doGetChannelAlbumsByUrl(url,listener);
 
     }
 
@@ -613,42 +651,48 @@ public class YouKuApi extends BaseSiteApi {
         try {
             JSONObject retJson = new JSONObject(ret);
             JSONArray results = retJson.optJSONArray("results");
-            SCAlbums albums = new SCAlbums();
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject result = results.getJSONObject(i);
-                SCAlbum album = new SCAlbum(SCSite.YOUKU);
-                String tmp;
+            if(results != null) {
+                SCAlbums albums = new SCAlbums();
+                if(results.length() == 0)
+                    return null;
+                for (int i = 0; i < results.length(); i++) {
+                    JSONObject result = results.getJSONObject(i);
+                    SCAlbum album = new SCAlbum(SCSite.YOUKU);
+                    String tmp;
 
-                tmp = result.optString("title");
-                if( tmp != null && !tmp.isEmpty())
-                    album.setTitle(tmp);
+                    tmp = result.optString("title");
+                    if (tmp != null && !tmp.isEmpty())
+                        album.setTitle(tmp);
 
-                int type = result.optInt("type");
+                    int type = result.optInt("type");
 
-                tmp = result.optString("img");
-                if( tmp != null && !tmp.isEmpty()) {
-                    if (type == 1)
-                        album.setHorImageUrl(tmp);
-                    if (type == 2)
-                        album.setVerImageUrl(tmp);
+                    tmp = result.optString("img");
+                    if (tmp != null && !tmp.isEmpty()) {
+                        if (type == 1)
+                            album.setHorImageUrl(tmp);
+                        if (type == 2)
+                            album.setVerImageUrl(tmp);
+                    }
+
+                    tmp = result.optString("tid");
+                    if (tmp != null && !tmp.isEmpty())
+                        album.setAlbumId(tmp);
+
+                    tmp = result.optString("subtitle");
+                    if (tmp != null && !tmp.isEmpty())
+                        album.setSubTitle(tmp);
+
+                    tmp = result.optString("stripe");
+                    if (tmp != null && !tmp.isEmpty())
+                        album.setTip(tmp);
+
+                    albums.add(album);
                 }
-
-                tmp = result.optString("tid");
-                if( tmp != null && !tmp.isEmpty())
-                    album.setAlbumId(tmp);
-
-                tmp = result.optString("subtitle");
-                if( tmp != null && !tmp.isEmpty())
-                    album.setSubTitle(tmp);
-
-                tmp = result.optString("stripe");
-                if( tmp != null && !tmp.isEmpty())
-                    album.setTip(tmp);
-
-                albums.add(album);
+                return albums;
             }
+            else
+                return null;
 
-            return albums;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -657,11 +701,55 @@ public class YouKuApi extends BaseSiteApi {
 
     @Override
     public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
-
+        String url = getChannelAlbumsListUrlByFilter(channel,filter,pageNo,pageSize);
+        doGetChannelAlbumsByUrl(url,listener);
     }
 
     @Override
-    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
+    public void doGetChannelFilter(SCChannel channel, final OnGetChannelFilterListener listener) {
+        String url = getChannelFilterUrl(channel);
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                listener.onGetChannelFilterFailed("Http failed");
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject resultsJson = retJson.optJSONObject("results");
+                    if(resultsJson != null) {
+                        JSONArray filterJsonArray = resultsJson.optJSONArray("filter");
+                        if(filterJsonArray != null && filterJsonArray.length() > 0) {
+                            SCChannelFilter filter = new SCChannelFilter();
+                            for (int i = 0; i < filterJsonArray.length(); i++) {
+                                JSONObject filterJson = filterJsonArray.getJSONObject(i);
+                                JSONArray filterItemsJson = filterJson.optJSONArray("items");
+                                String key = filterJson.optString("cat");
+                                ArrayList<SCChannelFilterItem> filterItems = new ArrayList<SCChannelFilterItem>();
+                                for (int j = 0; j < filterItemsJson.length(); j++) {
+                                    JSONObject filterItemJson = filterItemsJson.getJSONObject(j);
+                                    String searchVal = filterItemJson.optString("value");
+                                    String displayName = filterItemJson.optString("title");
+                                    if(searchVal == null)
+                                        searchVal = "";
+                                    SCChannelFilterItem filterItem = new SCChannelFilterItem(searchVal,displayName);
+                                    filterItem.setParentKey(key);
+                                    filterItem.setSearchKey(key);
+                                    filterItems.add(filterItem);
+                                }
+                                filter.addFilter(key,filterItems);
+                            }
+                            listener.onGetChannelFilterSuccess(filter);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
