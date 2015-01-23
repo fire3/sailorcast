@@ -77,19 +77,19 @@ public class LetvApi extends BaseSiteApi{
     private final static int CID_CLASS = 17; //公开课
 
     private final static String ALBUM_LIST_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
-            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/ph/420003,420004/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
     private final static String FILTER_URL = "http://static.meizi.app.m.letv.com/android/mod/mob/ctl/filter/act/" +
             "index/pcode/010110263/version/5.6.2.mindex.html";
 
     private final static String ALBUM_LIST_URL_DOCUMENTARY_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
-            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/3/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/3/ph/420003,420004/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
     private final static String ALBUM_LIST_URL_SHOW_FORMAT =   "http://static.meizi.app.m.letv.com/android/" +
             "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/20/vt/180001/ph/420003,420004/pt/-141003/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
     private final static String ALBUM_LIST_BY_FILTER_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
-            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s%s/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s%s/ph/420003,420004/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
     public LetvApi() {
         doUpdateTmOffset();

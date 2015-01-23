@@ -1,7 +1,6 @@
 package com.crixmod.sailorcast.view.fragments;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -156,10 +155,11 @@ public class AlbumPlayGridFragment extends Fragment implements
                 mGridView.post(new Runnable() {
                     @Override
                     public void run() {
+                        mListener.onAlbumPlayVideosFetched(videos.size());
                         if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
                             mGridView.setSelection(mInitialVideoNoInAlbum);
                             mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
-                            mListener.onVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
+                            mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
                         }
                         mAdapter.notifyDataSetChanged();
                         mGridView.setIsLoading(false);
@@ -193,23 +193,25 @@ public class AlbumPlayGridFragment extends Fragment implements
 
     @Override
     public void onGetVideosFailed(String failReason) {
-        mGridView.post(new Runnable() {
-            @Override
-            public void run() {
-                mGridView.setIsLoading(false);
-                mGridView.setHasMoreItems(false);
-            }
-        });
-
-
-
+        if(mGridView != null) {
+            mGridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mGridView.setIsLoading(false);
+                    mGridView.setHasMoreItems(false);
+                }
+            });
+        }
     }
 
     @Override
     public void onVideoSelected(int position, SCVideo v) {
-        mGridView.setSelection(position);
-        mGridView.setItemChecked(position,true);
-        mListener.onVideoSelected(v, position);
+
+        if(mGridView != null) {
+            mGridView.setSelection(position);
+            mGridView.setItemChecked(position, true);
+        }
+        mListener.onAlbumPlayVideoSelected(v, position);
     }
 
     /**
@@ -223,7 +225,8 @@ public class AlbumPlayGridFragment extends Fragment implements
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnAlbumPlayGridListener {
-        public void onVideoSelected(SCVideo v, int videoNoInAlbum);
+        public void onAlbumPlayVideoSelected(SCVideo v, int videoNoInAlbum);
+        public void onAlbumPlayVideosFetched(int count);
     }
 
 }

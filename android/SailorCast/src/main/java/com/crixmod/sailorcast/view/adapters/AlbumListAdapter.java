@@ -16,6 +16,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
@@ -118,7 +119,9 @@ public class AlbumListAdapter extends BaseAdapter {
                         mChannel.getChannelID() == SCChannel.MUSIC
                         )
                     AlbumDetailActivity.launch((Activity) mContext, album, 0,true);
-                else
+                else if(mChannel.getChannelID() == SCChannel.MOVIE && album.getSite().getSiteID() == SCSite.LETV) {
+                    AlbumDetailActivity.launch((Activity) mContext, album, 0,true);
+                } else
                     AlbumDetailActivity.launch((Activity) mContext, album);
             }
         });

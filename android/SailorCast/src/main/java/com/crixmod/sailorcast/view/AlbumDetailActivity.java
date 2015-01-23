@@ -247,7 +247,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             ImageTools.displayImage(albumImage,album.getHorImageUrl());
         }
     }
-    public void closeAlbumDesc() {
+
+    public void closeAlbumDesc(View view) {
         RelativeLayout albumDescContainer = (RelativeLayout) findViewById(R.id.album_desc_container);
         albumDescContainer.setVisibility(View.GONE);
     }
@@ -308,13 +309,20 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     @Override
-    public void onVideoSelected(SCVideo v, int videoNoInAlbum) {
+    public void onAlbumPlayVideoSelected(SCVideo v, int videoNoInAlbum) {
         mCurrentVideo = v;
         mVideoInAlbum = videoNoInAlbum;
         v.setSeqInAlbum(videoNoInAlbum + 1);
         hideAllPlayButton();
         SiteApi.doGetVideoPlayUrl(v, this);
 
+    }
+
+    @Override
+    public void onAlbumPlayVideosFetched(int count) {
+        int old = mAlbum.getVideosCount();
+        mAlbum.setVideosCount(old + count);
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -400,13 +408,9 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onPlayButtonClick(View button) {
         String url = (String) button.getTag(R.id.key_video_url);
         if(url != null) {
-            //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
             //BaiduPlayerActivity.launch(this,url);
-            Log.d("fire3", "play " + mCurrentVideo.toString());
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
-        else
-            Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -416,13 +420,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onDlnaButtonClick(View button) {
         final String url = (String) button.getTag(R.id.key_video_url);
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
-        if(url != null) {
-            //Integer no = (Integer) button.getTag(R.id.key_video_number_in_album);
-            //BaiduPlayerActivity.launch(this,url);
-            Log.d("fire3","play " + v.toString());
-        }
-        else
-            Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
 
         FragmentManager fm = getSupportFragmentManager();
         RendererDialog dialog = new RendererDialog();
@@ -439,9 +436,9 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
 	private void launchRenderer(SCVideo video, String url)
 	{
+        mHistoryDb.addHistory(mAlbum,video,0);
 		IRendererCommand rendererCommand = SailorCast.factory.createRendererCommand(SailorCast.factory.createRendererState());
 		rendererCommand.lauchSCVideo(video,url);
-        //RenderActivity.launch(this,mAlbum,video);
 	}
 
 }
