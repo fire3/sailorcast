@@ -23,10 +23,6 @@
             android:name=".view.SearchResultsActivity"
             android:label="@string/title_activity_search_results" >
         </activity>
-        <activity
-            android:name=".view.AlbumActivity"
-            android:label="@string/title_activity_album" >
-        </activity>
 
         <service android:name=".model.cling.UpnpService" />
 

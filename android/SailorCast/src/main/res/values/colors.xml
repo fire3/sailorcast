@@ -100,9 +100,7 @@
     <color name="reader_divider_grey">@color/grey_extra_light</color>
     <color name="reader_hyperlink">@color/blue_medium</color>
 
-    <!-- comment status colors -->
-    <color name="comment_status_unapproved">@color/orange_medium</color>
-    <color name="comment_status_spam">#dd3d36</color>
+    <color name="item_checked">#cd5c5c</color>
 
     <!-- NUX Colors -->
     <color name="nux_grey_button">#bbdded</color>

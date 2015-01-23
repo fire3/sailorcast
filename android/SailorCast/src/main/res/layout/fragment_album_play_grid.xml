@@ -6,9 +6,9 @@
 <com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView
     android:id="@+id/result_grid"
     android:numColumns="6"
-    android:verticalSpacing="1dp"
     android:choiceMode="singleChoice"
-    android:horizontalSpacing="1dp"
+    android:verticalSpacing="4dp"
+    android:horizontalSpacing="4dp"
     android:stretchMode="columnWidth"
     android:layout_width="match_parent"
     android:layout_height="match_parent">

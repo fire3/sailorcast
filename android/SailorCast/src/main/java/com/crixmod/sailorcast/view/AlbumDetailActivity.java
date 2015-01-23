@@ -156,6 +156,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 mBookmarkDb.addAlbum(mAlbum);
                 mIsFav = true;
                 invalidateOptionsMenu();
+                Toast.makeText(this,getResources().getString(R.string.toast_bookmarked),Toast.LENGTH_SHORT).show();
+
             }
         }
 
@@ -163,6 +165,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         if (id == R.id.action_fav_button) {
             if(mIsFav == true) {
                 mBookmarkDb.deleteAlbum(mAlbum.getAlbumId(),mAlbum.getSite().getSiteID());
+                Toast.makeText(this,getResources().getString(R.string.toast_unbookmarked),Toast.LENGTH_SHORT).show();
                 mIsFav = false;
                 invalidateOptionsMenu();
             }

@@ -234,8 +234,11 @@ public class HistoryFragment extends Fragment {
             params.height = point.y;
             if(video.getHorPic() != null &&  !video.getHorPic().isEmpty())
                 ImageTools.displayImage(viewHolder.videoImage,video.getHorPic(),point.x,point.y);
-            else
+            else if(album.getHorImageUrl()!= null && !album.getHorImageUrl().isEmpty())
                 ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
+            else if(album.getVerImageUrl()!= null && !album.getVerImageUrl().isEmpty())
+                ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
+
 
             viewHolder.videoChecker.setChecked(bookmarkHistory.getChecked());
 

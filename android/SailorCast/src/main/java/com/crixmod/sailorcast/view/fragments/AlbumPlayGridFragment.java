@@ -37,7 +37,7 @@ public class AlbumPlayGridFragment extends Fragment implements
     private SCAlbum mAlbum;
     private boolean mIsShowTitle;
     private int mPageNo = 0;
-    private int mPageSize = 50;
+    private int mPageSize = 60;
     private AlbumPlayGridAdapter mAdapter;
     private int mInitialVideoNoInAlbum = 0;
     private boolean mFirstSelection = true;
@@ -90,7 +90,11 @@ public class AlbumPlayGridFragment extends Fragment implements
         mGridView.setNumColumns(mColumns);
         mAdapter.setShowTitle(mIsShowTitle);
         mGridView.setAdapter(mAdapter);
-        mGridView.setHasMoreItems(true);
+        if(mAlbum.getVideosTotal() > 0 && mAlbum.getVideosTotal() > mPageSize)
+            mGridView.setHasMoreItems(true);
+        else
+            mGridView.setHasMoreItems(false);
+
         mGridView.setPagingableListener(new PagingGridView.Pagingable() {
             @Override
             public void onLoadMoreItems() {

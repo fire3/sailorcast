@@ -89,9 +89,9 @@ public class AlbumListActivity extends BaseToolbarActivity {
         }
 
         private int positionToSiteID(int position) {
-            //音乐频道里面，Youku的数据处理起来有些麻烦，这里屏蔽一下。
+            //音乐、体育频道里面，Youku的数据处理起来有些麻烦，这里屏蔽一下。
             int mSiteID = position;
-            if(mChannelID == SCChannel.MUSIC) {
+            if(mChannelID == SCChannel.MUSIC || mChannelID == SCChannel.SPORT) {
                 if(position == 0)
                     mSiteID = SCSite.SOHU;
                 if(position == 1)
@@ -109,7 +109,7 @@ public class AlbumListActivity extends BaseToolbarActivity {
 
         @Override
         public int getCount() {
-            if(mChannelID == SCChannel.MUSIC)
+            if(mChannelID == SCChannel.MUSIC || mChannelID == SCChannel.SPORT)
                 return (SiteApi.getSupportSiteNumber() - 1);
             else
                 return SiteApi.getSupportSiteNumber();

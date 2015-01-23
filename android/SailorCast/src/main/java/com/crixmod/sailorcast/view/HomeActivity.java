@@ -116,9 +116,9 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure?")
-                .setPositiveButton("Yes", dialogClick)
-                .setNegativeButton("No", dialogClick).show();
+        builder.setMessage(getResources().getString(R.string.alert_delete_message))
+                .setPositiveButton(getResources().getString(R.string.alert_delete_ok), dialogClick)
+                .setNegativeButton(getResources().getString(R.string.alert_delete_cancel), dialogClick).show();
     }
 
 
