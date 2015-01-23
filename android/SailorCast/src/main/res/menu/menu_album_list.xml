@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.crixmod.sailorcast.view.AlbumListActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_filters" android:title="@string/action_filters"
+        android:icon="@drawable/ic_filter_white"
+        android:orderInCategory="100" app:showAsAction="always" />
 </menu>

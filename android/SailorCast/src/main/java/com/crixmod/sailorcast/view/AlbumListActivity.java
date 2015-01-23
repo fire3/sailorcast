@@ -58,11 +58,18 @@ public class AlbumListActivity extends BaseToolbarActivity {
         return true;
     }
 
+    private void showAlbumFilterDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        AlbumFilterDialog dialog = new AlbumFilterDialog();
+        dialog.show(fm,"fdas");
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_filters) {
+            showAlbumFilterDialog();
             return true;
         }
 
