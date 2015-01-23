@@ -8,11 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:background="@drawable/loading"
             android:id="@+id/video_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="100dp" />
         <TextView
             android:paddingLeft="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small"

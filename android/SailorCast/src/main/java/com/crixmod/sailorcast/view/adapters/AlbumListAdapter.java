@@ -40,6 +40,9 @@ public class AlbumListAdapter extends BaseAdapter {
         this.mContext = mContext;
         this.mChannel = channel;
     }
+    public void clear() {
+        mAlbums.clear();
+    }
 
     public void addAlbum(SCAlbum album) {
         mAlbums.add(album);
@@ -78,19 +81,26 @@ public class AlbumListAdapter extends BaseAdapter {
 
     private void setupViewHolder(View view, int i, final ViewHolder viewHolder, final SCAlbum album) {
         viewHolder.videoTitle.setText(album.getTitle());
-
-        if(mColumns == 3 && album.getVerImageUrl() != null) {
-
+        int x = 0,y = 0;
+        if(mColumns == 3) {
             Point point = ImageTools.getGridVerPosterSize(mContext, mColumns);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
             viewHolder.videoImage.setLayoutParams(params);
-            ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
-        } else if(mColumns == 2 && album.getHorImageUrl() != null) {
+            x = point.x;
+            y = point.y;
+        }
 
+        if(mColumns == 2) {
             Point point = ImageTools.getGridHorPosterSize(mContext,mColumns);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
             viewHolder.videoImage.setLayoutParams(params);
-            ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
+            x = point.x;
+            y = point.y;
+        }
+        if(album.getVerImageUrl() != null) {
+            ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),x,y);
+        } else if(album.getHorImageUrl() != null) {
+            ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),x,y);
         }
         viewHolder.videoTip.setText("");
         viewHolder.videoTip.setVisibility(View.GONE);

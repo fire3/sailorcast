@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,9 @@ import com.crixmod.sailorcast.view.adapters.AlbumListAdapter;
  * Use the {@link AlbumListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, OnGetChannelFilterListener{
+public class AlbumListFragment extends Fragment implements
+        SwipeRefreshLayout.OnRefreshListener,
+        OnGetAlbumsListener, OnGetChannelFilterListener{
     private static final String ARG_CHANNEL_ID = "channelID";
     private static final String ARG_SITE_ID = "siteID";
 
@@ -41,6 +44,8 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
     private AlbumListAdapter mAdapter;
     private int mColumns = 3;
     private SCChannelFilter mFilter;
+    private boolean inFilterMode;
+    private SwipeRefreshLayout mSwipeContainer;
 
 
     /**
@@ -88,7 +93,14 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_album_list, container, false);
+        mSwipeContainer = (SwipeRefreshLayout) view;
+        mSwipeContainer.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
+        mSwipeContainer.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
         mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
+
         mGridView.setNumColumns(mColumns);
         mGridView.setAdapter(mAdapter);
         mGridView.setHasMoreItems(true);
@@ -103,7 +115,10 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
 
     public void loadMoreAlbums() {
         mPageNo ++ ;
-        SiteApi.doGetChannelAlbums(mSiteID,mChannelID,mPageNo,mPageSize,this);
+        if(inFilterMode)
+            SiteApi.doGetChannelAlbumsByFilter(mSiteID, mChannelID, mPageNo, mPageSize, mFilter, this);
+        else
+            SiteApi.doGetChannelAlbums(mSiteID, mChannelID, mPageNo, mPageSize, this);
     }
 
 
@@ -114,27 +129,33 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
             if (albums.size() > 0) {
                 if (albums.get(0).getVerImageUrl() == null) {
                     mColumns = 2;
-                    mGridView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mGridView.setNumColumns(mColumns);
-                            mAdapter.setColumns(mColumns);
-                        }
-                    });
+                    if (mGridView != null) {
+                        mGridView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mGridView.setNumColumns(mColumns);
+                                mAdapter.setColumns(mColumns);
+                            }
+                        });
+                    }
                 }
             }
         }
 
         for(SCAlbum a : albums) {
-            mAdapter.addAlbum(a);
+            if(mAdapter != null)
+                mAdapter.addAlbum(a);
         }
-        mGridView.post(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-                mGridView.setIsLoading(false);
-            }
-        });
+        if(mGridView != null) {
+            mGridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                    mGridView.setIsLoading(false);
+                    mSwipeContainer.setRefreshing(false);
+                }
+            });
+        }
     }
 
     @Override
@@ -151,9 +172,19 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
 
     @Override
     public void onGetChannelFilterSuccess(SCChannelFilter filter) {
-        mFilter = filter;
-        Log.d("fire3",mFilter.toJson());
+        if(filter != null)
+            mFilter = filter;
     }
+
+    public void setChannelFilter(SCChannelFilter filter) {
+        if(filter != null) {
+            mFilter = filter;
+            inFilterMode = true;
+            Log.d("fire3","setChannelFilter" + filter.toJson());
+            onRefresh();
+        }
+    }
+
 
     @Override
     public void onGetChannelFilterFailed(String failReason) {
@@ -169,4 +200,13 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
         }
     }
 
+    @Override
+    public void onRefresh() {
+        mAdapter.clear();
+        mPageNo = 0;
+        mGridView.setHasMoreItems(true);
+        loadMoreAlbums();
+        mAdapter.notifyDataSetChanged();
+
+    }
 }

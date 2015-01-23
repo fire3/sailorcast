@@ -79,7 +79,14 @@ public class SiteApi {
         return null;
     }
 
-    public static void doGetChannelAlbumsByFilter(int siteID, SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+    public static void doGetChannelAlbumsByFilter(int siteID, int channelID, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+
+        if(siteID == SCSite.LETV)
+            new LetvApi().doGetChannelAlbumsByFilter(new SCChannel(channelID),pageNo,pageSize,filter,listener);
+        if(siteID == SCSite.YOUKU)
+            new YouKuApi().doGetChannelAlbumsByFilter(new SCChannel(channelID),pageNo,pageSize,filter,listener);
+        if(siteID == SCSite.SOHU)
+            new SohuApi().doGetChannelAlbumsByFilter(new SCChannel(channelID),pageNo,pageSize,filter,listener);
 
     }
     public static void doGetChannelAlbums(int siteID, int channelID, int pageNo, int pageSize, OnGetAlbumsListener listener) {

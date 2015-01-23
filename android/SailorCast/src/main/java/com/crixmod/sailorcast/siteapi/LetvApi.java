@@ -87,6 +87,10 @@ public class LetvApi extends BaseSiteApi{
 
     private final static String ALBUM_LIST_URL_SHOW_FORMAT =   "http://static.meizi.app.m.letv.com/android/" +
             "mod/mob/ctl/listalbum/act/index/src/1/cg/%s/or/20/vt/180001/ph/420003,420004/pt/-141003/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+
+    private final static String ALBUM_LIST_BY_FILTER_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
+            "mod/mob/ctl/listalbum/act/index/src/1/cg/%s%s/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
+
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -501,6 +505,16 @@ public class LetvApi extends BaseSiteApi{
            return String.format(ALBUM_LIST_URL_FORMAT,channelToCid(channel),pageNo,pageSize);
     }
 
+    private String getAlbumListUrlByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter) {
+        String filterString = "";
+        ArrayList<SCChannelFilterItem> items = filter.getSelectedItems();
+        for(SCChannelFilterItem item: items) {
+            if(item.getSearchKey() != null)
+                filterString = filterString + "/" + item.getSearchKey() + "/" + item.getSearchVal();
+        }
+        return String.format(ALBUM_LIST_BY_FILTER_URL_FORMAT,channelToCid(channel),filterString,pageNo,pageSize);
+    }
+
     private int channelToCid(SCChannel channel) {
 
         if(channel.getChannelID() == SCChannel.MOVIE)
@@ -526,10 +540,7 @@ public class LetvApi extends BaseSiteApi{
         return -1;
     }
 
-
-    @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
-        String url = getAlbumListUrl(channel,pageNo,pageSize);
+    private void getAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -551,8 +562,15 @@ public class LetvApi extends BaseSiteApi{
     }
 
     @Override
-    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getAlbumListUrl(channel,pageNo,pageSize);
+        getAlbumsByUrl(url,listener);
+    }
 
+    @Override
+    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+        String url = getAlbumListUrlByFilter(channel, pageNo, pageSize, filter);
+        getAlbumsByUrl(url,listener);
     }
 
     @Override
@@ -581,8 +599,16 @@ public class LetvApi extends BaseSiteApi{
                             for (int j = 0; j < filterArray.length(); j++) {
 
                                 String key = filterArray.getJSONObject(j).optString("key");
+
                                 JSONArray valArray = filterArray.getJSONObject(j).optJSONArray("val");
                                 ArrayList<SCChannelFilterItem> items = new ArrayList<SCChannelFilterItem>();
+                                if(!key.equals("or")) {
+                                    //增加全部选项，设置Searchkey为Null，当生成链接时发现SearchKey为null，忽略这个item即可
+                                    SCChannelFilterItem item = new SCChannelFilterItem("","全部");
+                                    item.setSearchKey(null);
+                                    item.setParentKey(key);
+                                    items.add(item);
+                                }
                                 for (int k = 0; k < valArray.length() ; k++) {
                                     String name = valArray.getJSONObject(k).optString("name");
                                     String searchVal = valArray.getJSONObject(k).optString("id");
@@ -595,7 +621,8 @@ public class LetvApi extends BaseSiteApi{
                                     item.setParentKey(key);
                                     items.add(item);
                                 }
-                                scfilter.addFilter(key,items);
+                                if(items.size() > 1)
+                                    scfilter.addFilter(key,items);
                             }
 
                             listener.onGetChannelFilterSuccess(scfilter);

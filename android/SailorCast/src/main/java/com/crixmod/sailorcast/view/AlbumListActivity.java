@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
@@ -25,7 +26,9 @@ import com.crixmod.sailorcast.view.fragments.AlbumListFragment;
 
 import java.util.HashMap;
 
-public class AlbumListActivity extends BaseToolbarActivity {
+public class AlbumListActivity extends BaseToolbarActivity
+implements AlbumFilterDialog.OnAlbumFilterDialogAction
+{
     ViewPager mViewPager;
     private SlidingTabLayout mSlidingTabLayout;
     private SitePagerAdapter mPagerAdapter;
@@ -88,6 +91,14 @@ public class AlbumListActivity extends BaseToolbarActivity {
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(AlbumListActivity.EXTRA_CHANNEL_ID, mChannelID);
         activity.startActivity(mpdIntent);
+    }
+
+    @Override
+    public void onAlbumFilterSelected(SCChannelFilter filter) {
+
+        AlbumListFragment fragment =    mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+        if(fragment!= null)
+            fragment.setChannelFilter(filter);
     }
 
     private class SitePagerAdapter extends FragmentPagerAdapter {

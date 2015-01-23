@@ -1,5 +1,6 @@
 package com.crixmod.sailorcast.view;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class AlbumFilterDialog extends DialogFragment {
     private static final String ARG_FILTER = "filter";
     private static final String ARG_SITE_ID = "siteID";
     private View mRootView;
+    private OnAlbumFilterDialogAction mListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +44,24 @@ public class AlbumFilterDialog extends DialogFragment {
         fillView(mFilter);
         return view;
     }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnAlbumFilterDialogAction) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -98,6 +118,7 @@ public class AlbumFilterDialog extends DialogFragment {
                         text.setTextSize(15);
                         text.setText(items.get(index).getDisplayName());
                         text.setTag(R.id.key_filter_item, items.get(index));
+                        items.get(index).setChecked(false);
                         int[][] states = new int[][]{
                                 new int[]{android.R.attr.state_checked}, // checked
                                 new int[]{-android.R.attr.state_checked}, // unchecked
@@ -128,8 +149,11 @@ public class AlbumFilterDialog extends DialogFragment {
                                 item.setChecked(true);
                             }
                         });
-                        if (j == 0 && k == 0)
+                        if (j == 0 && k == 0) {
                             text.setChecked(true);
+                            SCChannelFilterItem item = (SCChannelFilterItem) text.getTag(R.id.key_filter_item);
+                            item.setChecked(true);
+                        }
                         row.addView(text);
                     }
                 }
@@ -172,6 +196,15 @@ public class AlbumFilterDialog extends DialogFragment {
                     dismiss();
                 }
             });
+
+            okButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.onAlbumFilterSelected(mFilter);
+                    dismiss();
+                }
+            });
+
         }
     }
 
@@ -196,6 +229,10 @@ public class AlbumFilterDialog extends DialogFragment {
             mFilter = SCChannelFilter.fromJson(getArguments().getString(ARG_FILTER));
         }
 
+    }
+
+    public interface OnAlbumFilterDialogAction {
+        public void onAlbumFilterSelected(SCChannelFilter filter);
     }
 
 
