@@ -41,6 +41,9 @@ public class AlbumPlayGridFragment extends Fragment implements
     private AlbumPlayGridAdapter mAdapter;
     private int mInitialVideoNoInAlbum = 0;
     private boolean mFirstSelection = true;
+    private int COLUMNS_BUTTON = 6;
+    private int COLUMNS_TITLE = 1;
+    private int mColumns = COLUMNS_BUTTON;
 
     private OnAlbumPlayGridListener mListener;
     private PagingGridView mGridView;
@@ -84,6 +87,8 @@ public class AlbumPlayGridFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_album_play_grid, container, false);
         mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
+        mGridView.setNumColumns(mColumns);
+        mAdapter.setShowTitle(mIsShowTitle);
         mGridView.setAdapter(mAdapter);
         mGridView.setHasMoreItems(true);
         mGridView.setPagingableListener(new PagingGridView.Pagingable() {
@@ -93,6 +98,22 @@ public class AlbumPlayGridFragment extends Fragment implements
             }
         });
         return view;
+    }
+
+
+    public void setShowTitle(boolean showTitle) {
+        mIsShowTitle = showTitle;
+        if(mIsShowTitle) {
+            mColumns = COLUMNS_TITLE;
+        } else {
+            mColumns = COLUMNS_BUTTON;
+        }
+        if(mAdapter!=null) {
+            mAdapter.setShowTitle(mIsShowTitle);
+        }
+        if(mGridView != null) {
+            mGridView.setNumColumns(mColumns);
+        }
     }
 
     @Override
@@ -171,13 +192,16 @@ public class AlbumPlayGridFragment extends Fragment implements
                 mGridView.setHasMoreItems(false);
             }
         });
+
+
+
     }
 
     @Override
     public void onVideoSelected(int position, SCVideo v) {
         mGridView.setSelection(position);
         mGridView.setItemChecked(position,true);
-        mListener.onVideoSelected(v,position);
+        mListener.onVideoSelected(v, position);
     }
 
     /**

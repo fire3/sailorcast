@@ -64,7 +64,7 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
             mSiteID = getArguments().getInt(ARG_SITE_ID);
             mChannelID = getArguments().getInt(ARG_CHANNEL_ID);
             loadMoreAlbums();
-            mAdapter = new AlbumListAdapter(getActivity());
+            mAdapter = new AlbumListAdapter(getActivity(), new SCChannel(mChannelID));
             if(mSiteID == SCSite.LETV) {
                 mColumns = 2;
                 mAdapter.setColumns(mColumns);

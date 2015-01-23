@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCChannel;
+import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
@@ -87,20 +88,36 @@ public class AlbumListActivity extends BaseToolbarActivity {
             this.mChannelID = mChannelID;
         }
 
+        private int positionToSiteID(int position) {
+            //音乐频道里面，Youku的数据处理起来有些麻烦，这里屏蔽一下。
+            int mSiteID = position;
+            if(mChannelID == SCChannel.MUSIC) {
+                if(position == 0)
+                    mSiteID = SCSite.SOHU;
+                if(position == 1)
+                    mSiteID = SCSite.LETV;
+            }
+            else
+                mSiteID = position;
+            return mSiteID;
+        }
+
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            return AlbumListFragment.newInstance(position,mChannelID);
+            return AlbumListFragment.newInstance(positionToSiteID(position),mChannelID);
         }
 
         @Override
         public int getCount() {
-            return SiteApi.getSupportSiteNumber();
+            if(mChannelID == SCChannel.MUSIC)
+                return (SiteApi.getSupportSiteNumber() - 1);
+            else
+                return SiteApi.getSupportSiteNumber();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return SiteApi.getSiteName(position, mContext);
+            return SiteApi.getSiteName(positionToSiteID(position), mContext);
         }
     }
 }

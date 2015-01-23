@@ -58,7 +58,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     private BookmarkDbHelper mBookmarkDb;
     private HistoryDbHelper mHistoryDb;
     private boolean mIsFav;
-    private Fragment mFragment;
+    private AlbumPlayGridFragment mFragment;
 
 
     @Override
@@ -66,6 +66,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         super.onCreate(savedInstanceState);
         mAlbum = getIntent().getParcelableExtra("album");
         mInitialVideoNoInAlbum = getIntent().getIntExtra("videoNo",0);
+        mIsShowTitle = getIntent().getBooleanExtra("showTitle",false);
         SiteApi.doGetAlbumDesc(mAlbum, this);
         findViews();
         setTitle(mAlbum.getTitle());
@@ -138,12 +139,14 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         if (id == R.id.action_display_button) {
             if ( mIsShowTitle == true ) {
                 mIsShowTitle = false;
+                mFragment.setShowTitle(mIsShowTitle);
             }
             return true;
         }
         if (id == R.id.action_display_title) {
             if ( mIsShowTitle == false ) {
                 mIsShowTitle = true;
+                mFragment.setShowTitle(mIsShowTitle);
             }
             return true;
         }
@@ -185,6 +188,16 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         Intent mpdIntent = new Intent(activity, AlbumDetailActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra("videoNo",videoNo)
+                .putExtra("album",album);
+
+        activity.startActivity(mpdIntent);
+    }
+
+    public static void launch(Activity activity, SCAlbum album, int videoNo, boolean mIsShowTitle) {
+        Intent mpdIntent = new Intent(activity, AlbumDetailActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra("videoNo",videoNo)
+                .putExtra("showTitle",mIsShowTitle)
                 .putExtra("album",album);
 
         activity.startActivity(mpdIntent);
@@ -271,6 +284,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 invalidateOptionsMenu();
 
                 mFragment = AlbumPlayGridFragment.newInstance(mAlbum,mIsShowTitle,mInitialVideoNoInAlbum);
+                mFragment.setShowTitle(mIsShowTitle);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, mFragment);
                 ft.commit();

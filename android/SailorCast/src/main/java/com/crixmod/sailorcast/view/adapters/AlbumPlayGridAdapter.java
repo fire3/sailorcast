@@ -24,11 +24,13 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
     private Context mContext;
     private SCVideos mVideos = new SCVideos();
     private AlbumPlayGridSelectedListener mListener;
+    private boolean showTitle = false;
 
     private class ViewHolder {
             LinearLayout resultContainer;
             Button videoTitle;
     }
+
 
     public AlbumPlayGridAdapter(Context mContext , AlbumPlayGridSelectedListener mListener) {
         this.mContext = mContext;
@@ -70,7 +72,13 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
     }
 
     private void setupViewHolder(View view, final int position, final ViewHolder viewHolder, final SCVideo video) {
-        viewHolder.videoTitle.setText("" + (position + 1));
+        if(isShowTitle()) {
+            if(video.getVideoTitle()!=null && !video.getVideoTitle().isEmpty())
+                viewHolder.videoTitle.setText(video.getVideoTitle());
+            else
+                viewHolder.videoTitle.setText("" + (position + 1));
+        } else
+            viewHolder.videoTitle.setText("" + (position + 1));
         viewHolder.videoTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,7 +100,30 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
         return itemView;
     }
 
+    public boolean isShowTitle() {
+        return showTitle;
+    }
+
+    public void setShowTitle(boolean showTitle) {
+        this.showTitle = showTitle;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(showTitle)
+            return 1;
+        else
+            return 0;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
     public interface AlbumPlayGridSelectedListener {
         public void onVideoSelected(int position, SCVideo v);
     }
+
+
 }

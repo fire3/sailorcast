@@ -282,15 +282,20 @@ public class LetvApi extends BaseSiteApi{
                                 videos.add(v);
                             }
                             if(videos.size() > 0) {
-                                listener.onGetVideosSuccess(videos);
+                                if(listener!=null)
+                                    listener.onGetVideosSuccess(videos);
                                 return;
                             }
-                            else
-                                listener.onGetVideosFailed("null videos");
+                            else {
+                                if(listener!=null)
+                                    listener.onGetVideosFailed("null videos");
+                            }
 
                         }
-                        listener.onGetVideosFailed("null videos");
+                        if(listener!=null)
+                            listener.onGetVideosFailed("null videos");
                     }
+                    if(listener!=null)
                     listener.onGetVideosFailed("null videos");
                 } catch (JSONException e) {
                     listener.onGetVideosFailed("Wrong Json");

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumDetailActivity;
 
@@ -24,6 +25,7 @@ import com.crixmod.sailorcast.view.AlbumDetailActivity;
 public class AlbumListAdapter extends BaseAdapter {
     private Context mContext;
     private int mColumns = 3;
+    private SCChannel mChannel;
 
     private SCAlbums mAlbums = new SCAlbums();
 
@@ -34,8 +36,9 @@ public class AlbumListAdapter extends BaseAdapter {
             TextView videoTip;
     }
 
-    public AlbumListAdapter(Context mContext) {
+    public AlbumListAdapter(Context mContext, SCChannel channel) {
         this.mContext = mContext;
+        this.mChannel = channel;
     }
 
     public void addAlbum(SCAlbum album) {
@@ -99,7 +102,14 @@ public class AlbumListAdapter extends BaseAdapter {
         viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlbumDetailActivity.launch((Activity) mContext, album);
+                if(mChannel.getChannelID() == SCChannel.VARIETY ||
+                        mChannel.getChannelID() == SCChannel.DOCUMENTARY ||
+                        mChannel.getChannelID() == SCChannel.SPORT ||
+                        mChannel.getChannelID() == SCChannel.MUSIC
+                        )
+                    AlbumDetailActivity.launch((Activity) mContext, album, 0,true);
+                else
+                    AlbumDetailActivity.launch((Activity) mContext, album);
             }
         });
     }
