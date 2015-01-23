@@ -708,6 +708,10 @@ public class YouKuApi extends BaseSiteApi {
     @Override
     public void doGetChannelFilter(SCChannel channel, final OnGetChannelFilterListener listener) {
         String url = getChannelFilterUrl(channel);
+        if(url == null) {
+            listener.onGetChannelFilterFailed("wrong channel");
+            return;
+        }
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

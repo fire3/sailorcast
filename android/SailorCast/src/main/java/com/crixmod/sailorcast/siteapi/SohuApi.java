@@ -6,6 +6,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
+import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -19,11 +20,14 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 /**
  * Created by fire3 on 14-12-26.
@@ -32,7 +36,6 @@ public class SohuApi extends BaseSiteApi {
     private final static String API_KEY = "plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&sver=4.5.0&sysver=4.4.2&partner=47";
     private final static String API_ALBUM_INFO = "http://api.tv.sohu.com/v4/album/info/" ;
     private final static String API_ALBUM_VIDOES = "http://api.tv.sohu.com/v4/album/videos/" ;
-    private final static String API_CATEGORY_FILTER = "http://api.tv.sohu.com/v4/search/channel.json?";
     private final static String API_SEARCH = "http://api.tv.sohu.com/v4/search/album.json?o=&all=0&ds=&" + API_KEY + "&key=";
 
     private static int ORDER_DESCENDING = 1;
@@ -41,7 +44,11 @@ public class SohuApi extends BaseSiteApi {
     private final static String API_CHANNEL_ALBUM_FORMAT = "http://api.tv.sohu.com/v4/search/channel.json" +
             "?cid=%s&o=1&plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&" +
             "sver=4.5.0&sysver=4.4.2&partner=47&page=%s&page_size=%s";
-
+    private final static String API_CHANNEL_FILTER_FORMAT = "http://api.tv.sohu.com/v4/category/%s.json?" +
+            "plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&sver=4.5.0&sysver=4.4.2&partner=47";
+    private final static String API_CHANNEL_ALBUM_BY_FILTER_FORMAT = "http://api.tv.sohu.com/v4/search/channel.json" +
+            "?cid=%s&%s&plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&" +
+            "sver=4.5.0&sysver=4.4.2&partner=47&page=%s&page_size=%s";
     private final static int CID_SHOW = 2;
     private final static int CID_MOVIE = 1;
     private final static int CID_COMIC = 16;
@@ -76,11 +83,39 @@ public class SohuApi extends BaseSiteApi {
         return -1;
     }
 
+    private String getChannelFilterUrl(SCChannel channel) {
+        if(channel.getChannelID() == SCChannel.SHOW)
+            return String.format(API_CHANNEL_FILTER_FORMAT,"teleplay");
+        if(channel.getChannelID() == SCChannel.MOVIE)
+            return String.format(API_CHANNEL_FILTER_FORMAT,"movie");
+        if(channel.getChannelID() == SCChannel.VARIETY)
+            return String.format(API_CHANNEL_FILTER_FORMAT,"zongyi");
+        if(channel.getChannelID() == SCChannel.COMIC)
+            return String.format(API_CHANNEL_FILTER_FORMAT,"animation");
+        if(channel.getChannelID() == SCChannel.DOCUMENTARY)
+            return String.format(API_CHANNEL_FILTER_FORMAT,"documentary");
+        if(channel.getChannelID() == SCChannel.MUSIC)
+            return String.format(API_CHANNEL_FILTER_FORMAT,"music");
+
+
+        return null;
+    }
 
     private String getChannelAlbumUrl(SCChannel channel, int pageNo, int pageSize) {
         return String.format(API_CHANNEL_ALBUM_FORMAT,channelToCid(channel),pageNo,pageSize);
     }
 
+    private String getChannelAlbumUrlByFilter(SCChannel channel, SCChannelFilter filter, int pageNo, int pageSize) {
+        String filterString = "";
+        ArrayList<SCChannelFilterItem> items = filter.getSelectedItems();
+        for (int i = 0; i < items.size(); i++) {
+            SCChannelFilterItem item = items.get(i);
+            filterString = filterString + item.getSearchKey() + "=" + item.getSearchVal();
+            if(i < (items.size() - 1))
+                filterString = filterString + "&";
+        }
+        return String.format(API_CHANNEL_ALBUM_BY_FILTER_FORMAT,channelToCid(channel),filterString,pageNo,pageSize);
+    }
     @Override
     public void doSearch(String key, final OnGetAlbumsListener listener) {
 
@@ -216,9 +251,7 @@ public class SohuApi extends BaseSiteApi {
             listener.onGetVideoPlayUrlHigh(video,video.getM3U8Super());
     }
 
-    @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
-        String url = getChannelAlbumUrl(channel, pageNo, pageSize);
+    public void doGetChannelAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -247,14 +280,74 @@ public class SohuApi extends BaseSiteApi {
             }
         });
     }
-
     @Override
-    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
-
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getChannelAlbumUrl(channel, pageNo, pageSize);
+        if(url == null) {
+            listener.onGetAlbumsFailed("wrong url");
+            return;
+        }
+        doGetChannelAlbumsByUrl(url,listener);
     }
 
     @Override
-    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
+    public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+        String url = getChannelAlbumUrlByFilter(channel, filter, pageNo, pageSize);
+        if(url == null) {
+            listener.onGetAlbumsFailed("wrong url");
+            return;
+        }
+        doGetChannelAlbumsByUrl(url,listener);
+    }
+
+    @Override
+    public void doGetChannelFilter(SCChannel channel, final OnGetChannelFilterListener listener) {
+        String url = getChannelFilterUrl(channel);
+        if(url != null) {
+            HttpUtils.asyncGet(url, new Callback() {
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    listener.onGetChannelFilterFailed("http failure");
+                }
+
+                @Override
+                public void onResponse(Response response) throws IOException {
+                    String ret = response.body().string();
+                    try {
+                        JSONObject retJson = new JSONObject(ret);
+                        JSONObject resultsJson = retJson.optJSONObject("data");
+                        if(resultsJson != null) {
+                            JSONArray filterJsonArray = resultsJson.optJSONArray("categorys");
+                            if(filterJsonArray != null && filterJsonArray.length() > 0) {
+                                SCChannelFilter filter = new SCChannelFilter();
+                                for (int i = 0; i < filterJsonArray.length(); i++) {
+                                    JSONObject filterJson = filterJsonArray.getJSONObject(i);
+                                    JSONArray filterItemsJson = filterJson.optJSONArray("cates");
+                                    String key = filterJson.optString("cate_alias");
+                                    ArrayList<SCChannelFilterItem> filterItems = new ArrayList<SCChannelFilterItem>();
+                                    for (int j = 0; j < filterItemsJson.length(); j++) {
+                                        JSONObject filterItemJson = filterItemsJson.getJSONObject(j);
+                                        String searchVal = filterItemJson.optString("search_key");
+                                        String displayName = filterItemJson.optString("name");
+                                        if(searchVal == null)
+                                            searchVal = "";
+                                        SCChannelFilterItem filterItem = new SCChannelFilterItem(searchVal,displayName);
+                                        filterItem.setParentKey(key);
+                                        filterItem.setSearchKey(key);
+                                        filterItems.add(filterItem);
+                                    }
+                                    filter.addFilter(key,filterItems);
+                                }
+                                listener.onGetChannelFilterSuccess(filter);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else
+            listener.onGetChannelFilterFailed("wrong channel");
 
     }
 
