@@ -9,8 +9,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.ArrayMap;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCChannel;
@@ -19,6 +22,8 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.view.fragments.AlbumListFragment;
+
+import java.util.HashMap;
 
 public class AlbumListActivity extends BaseToolbarActivity {
     ViewPager mViewPager;
@@ -59,9 +64,10 @@ public class AlbumListActivity extends BaseToolbarActivity {
     }
 
     private void showAlbumFilterDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        AlbumFilterDialog dialog = new AlbumFilterDialog();
-        dialog.show(fm,"fdas");
+        AlbumListFragment fragment =    mPagerAdapter.getFragment(mViewPager.getCurrentItem());
+        if(fragment!= null)
+            fragment.showAlbumFilterDialog(this);
+
     }
 
     @Override
@@ -88,11 +94,13 @@ public class AlbumListActivity extends BaseToolbarActivity {
 
         private Context mContext;
         private int mChannelID;
+        private HashMap<Integer,AlbumListFragment> mPageReferenceMap;
 
         public SitePagerAdapter(FragmentManager fm, Context context, int mChannelID) {
             super(fm);
             this.mContext = context;
             this.mChannelID = mChannelID;
+            mPageReferenceMap = new HashMap<>();
         }
 
         private int positionToSiteID(int position) {
@@ -110,8 +118,28 @@ public class AlbumListActivity extends BaseToolbarActivity {
         }
 
         @Override
-        public Fragment getItem(int position) {
-            return AlbumListFragment.newInstance(positionToSiteID(position),mChannelID);
+        public Object instantiateItem(ViewGroup container, int position) {
+            Object obj = super.instantiateItem(container, position);
+            if(obj instanceof AlbumListFragment) {
+                mPageReferenceMap.put(position, (AlbumListFragment) obj);
+            }
+            return obj;
+        }
+
+        @Override
+        public AlbumListFragment getItem(int position) {
+            AlbumListFragment fragment  = AlbumListFragment.newInstance(positionToSiteID(position),mChannelID);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            super.destroyItem(container, position, object);
+            mPageReferenceMap.remove(position);
+        }
+
+        public AlbumListFragment getFragment(int position) {
+            return mPageReferenceMap.get(position);
         }
 
         @Override

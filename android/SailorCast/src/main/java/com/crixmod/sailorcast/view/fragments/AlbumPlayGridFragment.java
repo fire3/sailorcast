@@ -144,6 +144,7 @@ public class AlbumPlayGridFragment extends Fragment implements
 
     @Override
     public void onGetVideosSuccess(final SCVideos videos) {
+
         if(videos.size() > 0) {
             for (SCVideo v : videos) {
                 mAdapter.addVideo(v);
@@ -151,39 +152,42 @@ public class AlbumPlayGridFragment extends Fragment implements
             if(mInitialVideoNoInAlbum > mAdapter.getCount())
                 loadMoreVideos();
 
-            mGridView.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
-                        mGridView.setSelection(mInitialVideoNoInAlbum);
-                        mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
-                        mListener.onVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
+            if(mGridView != null) {
+                mGridView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                            mGridView.setSelection(mInitialVideoNoInAlbum);
+                            mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
+                            mListener.onVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        mGridView.setIsLoading(false);
                     }
-                    mAdapter.notifyDataSetChanged();
-                    mGridView.setIsLoading(false);
-                }
-            });
+                });
 
-            mGridView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if(mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
-                        mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
-                        mFirstSelection = false;
+                mGridView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                            mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                            mFirstSelection = false;
+                        }
                     }
-                }
-            },200);
 
+                }, 200);
+            }
         }
         else {
-
-            mGridView.post(new Runnable() {
-                @Override
-                public void run() {
-                    mGridView.setHasMoreItems(false);
-                    mGridView.setIsLoading(false);
-                }
-            });
+            if(mGridView != null ) {
+                mGridView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGridView.setHasMoreItems(false);
+                        mGridView.setIsLoading(false);
+                    }
+                });
+            }
         }
     }
 

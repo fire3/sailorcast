@@ -1,8 +1,11 @@
 package com.crixmod.sailorcast.view.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,7 @@ import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.OnGetChannelFilterListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
+import com.crixmod.sailorcast.view.AlbumFilterDialog;
 import com.crixmod.sailorcast.view.adapters.AlbumListAdapter;
 
 /**
@@ -36,6 +40,7 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
     private int mPageSize = 30;
     private AlbumListAdapter mAdapter;
     private int mColumns = 3;
+    private SCChannelFilter mFilter;
 
 
     /**
@@ -146,12 +151,22 @@ public class AlbumListFragment extends Fragment implements OnGetAlbumsListener, 
 
     @Override
     public void onGetChannelFilterSuccess(SCChannelFilter filter) {
-        Log.d("fire3", filter.toJson());
-
+        mFilter = filter;
+        Log.d("fire3",mFilter.toJson());
     }
 
     @Override
     public void onGetChannelFilterFailed(String failReason) {
 
     }
+
+    public void showAlbumFilterDialog(FragmentActivity activity) {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        Log.d("fire3","showFilter: mSite: %s" + new SCSite(mSiteID).toString());
+        if(mFilter != null) {
+            AlbumFilterDialog dialog = AlbumFilterDialog.newInstance(mSiteID, mChannelID, mFilter);
+            dialog.show(fm, "");
+        }
+    }
+
 }

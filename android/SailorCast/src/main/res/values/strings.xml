@@ -99,8 +99,8 @@
     <string name="toast_unbookmarked">已取消收藏</string>
 
     <string name="alert_delete_message">确定删除？</string>
-    <string name="alert_delete_ok">确定</string>
-    <string name="alert_delete_cancel">取消</string>
+    <string name="btn_ok">确定</string>
+    <string name="btn_cancel">取消</string>
     <string name="action_filters">筛选</string>
 
 
