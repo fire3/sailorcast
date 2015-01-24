@@ -47,6 +47,10 @@
             android:name=".view.AlbumDetailActivity"
             android:label="@string/title_activity_album_detail" >
         </activity>
+        <activity
+            android:name=".view.SearchActivity"
+            android:label="@string/title_activity_search" >
+        </activity>
     </application>
 
 </manifest>

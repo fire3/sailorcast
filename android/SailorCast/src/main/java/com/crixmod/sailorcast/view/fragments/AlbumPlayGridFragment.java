@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.view.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,6 +132,13 @@ public class AlbumPlayGridFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mFirstSelection = true;
+        Log.d("fire3","AlbumPlayGridFragment destroyed");
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -148,60 +156,51 @@ public class AlbumPlayGridFragment extends Fragment implements
             for (SCVideo v : videos) {
                 mAdapter.addVideo(v);
             }
-            if(mInitialVideoNoInAlbum > mAdapter.getCount())
+            if (mInitialVideoNoInAlbum > mAdapter.getCount())
                 loadMoreVideos();
 
-            if(mGridView != null) {
-                mGridView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mListener.onAlbumPlayVideosFetched(videos.size());
-                        if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
-                            mGridView.setSelection(mInitialVideoNoInAlbum);
-                            mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
-                            mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
-                        }
-                        mAdapter.notifyDataSetChanged();
-                        mGridView.setIsLoading(false);
-                    }
-                });
-
-                mGridView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
-                            mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
-                            mFirstSelection = false;
-                        }
-                    }
-
-                }, 200);
+            mListener.onAlbumPlayVideosFetched(videos.size());
+            if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
             }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                        mGridView.setSelection(mInitialVideoNoInAlbum);
+                        mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    mGridView.setIsLoading(false);
+                    mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                    mFirstSelection = false;
+                }
+            });
         }
         else {
-            if(mGridView != null ) {
-                mGridView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mGridView.setHasMoreItems(false);
-                        mGridView.setIsLoading(false);
-                    }
-                });
-            }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mGridView.setHasMoreItems(false);
+                    mGridView.setIsLoading(false);
+                }
+            });
         }
     }
 
     @Override
     public void onGetVideosFailed(String failReason) {
-        if(mGridView != null) {
-            mGridView.post(new Runnable() {
-                @Override
-                public void run() {
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(mGridView != null) {
                     mGridView.setIsLoading(false);
                     mGridView.setHasMoreItems(false);
                 }
-            });
-        }
+            }
+        });
+
     }
 
     @Override

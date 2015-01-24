@@ -3,11 +3,9 @@
 
     <string name="app_name">水手放映室</string>
     <string name="action_settings">设置</string>
-
     <string name="title_activity_album_list">AlbumListActivity</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_album_detail">AlbumDetailActivity</string>
-
     <string name="search_button_text">搜索</string>
     <string name="reader">阅读器</string>
     <string name="notifications">通知</string>
@@ -78,8 +76,6 @@
     <string name="udn">UDN</string>
     <string name="separator"> : </string>
     <string name="title_activity_render">RenderActivity</string>
-
-
     <string name="bookmark_button_text">收藏</string>
     <string name="history_button_text">历史</string>
     <string name="compass_button_text">发现</string>
@@ -94,14 +90,12 @@
     <string name="channel_sport">体育</string>
     <string name="channel_music">音乐</string>
     <string name="channel_variety">综艺</string>
-
     <string name="toast_bookmarked">已添加收藏</string>
     <string name="toast_unbookmarked">已取消收藏</string>
-
     <string name="alert_delete_message">确定删除？</string>
     <string name="btn_ok">确定</string>
     <string name="btn_cancel">取消</string>
     <string name="action_filters">筛选</string>
-
+    <string name="hello_world">Hello world!</string>
 
 </resources>

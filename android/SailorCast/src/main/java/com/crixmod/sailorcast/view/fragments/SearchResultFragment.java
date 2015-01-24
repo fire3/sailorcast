@@ -32,7 +32,7 @@ implements OnGetAlbumsListener
     private static final String ARG_SITEID = "siteID";
 
     private String mKeyword;
-    private int    mSiteID;
+    private int    mSiteID = -1;
 
     private SearchResultAdapter mAdapter;
     private String mFailReason;
@@ -55,6 +55,15 @@ implements OnGetAlbumsListener
         return fragment;
     }
 
+    public static SearchResultFragment newInstance(String keyword) {
+        SearchResultFragment fragment = new SearchResultFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_KEYWORD, keyword);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
     public SearchResultFragment() {
         // Required empty public constructor
     }
@@ -64,10 +73,14 @@ implements OnGetAlbumsListener
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mKeyword = getArguments().getString(ARG_KEYWORD);
-            mSiteID = getArguments().getInt(ARG_SITEID);
+            mSiteID = getArguments().getInt(ARG_SITEID, -1);
         }
         mAdapter = new SearchResultAdapter(getActivity());
-        SiteApi.doSearch(mSiteID, mKeyword, this);
+        if(mSiteID != -1)
+            SiteApi.doSearch(mSiteID, mKeyword, this);
+        else {
+            SiteApi.doSearchAll(mKeyword,this);
+        }
         mFailReason = SailorCast.getResource().getString(R.string.fail_reason_searching);
     }
 

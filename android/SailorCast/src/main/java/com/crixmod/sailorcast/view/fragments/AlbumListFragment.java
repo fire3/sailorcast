@@ -129,15 +129,14 @@ public class AlbumListFragment extends Fragment implements
             if (albums.size() > 0) {
                 if (albums.get(0).getVerImageUrl() == null) {
                     mColumns = 2;
-                    if (mGridView != null) {
-                        mGridView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                mGridView.setNumColumns(mColumns);
-                                mAdapter.setColumns(mColumns);
-                            }
-                        });
-                    }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGridView.setNumColumns(mColumns);
+                            mAdapter.setColumns(mColumns);
+                        }
+                    });
                 }
             }
         }
@@ -146,26 +145,30 @@ public class AlbumListFragment extends Fragment implements
             if(mAdapter != null)
                 mAdapter.addAlbum(a);
         }
-        if(mGridView != null) {
-            mGridView.post(new Runnable() {
-                @Override
-                public void run() {
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(mAdapter != null)
                     mAdapter.notifyDataSetChanged();
+                if(mGridView != null)
                     mGridView.setIsLoading(false);
+                if(mSwipeContainer != null)
                     mSwipeContainer.setRefreshing(false);
-                }
-            });
-        }
+            }
+        });
     }
 
     @Override
     public void onGetAlbumsFailed(String failReason) {
 
-        mGridView.post(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mGridView.setIsLoading(false);
-                mGridView.setHasMoreItems(false);
+                if (mGridView != null) {
+                    mGridView.setIsLoading(false);
+                    mGridView.setHasMoreItems(false);
+                }
             }
         });
     }
