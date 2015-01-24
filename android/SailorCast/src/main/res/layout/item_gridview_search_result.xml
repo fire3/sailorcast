@@ -13,17 +13,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <ImageView
-            android:visibility="gone"
-            android:id="@+id/video_tip_overlay"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/gradient"
-            android:layout_width="match_parent"
-            android:layout_height="30dp" />
         <TextView
             android:paddingLeft="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small"
             android:textColor="@color/white"
+            android:background="@drawable/gradient"
             android:id="@+id/video_tip"
             android:maxLines="1"
             android:singleLine="true"
@@ -38,6 +32,7 @@
     </RelativeLayout>
 
     <TextView
+        android:background="@color/white"
         android:paddingTop="@dimen/margin_small"
         android:paddingBottom="@dimen/margin_small"
         android:paddingLeft="@dimen/margin_small"
@@ -49,4 +44,17 @@
         android:textSize="@dimen/font_size_small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+     <TextView
+        android:background="@color/white"
+        android:paddingLeft="@dimen/margin_small"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:id="@+id/video_site"
+        android:textColor="@color/grey_medium"
+        android:lines="1"
+        android:textSize="@dimen/font_size_tiny"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

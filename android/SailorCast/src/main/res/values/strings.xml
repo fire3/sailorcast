@@ -97,5 +97,6 @@
     <string name="btn_cancel">取消</string>
     <string name="action_filters">筛选</string>
     <string name="hello_world">Hello world!</string>
+    <string name="album_from">来自：</string>
 
 </resources>

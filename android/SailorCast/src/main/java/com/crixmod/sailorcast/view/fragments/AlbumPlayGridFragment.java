@@ -135,7 +135,6 @@ public class AlbumPlayGridFragment extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         mFirstSelection = true;
-        Log.d("fire3","AlbumPlayGridFragment destroyed");
     }
 
     @Override

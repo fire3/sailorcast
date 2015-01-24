@@ -154,7 +154,6 @@ public class BookmarkFragment extends Fragment {
             int position;
             RelativeLayout resultContainer;
             ImageView videoImage;
-            ImageView videoTipOverlay;
             TextView videoTitle;
             TextView videoTip;
             CheckBox videoChecker;
@@ -306,7 +305,6 @@ public class BookmarkFragment extends Fragment {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             View itemView = inflater.inflate(R.layout.item_gridview_bookmark,viewGroup,false);
             viewHolder.videoImage = (ImageView) itemView.findViewById(R.id.video_image);
-            viewHolder.videoTipOverlay = (ImageView) itemView.findViewById(R.id.video_tip_overlay);
             viewHolder.videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);
             viewHolder.resultContainer = (RelativeLayout)itemView;

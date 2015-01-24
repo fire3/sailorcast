@@ -149,7 +149,6 @@ public class HistoryFragment extends Fragment {
             int position;
             RelativeLayout resultContainer;
             ImageView videoImage;
-            ImageView videoTipOverlay;
             TextView videoTitle;
             TextView videoTip;
             CheckBox videoChecker;
@@ -232,6 +231,7 @@ public class HistoryFragment extends Fragment {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
             params.width = point.x;
             params.height = point.y;
+            viewHolder.videoImage.setLayoutParams(params);
             if(video.getHorPic() != null &&  !video.getHorPic().isEmpty())
                 ImageTools.displayImage(viewHolder.videoImage,video.getHorPic(),point.x,point.y);
             else if(album.getHorImageUrl()!= null && !album.getHorImageUrl().isEmpty())
@@ -311,7 +311,6 @@ public class HistoryFragment extends Fragment {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             View itemView = inflater.inflate(R.layout.item_gridview_history,viewGroup,false);
             viewHolder.videoImage = (ImageView) itemView.findViewById(R.id.video_image);
-            viewHolder.videoTipOverlay = (ImageView) itemView.findViewById(R.id.video_tip_overlay);
             viewHolder.videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);
             viewHolder.videoStatus = (TextView) itemView.findViewById(R.id.video_play_status);

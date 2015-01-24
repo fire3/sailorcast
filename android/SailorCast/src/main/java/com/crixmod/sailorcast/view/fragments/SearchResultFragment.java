@@ -20,6 +20,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
@@ -146,6 +147,7 @@ implements OnGetAlbumsListener
             ImageView videoImage;
             TextView videoTitle;
             TextView videoTip;
+            TextView videoSite;
         }
 
         SearchResultAdapter(Context mContext, SCAlbums mResults) {
@@ -196,10 +198,11 @@ implements OnGetAlbumsListener
         private void setupViewHolder(View view, int i, ViewHolder viewHolder, final SCAlbum album) {
             viewHolder.videoTitle.setText(album.getTitle());
             viewHolder.videoTip.setText(album.getTip());
+            viewHolder.videoSite.setText(getResources().getString(R.string.album_from) + album.getSite().getSiteName());
 
             if(album.getVerImageUrl() != null) {
 
-                Point point = ImageTools.getGridVerPosterSize(mContext,3);
+                Point point = ImageTools.getGridVerPosterSize(mContext, 3);
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
                 params.width = point.x;
                 params.height = point.y;
@@ -227,6 +230,7 @@ implements OnGetAlbumsListener
             viewHolder.videoImage = (ImageView) itemView.findViewById(R.id.video_image);
             viewHolder.videoTitle = (TextView) itemView.findViewById(R.id.video_title);
             viewHolder.videoTip = (TextView) itemView.findViewById(R.id.video_tip);
+            viewHolder.videoSite = (TextView) itemView.findViewById(R.id.video_site);
             viewHolder.resultContainer = (LinearLayout)itemView.findViewById(R.id.search_result);
 
             itemView.setTag(viewHolder);

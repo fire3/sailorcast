@@ -18,6 +18,7 @@
             android:paddingLeft="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small"
             android:textColor="@color/white"
+            android:background="@drawable/gradient"
             android:id="@+id/video_tip"
             android:maxLines="1"
             android:singleLine="true"

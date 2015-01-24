@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.siteapi.SiteApi;
@@ -22,9 +23,7 @@ public class SearchResultsActivity extends BaseToolbarActivity {
     private static final String EXTRA_KEYWORD = "SearchResultsActivity:keyword";
 
     private String mKeyword;
-    ViewPager mViewPager;
-    private SlidingTabLayout mSlidingTabLayout;
-    private SitePagerAdapter mPagerAdapter;
+    private FrameLayout mFragContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +32,11 @@ public class SearchResultsActivity extends BaseToolbarActivity {
         Intent intent = getIntent();
         mKeyword = intent.getStringExtra(EXTRA_KEYWORD);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        mPagerAdapter = new SitePagerAdapter(getSupportFragmentManager(), this, mKeyword);
-        mViewPager.setAdapter(mPagerAdapter);
-        mSlidingTabLayout.setViewPager(mViewPager);
+        mFragContainer = (FrameLayout) findViewById(R.id.fragment_container);
+        if(mFragContainer != null) {
+            Fragment fragment = SearchResultFragment.newInstance(mKeyword);
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,fragment).commit();
+        }
     }
 
     @Override
@@ -78,10 +77,8 @@ public class SearchResultsActivity extends BaseToolbarActivity {
 
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
+    /*
+
     public class SitePagerAdapter extends FragmentPagerAdapter {
 
         private Context mContext;
@@ -110,5 +107,6 @@ public class SearchResultsActivity extends BaseToolbarActivity {
             return SiteApi.getSiteName(position, mContext);
         }
     }
+    */
 }
 

@@ -183,7 +183,6 @@ public class AlbumListFragment extends Fragment implements
         if(filter != null) {
             mFilter = filter;
             inFilterMode = true;
-            Log.d("fire3","setChannelFilter" + filter.toJson());
             onRefresh();
         }
     }
@@ -196,7 +195,6 @@ public class AlbumListFragment extends Fragment implements
 
     public void showAlbumFilterDialog(FragmentActivity activity) {
         FragmentManager fm = activity.getSupportFragmentManager();
-        Log.d("fire3","showFilter: mSite: %s" + new SCSite(mSiteID).toString());
         if(mFilter != null) {
             AlbumFilterDialog dialog = AlbumFilterDialog.newInstance(mSiteID, mChannelID, mFilter);
             dialog.show(fm, "");

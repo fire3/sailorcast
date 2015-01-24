@@ -1,5 +1,8 @@
 package com.crixmod.sailorcast.model;
 
+import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
+
 /**
  * Created by fire3 on 2014/12/26.
  */
@@ -16,13 +19,13 @@ public class SCSite {
     public SCSite(int mSiteID) {
         this.mSiteID = mSiteID;
         if(mSiteID == SOHU)
-            mSiteName = "Sohu";
+            mSiteName = SailorCast.getResource().getString(R.string.site_sohu);
         if(mSiteID == YOUKU)
-            mSiteName = "Youku";
+            mSiteName = SailorCast.getResource().getString(R.string.site_youku);
         if(mSiteID == IQIYI)
-            mSiteName = "IQiyi";
+            mSiteName = SailorCast.getResource().getString(R.string.site_iqiyi);
         if(mSiteID == LETV)
-            mSiteName = "Letv";
+            mSiteName = SailorCast.getResource().getString(R.string.site_letv);
         if(mSiteID == UNKNOWN)
             mSiteName = "Unknown";
     }
@@ -32,9 +35,11 @@ public class SCSite {
     }
     @Override
     public String toString() {
-
         return mSiteName;
     }
 
+    public String getSiteName() {
+        return mSiteName;
+    }
 
 }
