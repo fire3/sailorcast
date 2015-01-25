@@ -757,4 +757,9 @@ public class YouKuApi extends BaseSiteApi {
 
     }
 
+    public String  getKeyWordsSuggestionUrl(String keyword) {
+        String format = "http://search.api.3g.youku.com/keywords/suggest?pid=%s&guid=%s&keywords=%s";
+        return String.format(format,YOUKU_PID,getGUID(),URLEncoder.encode(keyword));
+    }
+
 }

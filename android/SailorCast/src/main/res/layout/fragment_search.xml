@@ -17,7 +17,7 @@
         android:orientation="horizontal"
         android:weightSum="10"
         >
-    <EditText
+    <com.crixmod.sailorcast.uiutils.DelayAutoCompleteTextView
         android:id="@+id/search_input"
         android:layout_width="0dp"
         android:layout_weight="7"
@@ -35,5 +35,14 @@
            android:text="@string/search_button_text"
            />
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_loading_indicator"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|right"
+        android:layout_marginRight="@dimen/margin_small"
+        android:visibility="gone"/>
 
 </LinearLayout>

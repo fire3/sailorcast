@@ -49,6 +49,20 @@ public class HttpUtils {
         asyncGet(request,activity,callback);
     }
 
+    public static String syncGet(String url) {
+        Request request = buildRequest(url);
+        try {
+            Response response =  SailorCast.getHttpClient().newCall(request).execute();
+            if (response.code() == 200) {
+                String ret = new String(response.body().bytes(), "utf-8");
+                return ret;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void asyncGet(String url, Callback callback) {
         Request request = buildRequest(url);
         asyncGet(request, callback);
@@ -95,4 +109,6 @@ public class HttpUtils {
     public static void cancelAll() {
         SailorCast.getHttpClient().cancel(REQUEST_TAG);
     }
+
+
 }
