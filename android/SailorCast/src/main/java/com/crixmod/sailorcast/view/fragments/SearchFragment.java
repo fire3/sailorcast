@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
@@ -37,6 +39,7 @@ import java.util.List;
 public class SearchFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
+    private ScrollView mScrollView;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -77,6 +80,24 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        final int a = getResources().getDimensionPixelSize(R.dimen.search_logo_margin_top);
+        final int b = getResources().getDimensionPixelSize(R.dimen.search_logo_height);
+        searchInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mScrollView.scrollTo(0,a+b);
+            }
+        });
+
+
+        searchInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mScrollView.scrollTo(0,a+b);
+                return false;
+            }
+        });
+
         Button button = (Button) root.findViewById(R.id.search_ok);
         final AutoCompleteTextView editText = (AutoCompleteTextView) root.findViewById(R.id.search_input);
         final Activity activity = getActivity();
@@ -103,6 +124,7 @@ public class SearchFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_search, container, false);
         fixEditTextPadding(view);
         setSearchButton(view);
+        mScrollView = (ScrollView) view.findViewById(R.id.scroll_container);
         return view;
     }
 
