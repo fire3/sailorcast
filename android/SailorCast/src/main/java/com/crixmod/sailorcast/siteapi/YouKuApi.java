@@ -762,4 +762,8 @@ public class YouKuApi extends BaseSiteApi {
         return String.format(format,YOUKU_PID,getGUID(),URLEncoder.encode(keyword));
     }
 
+    public String getHotKeyWordsUrl(int pageSize) {
+        String format =  "http://search.api.3g.youku.com/search/hotkeys?pid=%s&guid=%s&pz=%d";
+        return String.format(format,YOUKU_PID,getGUID(),pageSize);
+    }
 }
