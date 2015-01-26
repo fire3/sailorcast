@@ -248,7 +248,7 @@ public class SohuApi extends BaseSiteApi {
         if(video.getM3U8High() != null)
             listener.onGetVideoPlayUrlHigh(video,video.getM3U8High());
         if(video.getM3U8Super() != null)
-            listener.onGetVideoPlayUrlHigh(video,video.getM3U8Super());
+            listener.onGetVideoPlayUrlSuper(video,video.getM3U8Super());
     }
 
     public void doGetChannelAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
@@ -367,7 +367,7 @@ public class SohuApi extends BaseSiteApi {
                 sa.setVerImageUrl(a.getVerHighPic());
                 sa.setMainActor(a.getMainActor());
                 sa.setTitle(a.getAlbumName());
-                sa.setSubTitle(a.getTip());
+                sa.setTip(a.getTip());
                 sa.setAlbumId(a.getAid().toString());
                 albums.add(sa);
             }
@@ -384,7 +384,7 @@ public class SohuApi extends BaseSiteApi {
                 sa.setVerImageUrl(a.getVerHighPic());
                 sa.setMainActor(a.getMainActor());
                 sa.setTitle(a.getAlbumName());
-                sa.setSubTitle(a.getTip());
+                sa.setTip(a.getTip());
                 if(a.getAid() != null) {
                     sa.setAlbumId(a.getAid().toString());
                     albums.add(sa);

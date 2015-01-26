@@ -60,6 +60,12 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SiteApi.cancel();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_album_list, menu);

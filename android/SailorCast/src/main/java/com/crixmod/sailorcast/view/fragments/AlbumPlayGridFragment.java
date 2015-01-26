@@ -143,6 +143,12 @@ public class AlbumPlayGridFragment extends Fragment implements
         mListener = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SiteApi.cancel();
+    }
+
     public void loadMoreVideos() {
         mPageNo ++ ;
         SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
@@ -171,7 +177,8 @@ public class AlbumPlayGridFragment extends Fragment implements
                     }
                     mAdapter.notifyDataSetChanged();
                     mGridView.setIsLoading(false);
-                    mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                    if(mFirstSelection)
+                        mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
                     mFirstSelection = false;
                 }
             });

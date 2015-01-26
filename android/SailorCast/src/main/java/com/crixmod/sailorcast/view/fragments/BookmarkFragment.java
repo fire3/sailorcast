@@ -59,7 +59,7 @@ public class BookmarkFragment extends Fragment {
         mDb = new BookmarkDbHelper(getActivity());
         mAlbums = mDb.getAllAlbums();
         mAdapter = new BookmarkAdapter(getActivity(),mAlbums);
-        mFailReason = SailorCast.getResource().getString(R.string.fail_reason_no_results);
+        mFailReason = SailorCast.getResource().getString(R.string.fail_reason_no_bookmark);
         super.onCreate(savedInstanceState);
     }
 

@@ -61,7 +61,7 @@ public class HistoryFragment extends Fragment {
         mDb = new HistoryDbHelper(getActivity());
         mHistories = mDb.getAllHistories();
         mAdapter = new HistoryAdapter(getActivity(),mHistories);
-        mFailReason = SailorCast.getResource().getString(R.string.fail_reason_no_results);
+        mFailReason = SailorCast.getResource().getString(R.string.fail_reason_no_history);
         super.onCreate(savedInstanceState);
     }
 

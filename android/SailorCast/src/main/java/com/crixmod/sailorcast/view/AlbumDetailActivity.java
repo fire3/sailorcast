@@ -25,7 +25,9 @@ import com.crixmod.sailorcast.database.BookmarkDbHelper;
 import com.crixmod.sailorcast.database.HistoryDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.upnp.CallableRendererFilter;
 import com.crixmod.sailorcast.model.upnp.IRendererCommand;
+import com.crixmod.sailorcast.model.upnp.IUpnpDevice;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
@@ -34,6 +36,7 @@ import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment;
 
+import java.util.Collection;
 import java.util.concurrent.Callable;
 
 public class AlbumDetailActivity extends BaseToolbarActivity implements
@@ -79,8 +82,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
     @Override
     protected void onDestroy() {
-        SiteApi.cancel();
         super.onDestroy();
+        SiteApi.cancel();
     }
 
     private void findViews() {
@@ -421,16 +424,23 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         final String url = (String) button.getTag(R.id.key_video_url);
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
 
-        FragmentManager fm = getSupportFragmentManager();
-        RendererDialog dialog = new RendererDialog();
-        dialog.setCallback(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                launchRenderer(v,url);
-                return null;
-            }
-        });
-        dialog.show(fm,"Render");
+		final Collection<IUpnpDevice> upnpDevices = SailorCast.upnpServiceController.getServiceListener()
+				.getFilteredDeviceList(new CallableRendererFilter());
+        if(upnpDevices.size() > 0) {
+
+            FragmentManager fm = getSupportFragmentManager();
+            RendererDialog dialog = new RendererDialog();
+            dialog.setCallback(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    launchRenderer(v, url);
+                    return null;
+                }
+            });
+            dialog.show(fm, "Render");
+        } else {
+            Toast.makeText(this,getResources().getString(R.string.noRenderer),Toast.LENGTH_SHORT).show();
+        }
     }
 
 

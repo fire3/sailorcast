@@ -77,36 +77,10 @@ public class SearchResultsActivity extends BaseToolbarActivity {
 
     }
 
-    /*
-
-    public class SitePagerAdapter extends FragmentPagerAdapter {
-
-        private Context mContext;
-        private String mKeyword;
-
-        public SitePagerAdapter(FragmentManager fm, Context context, String keyword) {
-            super(fm);
-            mContext = context;
-            mKeyword = keyword;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            return SearchResultFragment.newInstance(mKeyword);
-            //return SearchResultFragment.newInstance(mKeyword, position);
-        }
-
-        @Override
-        public int getCount() {
-            return SiteApi.getSupportSiteNumber();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return SiteApi.getSiteName(position, mContext);
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SiteApi.cancel();
     }
-    */
 }
 

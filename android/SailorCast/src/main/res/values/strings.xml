@@ -50,8 +50,8 @@
     <!-- Popup -->
     <string name="OK">确定</string>
     <string name="loading">加载中...</string>
-    <string name="selectRenderer">选择播放设备</string>
-    <string name="noRenderer">没有可用的播放设备</string>
+    <string name="selectRenderer">选择投射设备</string>
+    <string name="noRenderer">没有可用的投射设备,请稍后再试</string>
 
     <!-- Now Playing -->
     <string name="duration">00:00:00</string>
@@ -98,5 +98,7 @@
     <string name="action_filters">筛选</string>
     <string name="hello_world">Hello world!</string>
     <string name="album_from">来自：</string>
+    <string name="fail_reason_no_bookmark">您还没有添加任何书签！\n\n请点击剧集信息页面上方星标尽情收藏吧：)</string>
+    <string name="fail_reason_no_history">您还没有任何播放历史！\n\n寻找您喜欢的剧集播放吧：)</string>
 
 </resources>

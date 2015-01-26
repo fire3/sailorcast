@@ -113,6 +113,12 @@ public class AlbumListFragment extends Fragment implements
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SiteApi.cancel();
+    }
+
     public void loadMoreAlbums() {
         mPageNo ++ ;
         if(inFilterMode)

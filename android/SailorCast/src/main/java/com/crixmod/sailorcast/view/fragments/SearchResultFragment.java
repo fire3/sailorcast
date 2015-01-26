@@ -115,13 +115,19 @@ implements OnGetAlbumsListener
         for(SCAlbum a : albums) {
             mAdapter.addAlbum(a);
         }
-        albums.debugLog();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAdapter.notifyDataSetChanged();
+                if(mAdapter != null)
+                    mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SiteApi.cancel();
     }
 
     @Override
