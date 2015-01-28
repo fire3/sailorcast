@@ -441,6 +441,8 @@ public class SohuApi extends BaseSiteApi {
                                     String title = a.optString("video_name");
                                     String tip = a.optString("tip");
                                     String aName = a.optString("album_name");
+                                    String subTitle = a.optString("album_sub_name");
+
                                     int latest_video_count = a.optInt("latest_video_count",0);
                                     if (aName != null && !aName.equals("广告")) {
                                         SCAlbum album = new SCAlbum(SCSite.SOHU);
@@ -456,6 +458,7 @@ public class SohuApi extends BaseSiteApi {
                                         else if(horPic2 != null && !horPic2.isEmpty())
                                             album.setHorImageUrl(horPic2);
                                         album.setAlbumId(aid);
+                                        album.setSubTitle(subTitle);
                                         albums.add(album);
                                     }
 
@@ -465,7 +468,7 @@ public class SohuApi extends BaseSiteApi {
                                     SCBanner banner = new SCBanner(SCBanner.TYPE_SLIDER, columnName, albums);
                                     banners.add(banner);
                                 }
-                                else if(columnID!=24 && columnID!=251 && columnID!=252 && columnID!=238 && columnID!=22)  {
+                                else if(columnID!=13 && columnID!=15 && columnID!=24 && columnID!=250 && columnID!=251 && columnID!=252 && columnID!=238 && columnID!=22)  {
                                     SCBanner banner = new SCBanner(SCBanner.TYPE_TABLE, columnName, albums);
                                     banners.add(banner);
                                 }
