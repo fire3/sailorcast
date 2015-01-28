@@ -3,4 +3,9 @@
     android:layout_height="match_parent"
     android:id="@+id/scroll_container"
     >
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        />
 </ScrollView>
