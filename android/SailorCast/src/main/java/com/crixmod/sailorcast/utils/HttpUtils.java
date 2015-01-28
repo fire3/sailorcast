@@ -24,21 +24,18 @@ public class HttpUtils {
             int maxAge = 60 * 60 * 24; // read from cache for 1 day
             Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
-                    .addHeader("Cache-Control", "public, max-age=" + maxAge)
+                    //.addHeader("Cache-Control", "public, max-age=" + maxAge)
                     //.addHeader("Cache-Control", "public, max-age=" + maxAge)
                     .url(url)
                     .build();
-            Log.d("HttpUtils", "request Url: " + url);
             return request;
         } else {
            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
              Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
-                     .addHeader("Cache-Control",
-                             "public, only-if-cached, max-stale=" + maxStale)
+                    //.addHeader("Cache-Control","public, only-if-cached, max-stale=" + maxStale)
                     .url(url)
                     .build();
-            Log.d("HttpUtils", "request Url: " + url);
             return request;
         }
     }
@@ -51,6 +48,7 @@ public class HttpUtils {
 
     public static String syncGet(String url) {
         Request request = buildRequest(url);
+        Log.d("fire3", "request Url: " + request.urlString());
         try {
             Response response =  SailorCast.getHttpClient().newCall(request).execute();
             if (response.code() == 200) {
@@ -65,17 +63,18 @@ public class HttpUtils {
 
     public static void asyncGet(String url, Callback callback) {
         Request request = buildRequest(url);
+        Log.d("fire3", "request Url: " + request.urlString());
         asyncGet(request, callback);
     }
 
     public static void asyncGet(Request request, Callback callback) {
-        Log.d("HttpUtils", "request Url: " + request.urlString());
+        Log.d("fire3", "request Url: " + request.urlString());
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
     }
 
     public static void asyncGet(Request request, final Activity activity, final Callback callback) {
 
-        Log.d("HttpUtils", "request Url: " + request.urlString());
+        Log.d("fire3", "request Url: " + request.urlString());
 
         SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
             Handler mainHandler = new Handler(activity.getMainLooper());

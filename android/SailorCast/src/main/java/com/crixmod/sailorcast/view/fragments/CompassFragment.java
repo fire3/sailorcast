@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.view.AlbumListActivity;
+import com.crixmod.sailorcast.view.BookmarkActivity;
+import com.crixmod.sailorcast.view.HistoryActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,8 +94,8 @@ public class CompassFragment extends Fragment {
             } else {
                 imageView = (ImageView) convertView.findViewById(R.id.icon_image);
                 textView = (TextView) convertView.findViewById(R.id.icon_text);
-
             }
+            Log.d("fire3","position: " + position + " " + channel.toString());
             switch (channel.getChannelID()) {
                 case    SCChannel.SHOW:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_show));
@@ -115,22 +118,44 @@ public class CompassFragment extends Fragment {
                 case    SCChannel.VARIETY:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_variety));
                     break;
-                /*
-                case    SCChannel.ENT:
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_ent));
+                case    SCChannel.LOCAL_BOOKMARK:
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star));
                     break;
-                */
+                case    SCChannel.LOCAL_HISTORY:
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_playhistory));
+                    break;
             }
 
             textView.setText(channel.toString());
 
 
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlbumListActivity.launch(getActivity(),channel.getChannelID());
-                }
-            });
+            if( !channel.isLocalChannel() ) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlbumListActivity.launch(getActivity(), channel.getChannelID());
+                    }
+                });
+            }
+
+            if(channel.getChannelID() == SCChannel.LOCAL_BOOKMARK) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        BookmarkActivity.launch(getActivity());
+                    }
+                });
+            }
+
+            if(channel.getChannelID() == SCChannel.LOCAL_HISTORY) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HistoryActivity.launch(getActivity());
+                    }
+                });
+            }
+
 
             return convertView;
         }

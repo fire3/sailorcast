@@ -113,11 +113,6 @@ public class AlbumListFragment extends Fragment implements
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        SiteApi.cancel();
-    }
 
     public void loadMoreAlbums() {
         mPageNo ++ ;
@@ -168,15 +163,21 @@ public class AlbumListFragment extends Fragment implements
     @Override
     public void onGetAlbumsFailed(String failReason) {
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mGridView != null) {
-                    mGridView.setIsLoading(false);
-                    mGridView.setHasMoreItems(false);
-                }
+        try {
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mGridView != null) {
+                            mGridView.setIsLoading(false);
+                            mGridView.setHasMoreItems(false);
+                        }
+                    }
+                });
             }
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

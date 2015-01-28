@@ -20,14 +20,16 @@ public class SCChannel {
     public static final int   MUSIC = 6;  //音乐
     public static final int   VARIETY = 7;  //综艺
     //public static final int   ENT = 8;  //娱乐
-    private static final int  MAX_CHANNEL_ID = 7;  //如果增加频道，注意修改该值
+    public static final int   LOCAL_BOOKMARK = 8;
+    public static final int   LOCAL_HISTORY = 9;
+    private static final int  MAX_CHANNEL_ID = 9;  //如果增加频道，注意修改该值
 
     private String mChannelName = "unknown";
 
     private int mChannelID = UNKNOWN;
 
     public SCChannel(int mChannelID) {
-        if(mChannelID >= SHOW && mChannelID <= VARIETY)
+        if(mChannelID >= SHOW && mChannelID <= MAX_CHANNEL_ID)
             this.mChannelID = mChannelID;
 
         if(mChannelID == SHOW)
@@ -46,6 +48,10 @@ public class SCChannel {
             mChannelName = SailorCast.getResource().getString(R.string.channel_music);
         else if(mChannelID == VARIETY)
             mChannelName = SailorCast.getResource().getString(R.string.channel_variety);
+        else if(mChannelID == LOCAL_BOOKMARK)
+            mChannelName = SailorCast.getResource().getString(R.string.channel_bookmark);
+        else if(mChannelID == LOCAL_HISTORY)
+            mChannelName = SailorCast.getResource().getString(R.string.channel_history);
         else
             mChannelName = "unknown";
 
@@ -66,5 +72,12 @@ public class SCChannel {
 
     public static int getChannelCount () {
         return MAX_CHANNEL_ID;
+    }
+
+    public boolean isLocalChannel() {
+        if(mChannelID == LOCAL_BOOKMARK || mChannelID == LOCAL_HISTORY)
+            return true;
+        else
+            return false;
     }
 }

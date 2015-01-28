@@ -19,7 +19,7 @@ import com.crixmod.sailorcast.view.fragments.CompassFragment;
 import com.crixmod.sailorcast.view.fragments.HistoryFragment;
 import com.crixmod.sailorcast.view.fragments.HomeFragment;
 
-public class HomeActivity extends BaseToolbarActivity implements BookmarkFragment.OnBookMarkFragActionListener {
+public class HomeActivity extends BaseToolbarActivity {
     BottomBar mBottomBar;
     private boolean isShowDelete = false;
 
@@ -92,11 +92,6 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
 
         if (id == R.id.action_search) {
             onSearchRequested();
-            /*
-            Intent mpdIntent = new Intent(this, SearchActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            this.startActivity(mpdIntent);
-            */
         }
 
         return super.onOptionsItemSelected(item);
@@ -112,7 +107,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
                         if(mBottomBar.mSeleted == mBottomBar.BOOKMARK)
                             mBottomBar.mBookmarkFragment.deleteSelectedBookmark();
                         if(mBottomBar.mSeleted == mBottomBar.HISTORY)
-                            mBottomBar.mHistoryFragment.deleteSelectedBookmark();
+                            mBottomBar.mHistoryFragment.deleteSelectedHistory();
 
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -179,9 +174,9 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             mHistoryFragment = HistoryFragment.newInstance();
             mCompassFragment = CompassFragment.newInstance();
 
-            mSearchLayout = (LinearLayout) findViewById(R.id.bottom_action_search);
-            mSearchIcon = (ImageView) findViewById(R.id.bottom_action_search_ic);
-            mSearchIconText = (TextView) findViewById(R.id.bottom_action_search_text);
+            mSearchLayout = (LinearLayout) findViewById(R.id.bottom_action_home);
+            mSearchIcon = (ImageView) findViewById(R.id.bottom_action_home_ic);
+            mSearchIconText = (TextView) findViewById(R.id.bottom_action_home_text);
 
             mBookmarkLayout = (LinearLayout) findViewById(R.id.bottom_action_bookmark);
             mBookmarkIcon = (ImageView) findViewById(R.id.bottom_action_bookmark_ic);
@@ -266,11 +261,11 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
         }
 
         private void deselectSearch() {
-            mSearchIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_search));
+            mSearchIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_home));
             mSearchIconText.setTextColor(getResources().getColor(R.color.bottom_text));
         }
         private void selectSearch() {
-            mSearchIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_search_hightlight));
+            mSearchIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_home_highlight));
             mSearchIconText.setTextColor(getResources().getColor(R.color.bottom_text_hightlight));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.home_fragment_container, mHomeFragment);

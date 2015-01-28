@@ -41,7 +41,6 @@ public class BookmarkFragment extends Fragment {
     private TextView mEmpty;
     private SCAlbums mAlbums;
 
-    private OnBookMarkFragActionListener mListener;
 
     public static BookmarkFragment newInstance() {
         BookmarkFragment fragment = new BookmarkFragment();
@@ -82,18 +81,12 @@ public class BookmarkFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (OnBookMarkFragActionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     public void deleteSelectedBookmark() {
@@ -319,9 +312,6 @@ public class BookmarkFragment extends Fragment {
             itemView.setTag(viewHolder);
             return itemView;
         }
-    }
-
-    public interface OnBookMarkFragActionListener {
     }
 
 

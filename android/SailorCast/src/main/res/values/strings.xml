@@ -102,5 +102,11 @@
     <string name="fail_reason_no_history">您还没有任何播放历史！\n\n寻找您喜欢的剧集播放吧：)</string>
     <string name="action_search">搜索</string>
     <string name="search_hint">输入搜索关键字</string>
+    <string name="home_button_text">首页</string>
+    <string name="channel_bookmark">我的收藏</string>
+    <string name="channel_history">播放历史</string>
+    <string name="title_activity_bookmark">BookmarkActivity</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_launcher">LauncherActivity</string>
 
 </resources>

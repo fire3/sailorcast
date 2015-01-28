@@ -91,7 +91,7 @@ public class HistoryFragment extends Fragment {
         super.onDetach();
     }
 
-    public void deleteSelectedBookmark() {
+    public void deleteSelectedHistory() {
         mAdapter.deleteCheckedSCAlbums();
         mAdapter.setShowChecker(false);
         mAdapter.notifyDataSetChanged();

@@ -30,26 +30,26 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/bottom_action_search"
+                android:id="@+id/bottom_action_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/bottom_action_search_ic"
+                    android:id="@+id/bottom_action_home_ic"
                     android:layout_width="@dimen/bottom_ic_image_size"
                     android:layout_height="@dimen/bottom_ic_image_size"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ic_search" />
+                    android:src="@drawable/ic_home" />
 
                 <TextView
-                    android:id="@+id/bottom_action_search_text"
+                    android:id="@+id/bottom_action_home_text"
                     android:textColor="@color/bottom_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:text="@string/search_button_text" />
+                    android:text="@string/home_button_text" />
 
             </LinearLayout>
 
