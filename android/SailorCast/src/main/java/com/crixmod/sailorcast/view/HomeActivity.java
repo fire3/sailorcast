@@ -2,6 +2,7 @@ package com.crixmod.sailorcast.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -88,6 +89,15 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
                 if(mBottomBar.mHistoryFragment.isShowDeleteChecker() == false)
                     mBottomBar.mHistoryFragment.setShowDeleteChecker(true);
             }
+        }
+
+        if (id == R.id.action_search) {
+            onSearchRequested();
+            /*
+            Intent mpdIntent = new Intent(this, SearchActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            this.startActivity(mpdIntent);
+            */
         }
 
         return super.onOptionsItemSelected(item);

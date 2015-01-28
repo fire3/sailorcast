@@ -1,13 +1,16 @@
 package com.crixmod.sailorcast.view;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -22,22 +25,28 @@ public class SearchResultsActivity extends BaseToolbarActivity {
 
     private static final String EXTRA_KEYWORD = "SearchResultsActivity:keyword";
 
-    private String mKeyword;
     private FrameLayout mFragContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handleIntent(getIntent());
 
-        Intent intent = getIntent();
-        mKeyword = intent.getStringExtra(EXTRA_KEYWORD);
 
-        mFragContainer = (FrameLayout) findViewById(R.id.fragment_container);
-        if(mFragContainer != null) {
-            Fragment fragment = SearchResultFragment.newInstance(mKeyword);
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container,fragment).commit();
+
+    }
+
+    private void doMySearch(String mKeyword) {
+        if(mKeyword != null) {
+            mFragContainer = (FrameLayout) findViewById(R.id.fragment_container);
+            if (mFragContainer != null) {
+                Fragment fragment = SearchResultFragment.newInstance(mKeyword);
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+            }
         }
     }
+
+
 
     @Override
     protected int getLayoutResource() {
@@ -78,6 +87,24 @@ public class SearchResultsActivity extends BaseToolbarActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            doMySearch(query);
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            // Handle a suggestions click (because the suggestions all use ACTION_VIEW)
+            //Uri data = intent.getData();
+            String dataString = intent.getDataString();
+            doMySearch(dataString);
+        }
+
+    }
+        @Override
     protected void onDestroy() {
         super.onDestroy();
         SiteApi.cancel();

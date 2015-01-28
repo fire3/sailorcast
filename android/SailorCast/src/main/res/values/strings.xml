@@ -100,5 +100,7 @@
     <string name="album_from">来自：</string>
     <string name="fail_reason_no_bookmark">您还没有添加任何书签！\n\n请点击剧集信息页面上方星标尽情收藏吧：)</string>
     <string name="fail_reason_no_history">您还没有任何播放历史！\n\n寻找您喜欢的剧集播放吧：)</string>
+    <string name="action_search">搜索</string>
+    <string name="search_hint">输入搜索关键字</string>
 
 </resources>
