@@ -4,6 +4,8 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCBanner;
+import com.crixmod.sailorcast.model.SCBanners;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCChannelFilterItem;
@@ -49,6 +51,10 @@ public class SohuApi extends BaseSiteApi {
     private final static String API_CHANNEL_ALBUM_BY_FILTER_FORMAT = "http://api.tv.sohu.com/v4/search/channel.json" +
             "?cid=%s&%s&plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&" +
             "sver=4.5.0&sysver=4.4.2&partner=47&page=%s&page_size=%s";
+
+    private final static String API_HOME_URL = "http://api.tv.sohu.com/v4/mobile/channelPageData/" +
+            "list.json?cate_code=0&plat=6&poid=1&" +
+            "api_key=9854b2afa779e1a6bff1962447a09dbd&sver=4.5.0&act=1&sysver=4.4.2&partner=47";
     private final static int CID_SHOW = 2;
     private final static int CID_MOVIE = 1;
     private final static int CID_COMIC = 16;
@@ -395,5 +401,89 @@ public class SohuApi extends BaseSiteApi {
         }
 
         return null;
+    }
+
+
+    public void  getBanners(final OnGetBannersListener listener) {
+        String url = API_HOME_URL;
+        HttpUtils.asyncGet(url,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject dataJson = retJson.optJSONObject("data");
+                    if(dataJson != null) {
+
+                        SCBanners banners = new SCBanners();
+                        JSONArray columnsJson = dataJson.optJSONArray("columns");
+
+                        for (int i = 0; i < columnsJson.length(); i++) {
+                            JSONObject columnJson = columnsJson.getJSONObject(i);
+                            int columnID = columnJson.optInt("column_id");
+                            int columnType = columnJson.optInt("column_type");
+                            String columnName = columnJson.optString("name");
+                            JSONArray listJson = columnJson.optJSONArray("video_list");
+                            if(listJson.length() > 0) {
+                                SCAlbums albums = new SCAlbums();
+                                for (int j = 0; j < listJson.length(); j++) {
+
+                                    JSONObject a = listJson.getJSONObject(j);
+
+                                    String horPic = a.optString("video_big_pic");
+                                    String horPic2 = a.optString("hor_common_pic");
+                                    String aid = a.optString("aid");
+                                    String title = a.optString("video_name");
+                                    String tip = a.optString("tip");
+                                    String aName = a.optString("album_name");
+                                    int latest_video_count = a.optInt("latest_video_count",0);
+                                    if (aName != null && !aName.equals("广告")) {
+                                        SCAlbum album = new SCAlbum(SCSite.SOHU);
+                                        if(title!=null && !title.isEmpty())
+                                            album.setTitle(title);
+                                        else
+                                            album.setTitle(aName);
+                                        album.setVideosCount(latest_video_count);
+                                        album.setVideosTotal(latest_video_count);
+                                        album.setTip(tip);
+                                        if(horPic != null && !horPic.isEmpty())
+                                            album.setHorImageUrl(horPic);
+                                        else if(horPic2 != null && !horPic2.isEmpty())
+                                            album.setHorImageUrl(horPic2);
+                                        album.setAlbumId(aid);
+                                        albums.add(album);
+                                    }
+
+                                }
+
+                                if(columnID == 1 && columnType == 1) {
+                                    SCBanner banner = new SCBanner(SCBanner.TYPE_SLIDER, columnName, albums);
+                                    banners.add(banner);
+                                }
+                                else if(columnID!=24 && columnID!=251 && columnID!=252 && columnID!=238 && columnID!=22)  {
+                                    SCBanner banner = new SCBanner(SCBanner.TYPE_TABLE, columnName, albums);
+                                    banners.add(banner);
+                                }
+                            }
+                        }
+                        if(banners.size()> 0)
+                            listener.onGetBannersSuccess(banners);
+                        return;
+                    } else {
+                        listener.onGetBannersFailed("wrong data");
+                        return;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
     }
 }

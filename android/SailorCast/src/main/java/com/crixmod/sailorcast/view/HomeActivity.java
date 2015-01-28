@@ -2,7 +2,6 @@ package com.crixmod.sailorcast.view;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
@@ -18,7 +17,7 @@ import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.fragments.BookmarkFragment;
 import com.crixmod.sailorcast.view.fragments.CompassFragment;
 import com.crixmod.sailorcast.view.fragments.HistoryFragment;
-import com.crixmod.sailorcast.view.fragments.SearchFragment;
+import com.crixmod.sailorcast.view.fragments.HomeFragment;
 
 public class HomeActivity extends BaseToolbarActivity implements BookmarkFragment.OnBookMarkFragActionListener {
     BottomBar mBottomBar;
@@ -167,7 +166,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
 
         private FrameLayout mFragContainer;
 
-        private SearchFragment mSearchFragment;
+        private HomeFragment mHomeFragment;
         private BookmarkFragment mBookmarkFragment;
         private HistoryFragment mHistoryFragment;
         private CompassFragment mCompassFragment;
@@ -175,7 +174,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
         public BottomBar() {
             mFragContainer = (FrameLayout) findViewById(R.id.home_fragment_container);
 
-            mSearchFragment = SearchFragment.newInstance();
+            mHomeFragment = HomeFragment.newInstance();
             mBookmarkFragment = BookmarkFragment.newInstance();
             mHistoryFragment = HistoryFragment.newInstance();
             mCompassFragment = CompassFragment.newInstance();
@@ -274,7 +273,7 @@ public class HomeActivity extends BaseToolbarActivity implements BookmarkFragmen
             mSearchIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_search_hightlight));
             mSearchIconText.setTextColor(getResources().getColor(R.color.bottom_text_hightlight));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.home_fragment_container, mSearchFragment);
+            ft.replace(R.id.home_fragment_container, mHomeFragment);
             ft.commit();
             getFragmentManager().executePendingTransactions();
         }
