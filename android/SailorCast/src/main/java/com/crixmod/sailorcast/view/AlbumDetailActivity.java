@@ -61,6 +61,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
     private int mInitialVideoNoInAlbum = 0;
     private boolean mIsShowTitle = false;
+    private boolean mIsBackward = false;
     private BookmarkDbHelper mBookmarkDb;
     private HistoryDbHelper mHistoryDb;
     private boolean mIsFav;
@@ -112,15 +113,25 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
         MenuItem showTitle = menu.findItem(R.id.action_display_title);
         MenuItem showButton = menu.findItem(R.id.action_display_button);
+
+
+        MenuItem backward = menu.findItem(R.id.action_order_backward);
+        MenuItem forward = menu.findItem(R.id.action_order_forward);
+
         fave.setVisible(mIsFav);
         unfave.setVisible(!mIsFav);
 
         if(mAlbum.getVideosTotal() <= 1) {
             showTitle.setVisible(false);
             showButton.setVisible(false);
+            backward.setVisible(false);
+            forward.setVisible(false);
         } else {
             showTitle.setVisible(mIsShowTitle);
             showButton.setVisible(!mIsShowTitle);
+
+            forward.setVisible(!mIsBackward);
+            backward.setVisible(mIsBackward);
         }
         return true;
     }
