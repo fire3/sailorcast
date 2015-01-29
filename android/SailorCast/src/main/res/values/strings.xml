@@ -2,18 +2,8 @@
 <resources>
 
     <string name="app_name">水手放映室</string>
-    <string name="action_settings">设置</string>
     <string name="title_activity_album_list">AlbumListActivity</string>
-    <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_album_detail">AlbumDetailActivity</string>
-    <string name="search_button_text">搜索</string>
-    <string name="reader">阅读器</string>
-    <string name="notifications">通知</string>
-    <string name="open_drawer">打开抽屉菜单</string>
-    <string name="close_drawer">关闭抽屉菜单</string>
-    <string name="reader_toast_err_generic">打开阅读器错误</string>
-    <string name="settings">设置</string>
-    <string name="title_activity_search">搜索</string>
     <string name="title_activity_search_results">搜索结果</string>
     <string name="site_sohu">搜狐视频</string>
     <string name="site_youku">优酷视频</string>
@@ -22,9 +12,6 @@
     <string name="fail_reason_no_results">对不起，没有搜索到任何结果...</string>
     <string name="fail_reason_searching">努力搜索中...</string>
     <string name="director">导演：</string>
-    <string name="actor">演员：</string>
-    <string name="toggle_button_order">倒序显示：</string>
-    <string name="toggle_button_display_title">标题显示：</string>
     <string name="btn_phone_super">超清\n播放</string>
     <string name="btn_phone_normal">标清\n播放</string>
     <string name="btn_phone_high">高清\n播放</string>
@@ -34,48 +21,11 @@
     <string name="action_display_title">显示标题</string>
     <string name="action_display_button">显示按钮</string>
 
-    <!-- Menu -->
-    <string name="menu_settings">Settings</string>
-    <string name="menu_about">About</string>
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_quit">Quit</string>
-    <string name="menu_search">Search</string>
-
-    <!-- Navigation drawer -->
-    <string name="renderer">Renderer</string>
-    <string name="device_list_empty">No device available</string>
-    <string name="navigation_drawer_open">Open device list</string>
-    <string name="navigation_drawer_close">Close device list</string>
-
     <!-- Popup -->
     <string name="OK">确定</string>
     <string name="loading">加载中...</string>
     <string name="selectRenderer">选择投射设备</string>
     <string name="noRenderer">没有可用的投射设备,请稍后再试</string>
-
-    <!-- Now Playing -->
-    <string name="duration">00:00:00</string>
-
-    <!-- Now Playing Footer -->
-    <string name="play">Play</string>
-    <string name="pause">Pause</string>
-    <string name="stop">Stop</string>
-    <string name="next">Next</string>
-    <string name="back">Back</string>
-    <string name="mute">Mute</string>
-
-    <!-- Device Info -->
-    <string name="manufacturer">Manufacturer</string>
-    <string name="manufacturer_url">Manufacturer URL</string>
-    <string name="model_name">Model name</string>
-    <string name="model_url">Model URL</string>
-    <string name="model_number">Model number</string>
-    <string name="model_desc">Model description</string>
-    <string name="presention_url">Presentation URL</string>
-    <string name="desc_xml">Description XML</string>
-    <string name="udn">UDN</string>
-    <string name="separator"> : </string>
-    <string name="title_activity_render">RenderActivity</string>
     <string name="bookmark_button_text">收藏</string>
     <string name="history_button_text">历史</string>
     <string name="compass_button_text">发现</string>
@@ -96,7 +46,6 @@
     <string name="btn_ok">确定</string>
     <string name="btn_cancel">取消</string>
     <string name="action_filters">筛选</string>
-    <string name="hello_world">Hello world!</string>
     <string name="album_from">来自：</string>
     <string name="fail_reason_no_bookmark">您还没有添加任何书签！\n\n请点击剧集信息页面上方星标尽情收藏吧：)</string>
     <string name="fail_reason_no_history">您还没有任何播放历史！\n\n寻找您喜欢的剧集播放吧：)</string>
@@ -107,6 +56,6 @@
     <string name="channel_history">播放历史</string>
     <string name="title_activity_bookmark">BookmarkActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
-    <string name="title_activity_launcher">LauncherActivity</string>
+    <string name="actor">演员：</string>
 
 </resources>
