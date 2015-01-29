@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  * Use the {@link BookmarkFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BookmarkFragment extends Fragment {
+public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private BookmarkDbHelper mDb;
 
     private BookmarkAdapter mAdapter;
@@ -40,6 +41,7 @@ public class BookmarkFragment extends Fragment {
     private GridView mGrid;
     private TextView mEmpty;
     private SCAlbums mAlbums;
+    private SwipeRefreshLayout mSwipeContainer;
 
 
     public static BookmarkFragment newInstance() {
@@ -72,6 +74,13 @@ public class BookmarkFragment extends Fragment {
         mGrid.setEmptyView(mEmpty);
         mEmpty.setText(mFailReason);
         mGrid.setAdapter(mAdapter);
+
+        mSwipeContainer = (SwipeRefreshLayout) view;
+        mSwipeContainer.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
+        mSwipeContainer.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         return view;
     }
@@ -111,6 +120,12 @@ public class BookmarkFragment extends Fragment {
         mAlbums = mDb.getAllAlbums();
         mAdapter = new BookmarkAdapter(getActivity(),mAlbums);
         mGrid.setAdapter(mAdapter);
+        mSwipeContainer.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        reloadBookmarks();
     }
 
 

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
  * Use the {@link com.crixmod.sailorcast.view.fragments.HistoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private HistoryDbHelper mDb;
 
     private HistoryAdapter mAdapter;
@@ -43,6 +43,7 @@ public class HistoryFragment extends Fragment {
     private GridView mGrid;
     private TextView mEmpty;
     private ArrayList<History> mHistories;
+    private SwipeRefreshLayout mSwipeContainer;
 
 
     public static HistoryFragment newInstance() {
@@ -75,6 +76,12 @@ public class HistoryFragment extends Fragment {
         mGrid.setEmptyView(mEmpty);
         mEmpty.setText(mFailReason);
         mGrid.setAdapter(mAdapter);
+        mSwipeContainer = (SwipeRefreshLayout) view;
+        mSwipeContainer.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
+        mSwipeContainer.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         return view;
     }
@@ -109,10 +116,16 @@ public class HistoryFragment extends Fragment {
         mAdapter.notifyDataSetInvalidated();
     }
 
-    public void reloadBookmarks() {
+    public void reloadHistories() {
         mHistories = mDb.getAllHistories();
         mAdapter = new HistoryAdapter(getActivity(),mHistories);
         mGrid.setAdapter(mAdapter);
+        mSwipeContainer.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        reloadHistories();
     }
 
 
@@ -293,7 +306,7 @@ public class HistoryFragment extends Fragment {
                 SCAlbum a = mBookmarkHistories.get(i).getHistory().getAlbum();
                 mDb.deleteAlbum(a.getAlbumId(),a.getSite().getSiteID());
             }
-            reloadBookmarks();
+            reloadHistories();
         }
 
 
