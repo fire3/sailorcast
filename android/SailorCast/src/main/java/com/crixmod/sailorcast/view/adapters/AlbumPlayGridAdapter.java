@@ -25,6 +25,8 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
     private SCVideos mVideos = new SCVideos();
     private AlbumPlayGridSelectedListener mListener;
     private boolean showTitle = false;
+    private boolean isBackward = false;
+    private int totalVideos;
 
     private class ViewHolder {
             LinearLayout resultContainer;
@@ -32,9 +34,18 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
     }
 
 
-    public AlbumPlayGridAdapter(Context mContext , AlbumPlayGridSelectedListener mListener) {
+    public AlbumPlayGridAdapter(Context mContext , int totalVideos,  AlbumPlayGridSelectedListener mListener) {
         this.mContext = mContext;
         this.mListener = mListener;
+        this.totalVideos = totalVideos;
+    }
+
+    public void clear() {
+        mVideos.clear();
+    }
+
+    public void setBackward(boolean isBackward) {
+        this.isBackward = isBackward;
     }
 
     public void addVideo(SCVideo v) {
@@ -75,10 +86,18 @@ public class AlbumPlayGridAdapter extends BaseAdapter {
         if(isShowTitle()) {
             if(video.getVideoTitle()!=null && !video.getVideoTitle().isEmpty())
                 viewHolder.videoTitle.setText(video.getVideoTitle());
-            else
+            else {
+                if(isBackward == false)
+                    viewHolder.videoTitle.setText("" + (position + 1));
+                else
+                    viewHolder.videoTitle.setText("" + (totalVideos - position));
+            }
+        } else {
+            if(isBackward == false)
                 viewHolder.videoTitle.setText("" + (position + 1));
-        } else
-            viewHolder.videoTitle.setText("" + (position + 1));
+            else
+                viewHolder.videoTitle.setText("" + (totalVideos - position));
+        }
         viewHolder.videoTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

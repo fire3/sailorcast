@@ -95,7 +95,6 @@ public class CompassFragment extends Fragment {
                 imageView = (ImageView) convertView.findViewById(R.id.icon_image);
                 textView = (TextView) convertView.findViewById(R.id.icon_text);
             }
-            Log.d("fire3","position: " + position + " " + channel.toString());
             switch (channel.getChannelID()) {
                 case    SCChannel.SHOW:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_show));

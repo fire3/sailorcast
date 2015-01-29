@@ -322,9 +322,19 @@ public class LetvApi extends BaseSiteApi{
                     album.setSubTitle(albumJsonBody.getString("subTitle"));
                 if(!albumJsonBody.optString("style").isEmpty())
                     album.setLetvStyle(albumJsonBody.getString("style"));
-                if (!albumJsonBody.optString("platformVideoNum").isEmpty()) {
+                if (!albumJsonBody.optString("platformVideoInfo").isEmpty()) {
+                    album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("platformVideoInfo")));
+                }
+                if(album.getVideosTotal() == 0) {
+                    album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("nowEpisodes")));
+                }
+                if(album.getVideosTotal() == 0) {
+                    album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("episode")));
+                }
+                if(album.getVideosTotal() == 0) {
                     album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("platformVideoNum")));
                 }
+
                 /*
                 if (!albumJsonBody.optString("platformVideoInfo").isEmpty()) {
                     album.setVideosCount(Integer.parseInt(albumJsonBody.getString("platformVideoInfo")));

@@ -152,6 +152,24 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id == R.id.action_order_backward) {
+            if ( mIsBackward == true) {
+                mIsBackward = false;
+                mFragment.setBackward(mIsBackward);
+                invalidateOptionsMenu();
+            }
+            return true;
+        }
+
+        if (id == R.id.action_order_forward) {
+            if (mIsBackward == false) {
+                mIsBackward = true;
+                mFragment.setBackward(mIsBackward);
+                invalidateOptionsMenu();
+            }
+            return true;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_display_button) {
             if ( mIsShowTitle == false ) {
@@ -177,6 +195,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 invalidateOptionsMenu();
                 Toast.makeText(this,getResources().getString(R.string.toast_bookmarked),Toast.LENGTH_SHORT).show();
             }
+            return true;
         }
 
 
@@ -187,6 +206,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 mIsFav = false;
                 invalidateOptionsMenu();
             }
+            return true;
         }
 
         if(id == android.R.id.home) {
@@ -311,7 +331,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 fillAlbumDescView(album);
                 invalidateOptionsMenu();
 
-                mFragment = AlbumPlayGridFragment.newInstance(mAlbum,mIsShowTitle,mInitialVideoNoInAlbum);
+                mFragment = AlbumPlayGridFragment.newInstance(mAlbum,mIsShowTitle,mIsBackward,mInitialVideoNoInAlbum);
                 mFragment.setShowTitle(mIsShowTitle);
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.fragment_container, mFragment);

@@ -31,13 +31,16 @@ public class AlbumPlayGridFragment extends Fragment implements
 
     private static final String ARG_ALBUM = "album";
     private static final String ARG_IS_SHOW_TITLE = "isShowTitle";
+    private static final String ARG_IS_BACKWARD = "isBackward";
     private static final String ARG_INITIAL_POSITION = "initialPosition";
 
 
     private SCAlbum mAlbum;
     private boolean mIsShowTitle;
+    private boolean mIsBackward;
     private int mPageNo = 0;
     private int mPageSize = 48;//sohu最多一次列出50个剧集
+    private int mPageTotal;
     private AlbumPlayGridAdapter mAdapter;
     private int mInitialVideoNoInAlbum = 0;
     private boolean mFirstSelection = true;
@@ -55,11 +58,12 @@ public class AlbumPlayGridFragment extends Fragment implements
      * @return A new instance of fragment AlbumPlayGridFragment.
      */
 
-    public static AlbumPlayGridFragment newInstance(SCAlbum album, boolean isShowTitle, int initialVideoPosition) {
+    public static AlbumPlayGridFragment newInstance(SCAlbum album, boolean isShowTitle, boolean isBackward, int initialVideoPosition) {
         AlbumPlayGridFragment fragment = new AlbumPlayGridFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_ALBUM, album);
         args.putBoolean(ARG_IS_SHOW_TITLE, isShowTitle);
+        args.putBoolean(ARG_IS_BACKWARD, isBackward);
         args.putInt(ARG_INITIAL_POSITION, initialVideoPosition);
 
         fragment.setArguments(args);
@@ -76,8 +80,10 @@ public class AlbumPlayGridFragment extends Fragment implements
         if (getArguments() != null) {
             mAlbum = getArguments().getParcelable(ARG_ALBUM);
             mIsShowTitle = getArguments().getBoolean(ARG_IS_SHOW_TITLE);
-            mAdapter = new AlbumPlayGridAdapter(getActivity(), this);
+            mIsBackward = getArguments().getBoolean(ARG_IS_BACKWARD);
+            mAdapter = new AlbumPlayGridAdapter(getActivity(),mAlbum.getVideosTotal(), this);
             mInitialVideoNoInAlbum = getArguments().getInt(ARG_INITIAL_POSITION);
+            mPageTotal = (mAlbum.getVideosTotal() + mPageSize - 1) / mPageSize;
             loadMoreVideos();
         }
     }
@@ -104,6 +110,15 @@ public class AlbumPlayGridFragment extends Fragment implements
         return view;
     }
 
+    public void setBackward(boolean isBackward) {
+        mIsBackward = isBackward;
+        mPageNo = isBackward ? mPageTotal : 0;
+        mAdapter.clear();
+        mAdapter.setBackward(mIsBackward);
+        mAdapter.notifyDataSetChanged();
+        mGridView.setHasMoreItems(true);
+        loadMoreVideos();
+    }
 
     public void setShowTitle(boolean showTitle) {
         mIsShowTitle = showTitle;
@@ -150,16 +165,34 @@ public class AlbumPlayGridFragment extends Fragment implements
     }
 
     public void loadMoreVideos() {
-        mPageNo ++ ;
-        SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
+        if(mIsBackward == false) {
+            mPageNo++;
+            if(mPageNo <= mPageTotal) {
+                SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
+            } else
+                mGridView.setHasMoreItems(false);
+        } else {
+            if(mPageNo > 0)
+                SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
+            mPageNo--;
+            if(mPageNo == 0)
+                mGridView.setHasMoreItems(false);
+        }
     }
 
     @Override
     public void onGetVideosSuccess(final SCVideos videos) {
 
         if(videos.size() > 0) {
-            for (SCVideo v : videos) {
+            for (int i = 0; i < videos.size(); i++) {
+                int index;
+                if(mIsBackward == false)
+                    index = i;
+                else
+                    index = videos.size() - i - 1;
+                SCVideo v = videos.get(index);
                 mAdapter.addVideo(v);
+
             }
             if (mInitialVideoNoInAlbum > mAdapter.getCount())
                 loadMoreVideos();
