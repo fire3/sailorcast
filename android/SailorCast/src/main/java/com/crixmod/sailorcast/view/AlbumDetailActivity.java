@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,8 @@ import com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
+
+import static com.crixmod.sailorcast.R.id.error_message;
 
 public class AlbumDetailActivity extends BaseToolbarActivity implements
         OnGetAlbumDescListener, AlbumPlayGridFragment.OnAlbumPlayGridListener
@@ -112,12 +115,12 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         fave.setVisible(mIsFav);
         unfave.setVisible(!mIsFav);
 
-        if(mAlbum.getVideosCount() <= 1) {
+        if(mAlbum.getVideosTotal() <= 1) {
             showTitle.setVisible(false);
             showButton.setVisible(false);
         } else {
-            showTitle.setVisible(true);
-            showButton.setVisible(true);
+            showTitle.setVisible(mIsShowTitle);
+            showButton.setVisible(!mIsShowTitle);
         }
         return true;
     }
@@ -140,16 +143,18 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_display_button) {
-            if ( mIsShowTitle == true ) {
-                mIsShowTitle = false;
+            if ( mIsShowTitle == false ) {
+                mIsShowTitle = true;
                 mFragment.setShowTitle(mIsShowTitle);
+                invalidateOptionsMenu();
             }
             return true;
         }
         if (id == R.id.action_display_title) {
-            if ( mIsShowTitle == false ) {
-                mIsShowTitle = true;
+            if ( mIsShowTitle == true ) {
+                mIsShowTitle = false;
                 mFragment.setShowTitle(mIsShowTitle);
+                invalidateOptionsMenu();
             }
             return true;
         }
@@ -160,7 +165,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 mIsFav = true;
                 invalidateOptionsMenu();
                 Toast.makeText(this,getResources().getString(R.string.toast_bookmarked),Toast.LENGTH_SHORT).show();
-
             }
         }
 
@@ -261,6 +265,12 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         albumDescContainer.setVisibility(View.VISIBLE);
     }
 
+    private void openErrorMsg(String msg) {
+        TextView textView = (TextView) findViewById(error_message);
+        textView.setText(msg);
+        textView.setVisibility(View.VISIBLE);
+    }
+
     private void hideAllPlayButton() {
         mDlnaHighButton.setVisibility(View.GONE);
         mDlnaNorButton.setVisibility(View.GONE);
@@ -301,6 +311,13 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                     hideAlbumCloseButton();
                     openAlbumDesc();
                 }
+
+                if(mAlbum.getVideosTotal() == 0) {
+                    hideAlbumCloseButton();
+                    openAlbumDesc();
+                    hideAllPlayButton();
+                    openErrorMsg(getResources().getString(R.string.album_no_videos));
+                }
             }
         });
 
@@ -319,13 +336,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         hideAllPlayButton();
         SiteApi.doGetVideoPlayUrl(v, this);
 
-    }
-
-    @Override
-    public void onAlbumPlayVideosFetched(int count) {
-        int old = mAlbum.getVideosCount();
-        mAlbum.setVideosCount(old + count);
-        invalidateOptionsMenu();
     }
 
     @Override

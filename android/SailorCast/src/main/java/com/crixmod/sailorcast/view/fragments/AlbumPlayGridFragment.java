@@ -164,7 +164,6 @@ public class AlbumPlayGridFragment extends Fragment implements
             if (mInitialVideoNoInAlbum > mAdapter.getCount())
                 loadMoreVideos();
 
-            mListener.onAlbumPlayVideosFetched(videos.size());
             if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
                 mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
             }
@@ -231,7 +230,6 @@ public class AlbumPlayGridFragment extends Fragment implements
      */
     public interface OnAlbumPlayGridListener {
         public void onAlbumPlayVideoSelected(SCVideo v, int videoNoInAlbum);
-        public void onAlbumPlayVideosFetched(int count);
     }
 
 }

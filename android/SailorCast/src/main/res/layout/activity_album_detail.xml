@@ -137,6 +137,13 @@
 
             <include layout="@layout/album_play_button_dlna"/>
             <include layout="@layout/album_play_button_phone"/>
+            <TextView
+                android:layout_marginBottom="@dimen/margin_large"
+                android:gravity="center"
+                android:id="@+id/error_message"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 

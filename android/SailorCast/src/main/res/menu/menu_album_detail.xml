@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.crixmod.sailorcast.view.AlbumActivity">
     <item android:id="@+id/action_display_title" android:title="@string/action_display_title"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/ic_button" />
     <item android:id="@+id/action_display_button" android:title="@string/action_display_button"
-        android:orderInCategory="100" app:showAsAction="never" />
+        android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/ic_button_notext"/>
     <item android:id="@+id/action_fav_button" android:title="@string/action_fav_button"
         android:orderInCategory="10" app:showAsAction="always" android:icon="@drawable/detail_card_favorited" />
     <item android:id="@+id/action_unfav_button" android:title="@string/action_unfav_button"
         android:orderInCategory="10" app:showAsAction="always" android:icon="@drawable/detail_card_favorite" />
+
 </menu>

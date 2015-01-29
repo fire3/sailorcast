@@ -210,12 +210,12 @@ public class SohuApi extends BaseSiteApi {
 
     private void fillAlbumDesc(SCAlbum album, Album sohuAlbum, OnGetAlbumDescListener listener) {
         if(sohuAlbum.getData() != null) {
-            album.setVideosCount(sohuAlbum.getData().getLatestVideoCount());
+            //album.setVideosCount(sohuAlbum.getData().getLatestVideoCount());
             //TotalVideoCount is 0 sometimes, use latestVideoCount instead.
-            if (sohuAlbum.getData().getTotalVideoCount() > 0)
-                album.setVideosTotal(sohuAlbum.getData().getTotalVideoCount());
-            else
+            if (sohuAlbum.getData().getLatestVideoCount() > 0)
                 album.setVideosTotal(sohuAlbum.getData().getLatestVideoCount());
+            else
+                album.setVideosTotal(sohuAlbum.getData().getTotalVideoCount());
 
             album.setDesc(sohuAlbum.getData().getAlbumDesc());
             album.setMainActor(sohuAlbum.getData().getMainActor());
@@ -452,7 +452,7 @@ public class SohuApi extends BaseSiteApi {
                                                 album.setTitle(title);
                                             else
                                                 album.setTitle(aName);
-                                            album.setVideosCount(latest_video_count);
+                                            //album.setVideosCount(latest_video_count);
                                             album.setVideosTotal(latest_video_count);
                                             album.setTip(tip);
                                             if (horPic != null && !horPic.isEmpty())

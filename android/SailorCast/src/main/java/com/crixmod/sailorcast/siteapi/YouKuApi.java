@@ -354,7 +354,7 @@ public class YouKuApi extends BaseSiteApi {
     }
 
     private void getAlbumUpdateVideosCount(final SCAlbum album, final OnGetAlbumDescListener listener) {
-        String url = getShowVideosUrl(album.getAlbumId(),1,1);
+        String url = getShowVideosUrl(album.getAlbumId(),1,10);
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -370,9 +370,17 @@ public class YouKuApi extends BaseSiteApi {
                 String ret = response.body().string();
                 try {
                     JSONObject jObject = new JSONObject(ret);
-                    if( jObject.getInt("total") != 0) {
-                        album.setVideosCount(jObject.getInt("total"));
+                    int total = jObject.optInt("total",0);
+                    if( total != 0) {
+                        album.setVideosTotal(total);
                     }
+                    //total有时候不可信。
+                    JSONArray res = jObject.optJSONArray("results");
+                    int length = res.length();
+                    if(length == 1)
+                        album.setVideosTotal(1);
+                    if(length == 0)
+                        album.setVideosTotal(0);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     listener.onGetAlbumDescFailed("Wrong Json");

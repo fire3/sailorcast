@@ -325,11 +325,13 @@ public class LetvApi extends BaseSiteApi{
                 if (!albumJsonBody.optString("platformVideoNum").isEmpty()) {
                     album.setVideosTotal(Integer.parseInt(albumJsonBody.getString("platformVideoNum")));
                 }
+                /*
                 if (!albumJsonBody.optString("platformVideoInfo").isEmpty()) {
                     album.setVideosCount(Integer.parseInt(albumJsonBody.getString("platformVideoInfo")));
                 }
                 if(album.getVideosCount() == 0)
                     album.setVideosCount(album.getVideosTotal());
+                */
                 if (albumJsonBody.optString("isEnd") != null) {
                     if (albumJsonBody.getString("isEnd").equals("1"))
                         album.setIsCompleted(true);

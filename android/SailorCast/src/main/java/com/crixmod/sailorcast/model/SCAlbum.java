@@ -10,7 +10,6 @@ import com.crixmod.sailorcast.SailorCast;
  */
 public class SCAlbum implements Parcelable {
     private String mAlbumId = null;
-    private Integer mVideosCount = 0;   /* 已经更新的视频数量 */
     private Integer mVideosTotal = 0;   /* 总共的视频数量 */
     private String mTitle = null;
     private String mSubTitle = null;
@@ -34,14 +33,6 @@ public class SCAlbum implements Parcelable {
 
     public void setAlbumId(String mAlbumId) {
         this.mAlbumId = mAlbumId;
-    }
-
-    public Integer getVideosCount() {
-        return mVideosCount;
-    }
-
-    public void setVideosCount(Integer mVideosCount) {
-        this.mVideosCount = mVideosCount;
     }
 
     public String getTitle() {
@@ -145,7 +136,6 @@ public class SCAlbum implements Parcelable {
     public String toString() {
         return "SCAlbum{" +
                 "mAlbumId='" + mAlbumId + '\'' +
-                ", mVideosCount=" + mVideosCount +
                 ", mVideosTotal=" + mVideosTotal +
                 ", mTitle='" + mTitle + '\'' +
                 ", mSubTitle='" + mSubTitle + '\'' +
@@ -169,7 +159,6 @@ public class SCAlbum implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
 
         parcel.writeString(mAlbumId);
-        parcel.writeInt(mVideosCount);
         parcel.writeInt(mVideosTotal);
         parcel.writeString(mTitle);
         parcel.writeString(mSubTitle);
@@ -187,7 +176,6 @@ public class SCAlbum implements Parcelable {
 
     private SCAlbum (Parcel in) {
         this.mAlbumId = in.readString();
-        this.mVideosCount = in.readInt();
         this.mVideosTotal = in.readInt();
         this.mTitle = in.readString();
         this.mSubTitle = in.readString();
