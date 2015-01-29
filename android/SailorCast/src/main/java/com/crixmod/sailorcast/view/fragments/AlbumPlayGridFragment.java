@@ -50,6 +50,7 @@ public class AlbumPlayGridFragment extends Fragment implements
 
     private OnAlbumPlayGridListener mListener;
     private PagingGridView mGridView;
+    private int mCurrentSelected = mInitialVideoNoInAlbum;
 
     /**
      * Use this factory method to create a new instance of
@@ -132,6 +133,12 @@ public class AlbumPlayGridFragment extends Fragment implements
         }
         if(mGridView != null) {
             mGridView.setNumColumns(mColumns);
+            mGridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mGridView.smoothScrollToPosition(mCurrentSelected);
+                }
+            });
         }
     }
 
@@ -169,14 +176,18 @@ public class AlbumPlayGridFragment extends Fragment implements
             mPageNo++;
             if(mPageNo <= mPageTotal) {
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
-            } else
-                mGridView.setHasMoreItems(false);
+            } else {
+                if(mGridView != null)
+                    mGridView.setHasMoreItems(false);
+            }
         } else {
             if(mPageNo > 0)
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
             mPageNo--;
-            if(mPageNo == 0)
-                mGridView.setHasMoreItems(false);
+            if(mPageNo == 0) {
+                if(mGridView != null)
+                    mGridView.setHasMoreItems(false);
+            }
         }
     }
 
@@ -247,6 +258,7 @@ public class AlbumPlayGridFragment extends Fragment implements
         if(mGridView != null) {
             mGridView.setSelection(position);
             mGridView.setItemChecked(position, true);
+            mCurrentSelected = position;
         }
         mListener.onAlbumPlayVideoSelected(v, position);
     }

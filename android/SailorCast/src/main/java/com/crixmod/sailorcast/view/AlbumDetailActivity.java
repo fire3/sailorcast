@@ -2,14 +2,9 @@ package com.crixmod.sailorcast.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +28,6 @@ import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
-import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment;
 
@@ -360,10 +354,13 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     @Override
-    public void onAlbumPlayVideoSelected(SCVideo v, int videoNoInAlbum) {
+    public void onAlbumPlayVideoSelected(SCVideo v, int positionInGrid) {
         mCurrentVideo = v;
-        mVideoInAlbum = videoNoInAlbum;
-        v.setSeqInAlbum(videoNoInAlbum + 1);
+        mVideoInAlbum = positionInGrid;
+        if(mIsBackward == false)
+            v.setSeqInAlbum(positionInGrid + 1);
+        else
+            v.setSeqInAlbum(mAlbum.getVideosTotal() - positionInGrid);
         hideAllPlayButton();
         SiteApi.doGetVideoPlayUrl(v, this);
 
