@@ -34,8 +34,12 @@ public class ImageTools {
 
     public static void displayImage(ImageView view, String picUrl, int height, int width) {
 
-        if(picUrl != null && !picUrl.isEmpty() && view != null  && height > 0 && width > 0)
-            Picasso.with(view.getContext()).load(picUrl).resize(height,width).centerCrop().into(view);
+        if(picUrl != null && !picUrl.isEmpty() && view != null  && height > 0 && width > 0) {
+            if(height > width)
+                Picasso.with(view.getContext()).load(picUrl).error(R.drawable.loading).centerCrop().resize(height, width).into(view);
+            else
+                Picasso.with(view.getContext()).load(picUrl).error(R.drawable.loading_hor).centerCrop().resize(height, width).into(view);
+        }
     }
 
     public static void displayImage(ImageView view, String picUrl) {

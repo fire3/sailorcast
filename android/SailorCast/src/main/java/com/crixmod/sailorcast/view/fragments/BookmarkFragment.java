@@ -241,7 +241,13 @@ public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnR
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
             params.width = point.x;
             params.height = point.y;
-            ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
+            if(album.getVerImageUrl() != null && !album.getVerImageUrl().isEmpty())
+                ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
+            else if(album.getHorImageUrl() != null && !album.getHorImageUrl().isEmpty())
+                ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
+            else
+                viewHolder.videoImage.setImageDrawable(SailorCast.getResource().getDrawable(R.drawable.loading));
+
             viewHolder.videoChecker.setChecked(bookmarkAlbum.getChecked());
 
             if(mShowChecker == false) {
