@@ -119,10 +119,10 @@ public class CompassFragment extends Fragment {
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_variety));
                     break;
                 case    SCChannel.LOCAL_BOOKMARK:
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_star));
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark));
                     break;
                 case    SCChannel.LOCAL_HISTORY:
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_playhistory));
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_history));
                     break;
             }
 
