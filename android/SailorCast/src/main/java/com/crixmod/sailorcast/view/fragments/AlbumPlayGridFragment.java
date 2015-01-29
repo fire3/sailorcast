@@ -182,15 +182,26 @@ public class AlbumPlayGridFragment extends Fragment implements
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
             } else {
                 if(mGridView != null)
-                    mGridView.setHasMoreItems(false);
+                    mGridView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGridView.setHasMoreItems(false);
+                        }
+                    });
             }
         } else {
             if(mPageNo > 0)
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
             mPageNo--;
             if(mPageNo == 0) {
-                if(mGridView != null)
-                    mGridView.setHasMoreItems(false);
+                if(mGridView != null) {
+                    mGridView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mGridView.setHasMoreItems(false);
+                        }
+                    });
+                }
             }
         }
     }
