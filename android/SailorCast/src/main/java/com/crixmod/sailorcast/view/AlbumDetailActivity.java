@@ -297,12 +297,18 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     private void hideAllPlayButton() {
-        mDlnaHighButton.setVisibility(View.GONE);
-        mDlnaNorButton.setVisibility(View.GONE);
-        mDlnaSuperButton.setVisibility(View.GONE);
-        mPlayHighButton.setVisibility(View.GONE);
-        mPlayNorButton.setVisibility(View.GONE);
-        mPlaySuperButton.setVisibility(View.GONE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDlnaHighButton.setVisibility(View.GONE);
+                mDlnaNorButton.setVisibility(View.GONE);
+                mDlnaSuperButton.setVisibility(View.GONE);
+                mPlayHighButton.setVisibility(View.GONE);
+                mPlayNorButton.setVisibility(View.GONE);
+                mPlaySuperButton.setVisibility(View.GONE);
+            }
+        });
+
     }
 
 

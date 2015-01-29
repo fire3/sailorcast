@@ -84,6 +84,7 @@ public class AlbumPlayGridFragment extends Fragment implements
             mIsBackward = getArguments().getBoolean(ARG_IS_BACKWARD);
             mAdapter = new AlbumPlayGridAdapter(getActivity(),mAlbum.getVideosTotal(), this);
             mInitialVideoNoInAlbum = getArguments().getInt(ARG_INITIAL_POSITION);
+            mCurrentSelected = mInitialVideoNoInAlbum;
             mPageTotal = (mAlbum.getVideosTotal() + mPageSize - 1) / mPageSize;
             loadMoreVideos();
         }
@@ -118,6 +119,9 @@ public class AlbumPlayGridFragment extends Fragment implements
         mAdapter.setBackward(mIsBackward);
         mAdapter.notifyDataSetChanged();
         mGridView.setHasMoreItems(true);
+        mFirstSelection = true;
+        mInitialVideoNoInAlbum = 0;
+        mCurrentSelected = mInitialVideoNoInAlbum;
         loadMoreVideos();
     }
 
