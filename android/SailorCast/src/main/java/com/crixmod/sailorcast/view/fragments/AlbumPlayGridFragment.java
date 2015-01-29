@@ -2,11 +2,13 @@ package com.crixmod.sailorcast.view.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -229,15 +231,37 @@ public class AlbumPlayGridFragment extends Fragment implements
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
-                        mGridView.setSelection(mInitialVideoNoInAlbum);
-                        mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
-                    }
+
                     mAdapter.notifyDataSetChanged();
-                    mGridView.setIsLoading(false);
-                    if(mFirstSelection)
-                        mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
-                    mFirstSelection = false;
+                    if(mGridView != null) {
+                        mGridView.setIsLoading(false);
+                        /*
+                        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection == true) {
+                                    mGridView.setSelection(mInitialVideoNoInAlbum);
+                                    mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
+                                    mFirstSelection = false;
+                                    SystemClock.sleep(50);
+                                    mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                                }
+                            }
+                        });
+                        */
+                        mGridView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection == true) {
+                                    mGridView.setSelection(mInitialVideoNoInAlbum);
+                                    mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
+                                    mFirstSelection = false;
+                                    SystemClock.sleep(100);
+                                    mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                                }
+                            }
+                        });
+                    }
                 }
             });
         }

@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
@@ -102,7 +103,13 @@ public class AlbumListAdapter extends BaseAdapter {
             ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),x,y);
         } else if(album.getHorImageUrl() != null) {
             ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),x,y);
+        } else {
+            if(mColumns == 2)
+                viewHolder.videoImage.setImageDrawable(SailorCast.getResource().getDrawable(R.drawable.loading_hor));
+            if(mColumns == 3)
+                viewHolder.videoImage.setImageDrawable(SailorCast.getResource().getDrawable(R.drawable.loading));
         }
+
         viewHolder.videoTip.setText("");
         viewHolder.videoTip.setVisibility(View.GONE);
         if(album.getTip() != null && !album.getTip().isEmpty()) {
@@ -115,6 +122,7 @@ public class AlbumListAdapter extends BaseAdapter {
             public void onClick(View view) {
                 if(mChannel.getChannelID() == SCChannel.VARIETY ||
                         mChannel.getChannelID() == SCChannel.DOCUMENTARY ||
+                        mChannel.getChannelID() == SCChannel.MOVIE ||
                         mChannel.getChannelID() == SCChannel.SPORT ||
                         mChannel.getChannelID() == SCChannel.MUSIC
                         )
