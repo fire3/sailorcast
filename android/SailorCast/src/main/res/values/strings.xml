@@ -58,5 +58,7 @@
     <string name="title_activity_history">HistoryActivity</string>
     <string name="actor">演员：</string>
     <string name="album_no_videos">对不起，没有找到可供播放的影片...</string>
+    <string name="action_order_forward">顺序显示</string>
+    <string name="action_order_backward">倒序显示</string>
 
 </resources>

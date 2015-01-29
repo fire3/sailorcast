@@ -2,6 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.crixmod.sailorcast.view.AlbumActivity">
+
+    <item android:id="@+id/action_order_forward" android:title="@string/action_order_forward"
+        android:orderInCategory="200" app:showAsAction="always" android:icon="@drawable/ic_order_forward" />
+    <item android:id="@+id/action_order_backward" android:title="@string/action_order_backward"
+        android:orderInCategory="200" app:showAsAction="always" android:icon="@drawable/ic_order_backward"/>
     <item android:id="@+id/action_display_title" android:title="@string/action_display_title"
         android:orderInCategory="100" app:showAsAction="always" android:icon="@drawable/ic_button" />
     <item android:id="@+id/action_display_button" android:title="@string/action_display_button"
