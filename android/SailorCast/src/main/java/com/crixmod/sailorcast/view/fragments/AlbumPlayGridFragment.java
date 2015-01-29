@@ -37,7 +37,7 @@ public class AlbumPlayGridFragment extends Fragment implements
     private SCAlbum mAlbum;
     private boolean mIsShowTitle;
     private int mPageNo = 0;
-    private int mPageSize = 60;
+    private int mPageSize = 48;//sohu最多一次列出50个剧集
     private AlbumPlayGridAdapter mAdapter;
     private int mInitialVideoNoInAlbum = 0;
     private boolean mFirstSelection = true;
