@@ -1,24 +1,35 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'sailorcast'
+            keyPassword '123456'
+            storeFile file('../../sailorcast.jks')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 21
     buildToolsVersion "21.0.1"
-
     defaultConfig {
         applicationId "com.crixmod.sailorcast"
         minSdkVersion 17
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
-            minifyEnabled false
+            debuggable true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     packagingOptions {
         exclude 'META-INF/beans.xml'
+    }
+    productFlavors {
     }
 }
 
@@ -35,26 +46,19 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Cling
-
-    compile group: 'org.fourthline.cling', name: 'cling-core', version:'2.0.1'
-    compile group: 'org.fourthline.cling', name: 'cling-support', version:'2.0.1'
-    compile group: 'org.eclipse.jetty', name: 'jetty-server', version:'8.1.12.v20130726'
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version:'8.1.12.v20130726'
-    compile group: 'org.eclipse.jetty', name: 'jetty-client', version:'8.1.12.v20130726'
-    compile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.5'
-
+    compile 'org.fourthline.cling:cling-core:2.0.1'
+    compile 'org.fourthline.cling:cling-support:2.0.1'
+    compile 'org.eclipse.jetty:jetty-server:8.1.12.v20130726'
+    compile 'org.eclipse.jetty:jetty-servlet:8.1.12.v20130726'
+    compile 'org.eclipse.jetty:jetty-client:8.1.12.v20130726'
+    compile 'org.slf4j:slf4j-jdk14:1.7.5'
     compile 'commons-lang:commons-lang:2.6'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.+'
-
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.daimajia.slider:library:1.1.2@aar'
-
     compile 'com.umeng.analytics:analytics:latest.integration'
-    compile project(path:':decapi')
+    compile project(path: ':decapi')
 }

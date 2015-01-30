@@ -15,3 +15,110 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+# Obfuscation parameters:
+#-dontobfuscate
+-useuniqueclassmembernames
+-keepattributes SourceFile,LineNumberTable
+-allowaccessmodification
+# Ignore warnings:
+#-dontwarn org.mockito.**
+#-dontwarn org.junit.**
+#-dontwarn com.robotium.**
+#-dontwarn org.joda.convert.**
+# Ignore warnings: We are not using DOM model
+-dontwarn com.fasterxml.jackson.databind.ext.DOMSerializer
+# Ignore warnings: https://github.com/square/okhttp/wiki/FAQs
+-dontwarn com.squareup.okhttp.internal.huc.**
+# Ignore warnings: https://github.com/square/okio/issues/60
+-dontwarn okio.**
+# Ignore warnings: https://github.com/square/retrofit/issues/435
+-dontwarn com.google.appengine.api.urlfetch.**
+# Keep the pojos used by GSON or Jackson
+-keep class com.futurice.project.models.pojo.** { *; }
+# Keep GSON stuff
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.** { *; }
+# Keep Jackson stuff
+-keep class org.codehaus.** { *; }
+-keep class com.fasterxml.jackson.annotation.** { *; }
+# Keep these for GSON and Jackson
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+# Keep Retrofit
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+@retrofit.** *;
+}
+-keepclassmembers class * {
+@retrofit.** *;
+}
+# Keep Picasso
+-keep class com.squareup.picasso.** { *; }
+-keepclasseswithmembers class * {
+@com.squareup.picasso.** *;
+}
+-keepclassmembers class * {
+@com.squareup.picasso.** *;
+}
+
+# jetty
+-keep class org.eclipse.** { *; }
+-keepclasseswithmembers class * {
+@org.eclipse.** *;
+}
+-keepclassmembers class * {
+@org.eclipse.** *;
+}
+
+# cling
+-keep class org.fourthline.** { *; }
+-keepclasseswithmembers class * {
+@org.fourthline.** *;
+}
+-keepclassmembers class * {
+@org.fourthline.** *;
+}
+
+-keep class org.seamless.** { *; }
+-keepclasseswithmembers class * {
+@org.seamless.** *;
+}
+-keepclassmembers class * {
+@org.seamless.** *;
+}
+
+-dontwarn org.fourthline.cling.**
+-dontwarn org.seamless.**
+-dontwarn org.eclipse.jetty.**
+-dontwarn org.slf4j.**
+-dontwarn javax.servlet.**
+
+
+-keep class org.fourthline.cling.** { *;}
+-keep class org.seamless.** { *;}
+-keep class org.eclipse.jetty.** { *;}
+-keep class org.slf4j.** { *;}
+-keep class javax.servlet.** { *;}
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+-keep public class com.android.vending.licensing.ILicensingService
+
+-keep class com.crixmod.sailorcast.uiutils.** {*;}
+-keep class com.crixmod.sailorcast.utils.** {*;}
+-keep class com.crixmod.sailorcast.model.** {*;}
+
+-dontwarn android.support.v7.**
+-keep class android.support.v7.** { *; }
+-keep interface android.support.v7.** { *; }
+
+-dontwarn android.support.v4.**
+-keep class android.support.v4.** { *; }
+-keep interface android.support.v4.** { *; }
+
