@@ -122,3 +122,17 @@
 -keep class android.support.v4.** { *; }
 -keep interface android.support.v4.** { *; }
 
+
+-keepclassmembers class * {
+   public <init>(org.json.JSONObject);
+}
+
+-keep public class com.crixmod.sailorcast.R$*{
+    public static final int *;
+}
+
+-keep public class com.umeng.fb.ui.ThreadView {
+}
+
+-keep public class * extends com.umeng.**
+-keep class com.umeng.** { *; }

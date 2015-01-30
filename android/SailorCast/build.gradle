@@ -15,7 +15,7 @@ android {
         applicationId "com.crixmod.sailorcast"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 2
+        versionCode 1
         versionName "0.1"
         signingConfig signingConfigs.config
     }
