@@ -20,6 +20,7 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.view.fragments.SearchResultFragment;
+import com.umeng.analytics.MobclickAgent;
 
 public class SearchResultsActivity extends BaseToolbarActivity {
 
@@ -109,5 +110,20 @@ public class SearchResultsActivity extends BaseToolbarActivity {
         super.onDestroy();
         SiteApi.cancel();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+
+    
 }
 

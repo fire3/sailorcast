@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.fragments.BookmarkFragment;
+import com.umeng.analytics.MobclickAgent;
 
 public class BookmarkActivity extends BaseToolbarActivity  {
 
@@ -95,5 +96,17 @@ public class BookmarkActivity extends BaseToolbarActivity  {
         activity.startActivity(mpdIntent);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 
 }

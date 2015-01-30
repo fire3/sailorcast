@@ -35,15 +35,6 @@
         <service android:name=".model.cling.UpnpService" />
 
         <activity
-            android:name=".view.HomeActivity"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="adjustPan" >
-
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".view.SearchResultsActivity" />
-        </activity>
-        <activity
             android:name=".view.AlbumListActivity"
             android:label="@string/title_activity_album_list" >
             <meta-data
@@ -83,6 +74,8 @@
                 android:name="android.app.default_searchable"
                 android:value=".view.SearchResultsActivity" />
         </activity>
+
+        <meta-data android:value="54ca4299fd98c527320002ee" android:name="UMENG_APPKEY"></meta-data>
     </application>
 
 </manifest>

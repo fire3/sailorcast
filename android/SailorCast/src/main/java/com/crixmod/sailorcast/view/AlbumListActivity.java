@@ -23,6 +23,7 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.view.fragments.AlbumListFragment;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
@@ -66,6 +67,19 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_album_list, menu);
@@ -106,6 +120,8 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
         if(fragment!= null)
             fragment.setChannelFilter(filter);
     }
+
+
 
     private class SitePagerAdapter extends FragmentPagerAdapter {
 

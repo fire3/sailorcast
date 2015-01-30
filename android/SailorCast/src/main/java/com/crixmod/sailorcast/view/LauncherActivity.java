@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.fragments.CompassFragment;
+import com.umeng.analytics.MobclickAgent;
 
 public class LauncherActivity extends BaseToolbarActivity {
 
@@ -24,6 +25,7 @@ public class LauncherActivity extends BaseToolbarActivity {
         ft.replace(R.id.fragment_container, mFragment);
         ft.commit();
         getFragmentManager().executePendingTransactions();
+        MobclickAgent.updateOnlineConfig(this);
     }
 
     @Override
@@ -51,5 +53,17 @@ public class LauncherActivity extends BaseToolbarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

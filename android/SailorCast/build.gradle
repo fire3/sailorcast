@@ -54,5 +54,7 @@ dependencies {
 
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.2@aar'
+
+    compile 'com.umeng.analytics:analytics:latest.integration'
     compile project(path:':decapi')
 }
