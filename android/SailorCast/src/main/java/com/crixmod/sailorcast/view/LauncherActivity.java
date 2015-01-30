@@ -10,6 +10,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.fragments.CompassFragment;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 public class LauncherActivity extends BaseToolbarActivity {
 
@@ -18,6 +19,7 @@ public class LauncherActivity extends BaseToolbarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UmengUpdateAgent.update(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         setTitle(getString(R.string.app_name));
         mFragment = CompassFragment.newInstance();

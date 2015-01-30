@@ -15,13 +15,13 @@ android {
         applicationId "com.crixmod.sailorcast"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.1"
         signingConfig signingConfigs.config
     }
     buildTypes {
         release {
-            debuggable true
+            //debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -61,4 +61,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.+'
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile project(path: ':decapi')
+    compile files('libs/umeng-update-v2.5.0.jar')
 }
