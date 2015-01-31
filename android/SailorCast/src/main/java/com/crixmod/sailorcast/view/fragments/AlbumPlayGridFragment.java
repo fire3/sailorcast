@@ -174,7 +174,6 @@ public class AlbumPlayGridFragment extends Fragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        SiteApi.cancel();
     }
 
     public void loadMoreVideos() {

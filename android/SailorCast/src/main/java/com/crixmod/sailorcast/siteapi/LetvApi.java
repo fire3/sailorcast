@@ -123,8 +123,9 @@ public class LetvApi extends BaseSiteApi{
 
             @Override
             public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
                 try {
-                    JSONObject json = new JSONObject(response.body().string());
+                    JSONObject json = new JSONObject(ret);
                     String serverTime = json.getString("time");
                     updateTmOffset(Integer.parseInt(serverTime));
                 } catch (JSONException e) {
@@ -196,7 +197,7 @@ public class LetvApi extends BaseSiteApi{
             }
 
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -368,7 +369,7 @@ public class LetvApi extends BaseSiteApi{
                 }
 
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return;
@@ -421,7 +422,7 @@ public class LetvApi extends BaseSiteApi{
                         listener.onGetVideoPlayUrlNormal(video,location);
                     }
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -500,7 +501,7 @@ public class LetvApi extends BaseSiteApi{
                                 getRealLink(video,listener,mp4Url,QUALITY_SUPER);
                         }
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -641,7 +642,7 @@ public class LetvApi extends BaseSiteApi{
                             break;
                         }
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

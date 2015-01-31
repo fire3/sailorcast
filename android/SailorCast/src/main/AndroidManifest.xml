@@ -81,8 +81,9 @@
                 android:value=".view.SearchResultsActivity" />
         </activity>
 
-        <meta-data android:value="54ca4299fd98c527320002ee" android:name="UMENG_APPKEY"></meta-data>
-       <!-- <meta-data android:value="original" android:name="UMENG_CHANNEL"/> -->
+        <meta-data android:value="54cc9582fd98c581270005cd" android:name="UMENG_APPKEY"></meta-data>
+        <meta-data android:value="crixmod" android:name="UMENG_CHANNEL"/>
+        <!--<meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/> -->
 
         <service
             android:name="com.umeng.update.net.DownloadingService"

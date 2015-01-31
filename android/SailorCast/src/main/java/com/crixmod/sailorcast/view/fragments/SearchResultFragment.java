@@ -87,7 +87,6 @@ implements OnGetAlbumsListener
 
     @Override
     public void onDestroy() {
-        SiteApi.cancel();
         super.onDestroy();
     }
 
@@ -127,18 +126,19 @@ implements OnGetAlbumsListener
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        SiteApi.cancel();
     }
 
     @Override
     public void onGetAlbumsFailed(final String failReason) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mFailReason = failReason;
-                mEmpty.setText(mFailReason);
-            }
-        });
+        if(getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mFailReason = failReason;
+                    mEmpty.setText(mFailReason);
+                }
+            });
+        }
     }
 
 

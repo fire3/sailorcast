@@ -26,7 +26,7 @@ public class ImageTools {
     public static final float HOR_POSTER_RATIO = 1.5f;
 
 
-    public static void displayImage(ImageView view, String picUrl, int height, int width) {
+    public static void displayImage(ImageView view, String picUrl, int width, int height) {
 
         if(picUrl != null && !picUrl.isEmpty() && view != null  && height > 0 && width > 0) {
             if(height > width)

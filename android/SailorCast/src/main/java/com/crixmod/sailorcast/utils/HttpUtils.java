@@ -25,7 +25,7 @@ public class HttpUtils {
             Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
                     //.addHeader("Cache-Control", "public, max-age=" + maxAge)
-                    //.addHeader("Cache-Control", "public, max-age=" + maxAge)
+                    .addHeader("Cache-Control", "public, max-age=" + maxAge)
                     .url(url)
                     .build();
             return request;
@@ -33,7 +33,7 @@ public class HttpUtils {
            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
              Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
-                    //.addHeader("Cache-Control","public, only-if-cached, max-stale=" + maxStale)
+                    .addHeader("Cache-Control","public, only-if-cached, max-stale=" + maxStale)
                     .url(url)
                     .build();
             return request;

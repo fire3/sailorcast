@@ -71,6 +71,7 @@ public class AlbumListFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mPageNo = 0;
             mSiteID = getArguments().getInt(ARG_SITE_ID);
             mChannelID = getArguments().getInt(ARG_CHANNEL_ID);
             loadMoreAlbums();
@@ -147,17 +148,19 @@ public class AlbumListFragment extends Fragment implements
                 mAdapter.addAlbum(a);
         }
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mAdapter != null)
-                    mAdapter.notifyDataSetChanged();
-                if(mGridView != null)
-                    mGridView.setIsLoading(false);
-                if(mSwipeContainer != null)
-                    mSwipeContainer.setRefreshing(false);
-            }
-        });
+        if(getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter != null)
+                        mAdapter.notifyDataSetChanged();
+                    if (mGridView != null)
+                        mGridView.setIsLoading(false);
+                    if (mSwipeContainer != null)
+                        mSwipeContainer.setRefreshing(false);
+                }
+            });
+        }
     }
 
     @Override
@@ -210,11 +213,19 @@ public class AlbumListFragment extends Fragment implements
 
     @Override
     public void onRefresh() {
-        mAdapter.clear();
+        mAdapter = new AlbumListAdapter(getActivity(), new SCChannel(mChannelID));
         mPageNo = 0;
         mGridView.setHasMoreItems(true);
-        loadMoreAlbums();
-        mAdapter.notifyDataSetChanged();
+        if(mSiteID == SCSite.LETV) {
+            mColumns = 2;
+            mAdapter.setColumns(mColumns);
+        }
 
+        if(mChannelID == SCChannel.SPORT || mChannelID == SCChannel.MUSIC) {
+            mColumns = 2;
+            mAdapter.setColumns(mColumns);
+        }
+        mGridView.setAdapter(mAdapter);
+        loadMoreAlbums();
     }
 }

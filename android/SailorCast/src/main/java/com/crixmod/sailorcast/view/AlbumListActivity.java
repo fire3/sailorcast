@@ -63,7 +63,6 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SiteApi.cancel();
     }
 
     @Override

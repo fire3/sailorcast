@@ -108,7 +108,6 @@ public class SearchResultsActivity extends BaseToolbarActivity {
         @Override
     protected void onDestroy() {
         super.onDestroy();
-        SiteApi.cancel();
     }
 
     @Override
