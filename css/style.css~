@@ -1,0 +1,528 @@
+@font-face {
+  font-family: "LeagueGothicRegular";
+  src: url("../fonts/LeagueGothic/League_Gothic-webfont.eot");
+  src: url("../fonts/LeagueGothic/League_Gothic-webfont.svg#LeagueGothicRegular") format("svg"),
+       url("../fonts/LeagueGothic/League_Gothic-webfont.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/LeagueGothic/League_Gothic-webfont.woff") format("woff"),
+       url("../fonts/LeagueGothic/League_Gothic-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-weight: 300;
+}
+
+#skrollr-body {
+  left: 0;
+  right: 0;
+}
+
+.hide-text {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.section .inner {
+  position: relative;
+  max-width: 980px;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+
+.fixed.section {
+  height: 600px;
+}
+
+.brand-bar {
+  background: #fff;
+}
+
+.brand-bar .inner {
+  overflow: auto;
+}
+
+.brand-bar h1 {
+  width: 215px;
+  height: 70px;
+  background: center left url("../images/readtime-logo.png") no-repeat;
+  float: left;
+  margin: 15px 0;
+}
+
+.brand-bar .get-it {
+  display: block;
+  float: right;
+  margin: 30px 0;
+  width: 135px;
+  height: 40px;
+  background: top left url("../images/app-store.png") no-repeat;
+}
+
+.intro {
+  position: relative;
+  background: top center url("../images/intro-background.jpg") no-repeat;
+  background-color: #f5f5f5;
+}
+
+.intro .inner {
+  position: relative;
+  margin: 0 auto;
+  max-width: 780px;
+}
+
+.screenshot {
+  display: none;
+}
+
+.intro h1 {
+  font-family: "LeagueGothicRegular";
+  font-weight: normal;
+  font-size: 140px;
+  float: left;
+  margin-top: 170px;
+  line-height: 1;
+  max-width: 463px;
+  color: #fff;
+  text-shadow: 0 0 20px rgba(19, 24, 54, 0.80);
+}
+
+.intro .phone {
+  left: 560px;
+}
+
+.phone {
+  position: absolute;
+  left: 640px;
+  top: 20px;
+  background: 0 0 url("../images/phone-frame.png") no-repeat;
+  width: 300px;
+  height: 628px;
+  overflow: hidden;
+}
+
+.static.phone {
+  display: none;
+}
+
+.phone .screen {
+  overflow: hidden;
+  position: absolute;
+  width: 272px;
+  height: 478px;
+  top: 51px;
+  left: 17px;
+}
+
+.phone .screen img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 102%;
+  -moz-box-shadow: -1px 0px 5px #999;
+  -webkit-box-shadow: -1px 0px 5px #999;
+  box-shadow: -1px 0px 5px #999;
+}
+
+.phone .screen img:first-child {
+  margin-left: 0;
+}
+
+.phone .gloss {
+  background: 0 0 url("../images/phone-gloss.png") no-repeat;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.connect {
+  background: #fff;
+}
+
+.dial-up {
+  background: #f5f5f5;
+}
+
+.start-reading {
+  background: #fff;
+}
+
+.about {
+  font-size: 18px;
+  color: #525252;
+  max-width: 440px;
+  line-height: 1.5;
+  padding-top: 220px;
+}
+
+.about h2 {
+  font-family: "LeagueGothicRegular";
+  font-weight: normal;
+  font-size: 56px;
+  color: #000;
+  line-height: 1.2;
+  margin: 0;
+}
+
+ul.dual {
+  overflow: auto;
+}
+
+ul.dual li {
+  padding: 20px 50px 20px 0;
+  float: left;
+  width: 440px;
+}
+
+.quotes {
+  background: #DE0000;
+  font-size: 24px;
+  line-height: 1.4;
+  color: #F3F3F3;
+  padding: 40px 0 40px 0;
+}
+
+.quotes ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.quotes li {
+  position: relative;
+  border-top: 1px solid #BA000D;
+}
+
+.quotes li:first-child, .quotes li:nth-child(2) {
+  border-top: none;
+}
+
+.quotes .author {
+  font-family: "LeagueGothicRegular";
+  font-weight: normal;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.features {
+  padding: 40px 0;
+  background: #535353;
+  font-size: 24px;
+  color: #F5F5F5;
+}
+
+.features h2 {
+  font-family: "LeagueGothicRegular";
+  font-weight: normal;
+  font-size: 56px;
+  color: #fff;
+  margin: 30px 0 0 0;
+}
+
+.features ul {
+  list-style-type: none;
+  margin: 30px 0 50px 0;
+  padding: 0;
+  border-bottom: 1px solid #424242;
+}
+
+.features li {
+  border-top: 1px solid #424242;
+}
+
+.features strong {
+  color: #fff;
+}
+
+.go-get-it {
+  padding: 40px 0;
+  text-align: center;
+  color: #535353;
+  font-size: 32px;
+}
+
+.go-get-it p {
+  margin: 15px 0 25px 0;
+}
+
+.go-get-it .button {
+  display: block;
+  width: 220px;
+  line-height: 60px;
+  margin: 0 auto;
+  border: 4px solid #999;
+  font-size: 24px;
+  color: #000;
+  text-decoration: none;
+
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+
+  background: #f7f7f7; /* Old browsers */
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlMGUwZTAiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+  background: -moz-linear-gradient(top, #ffffff 0%, #e0e0e0 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #ffffff 0%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #ffffff 0%,#e0e0e0 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #ffffff 0%,#e0e0e0 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #ffffff 0%,#e0e0e0 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-8 */
+}
+
+.contact {
+  font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: normal;
+  font-size: 16px;
+  color: #919293;
+  overflow: auto;
+  background: #000;
+}
+
+.contact a {
+  color: #919293;
+  text-decoration: none;
+}
+
+.contact ul {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  overflow: auto;
+  max-width: 648px;
+}
+
+.contact li {
+  float: left;
+  width: 160px;
+  margin: 0 28px;
+  text-align: center;
+  line-height: 60px;
+}
+
+.contact li a {
+  display: block;
+}
+
+.contact .cogent a {
+  background: 0 center url("../images/cogent-logo-small.png") no-repeat;
+  padding-left: 40px;
+  width: 120px;
+}
+
+@media screen and (max-width: 1060px) {
+  .skrollable {
+    top: 0 !important;
+  }
+
+  img.skrollable {
+    margin-left: 102% !important;
+  }
+
+  .fixed.section {
+    height: auto;
+  }
+
+  .section .inner {
+    overflow: hidden;
+  }
+
+  .fixed.section.intro {
+    height: 600px;
+    overflow: hidden;
+  }
+
+  .intro .phone {
+    left: auto;
+    margin: 0 auto;
+  }
+
+  .intro h1 {
+    display: block;
+    float: none;
+    width: auto;
+    text-align: center;
+    font-size: 100px;
+    margin: 20px auto;
+  }
+
+  .phone {
+    position: relative;
+    display: block;
+    left: auto;
+    top: auto;
+  }
+
+  .about {
+    max-width: none;
+    padding-top: 0;
+    margin: 80px 0 100px 0;
+    position: relative;
+  }
+
+  ul.dual li {
+    padding-right: 0;
+    float: none;
+    width: auto;
+  }
+
+  .screenshot {
+    display: block;
+    margin: 20px 0;
+    overflow: hidden;
+    border-bottom: 1px solid #999;
+  }
+
+  .quotes li:nth-child(2) {
+    border-top: 1px solid #BA000D;
+  }
+}
+
+.quotes li:first-child, .quotes li:nth-child(2) {
+
+}
+
+@media screen and (max-width: 1060px) and (min-width:768px) {
+  .about {
+    height: 450px;
+  }
+
+  .about h2 {
+    padding-top: 120px;
+  }
+
+  .connect .about h2 {
+    padding-top: 100px;
+  }
+
+  .about h2, .about p {
+    margin-right: 425px;
+  }
+
+  .screenshot {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 430px;
+    padding: 0 30px;
+  }
+}
+
+/* iPad */
+@media screen and (max-width:768px) {
+  .brand-bar {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 778px) and (min-width: 768px) {
+  .connect .about h2 {
+    padding-top: 40px;
+  }
+}
+
+/* Less than iPad but bigger than iPhone */
+@media screen and (max-width: 767px) and (min-width: 320px) {
+  .about p, .about .screenshot {
+    max-width: 510px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .about h2 {
+    font-size: 70px;
+    text-align: center;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .about p {
+    text-align: center;
+    margin-bottom: 0;
+  }
+
+  .screenshot {
+    height: 360px;
+    overflow: hidden;
+  }
+
+  .screenshot .phone {
+    margin: 0 auto;
+  }
+
+  .contact li {
+    float: none;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 515px) {
+  .intro h1 {
+    font-size: 80px;
+  }
+}
+
+@media screen and (max-width: 432px) {
+  .intro h1 {
+    font-size: 70px;
+  }
+}
+
+/* iPhone - Portrait */
+@media screen and (max-width: 320px) {
+  .section .inner {
+    padding-left: 15px;
+    padding-right: 20px;
+  }
+
+  .about .screenshot {
+    height: 320px;
+  }
+
+  .phone {
+    width: 210px;
+    height: 439.6px;
+    -webkit-background-size: cover;
+  }
+
+  .phone .screen {
+    width: 177px;
+    height: 303px;
+    top: 76px;
+    left: 19px;
+  }
+
+  .phone .screen img {
+    width: 100%;
+    margin-left: 105%;
+  }
+
+  .phone .gloss {
+    -webkit-background-size: cover;
+  }
+
+  .intro {
+    -webkit-background-size: cover;
+  }
+
+  .intro h1 {
+    font-size: 56px;
+  }
+
+  .intro.fixed.section {
+    height: 445px;
+  }
+
+  .about h2 {
+    font-size: 50px;
+    line-height: 1.1;
+  }
+
+  .go-get-it img {
+    width: 90%;
+  }
+}
