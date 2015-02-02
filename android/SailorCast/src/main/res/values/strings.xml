@@ -63,4 +63,8 @@
     <string name="action_order_forward">顺序显示</string>
     <string name="action_order_backward">倒序显示</string>
 
+
+    <string name="err_wrong_data">数据解析错误</string>
+    <string name="err_http_fail">网络请求失败</string>
+
 </resources>

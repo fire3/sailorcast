@@ -9,6 +9,7 @@ import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCChannelFilterItem;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -17,6 +18,7 @@ import com.crixmod.sailorcast.utils.MD5;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.umeng.analytics.MobclickAgent;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
  */
 public class LetvApi extends BaseSiteApi{
 
+    private final static String TAG = "LetvApi";
 
     private final static String SEARCH_URL_FORMAT = "http://dynamic.app.m.letv.com/android/dynamic.php" +
             "?mod=mob&ctl=searchmix&act=index&src=1&cg=&wd=%s&anum=&ph=&pt=&ver=&pn=%s&ps=%s&pcode=010410000&version=2.1";
@@ -94,6 +97,21 @@ public class LetvApi extends BaseSiteApi{
     public LetvApi() {
         doUpdateTmOffset();
     }
+
+
+    private String makeFailReason(String url, String reason) {
+        SCFailLog r = new SCFailLog(SCSite.LETV,url,reason);
+        String ret = r.toJson();
+        return ret;
+    }
+
+     private String makeExceptionFailReason(String url, String reason, Exception e) {
+        SCFailLog r = new SCFailLog(SCSite.LETV,url,reason,e);
+        String ret = r.toJson();
+        return ret;
+    }
+
+
 
     private synchronized void updateTmOffset(int serverTime) {
         if(tmOffset == Long.MAX_VALUE) {
@@ -209,11 +227,13 @@ public class LetvApi extends BaseSiteApi{
         try {
             String pageNo = "0";
             String pageSize = "30";
-            String url = String.format(SEARCH_URL_FORMAT,URLEncoder.encode(key,"UTF-8"),pageNo,pageSize);
+            final String url = String.format(SEARCH_URL_FORMAT,URLEncoder.encode(key,"UTF-8"),pageNo,pageSize);
             HttpUtils.asyncGet(url,new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    listener.onGetAlbumsFailed("Search Failed");
+                    String err = makeFailReason(url, SailorCast.getResource().getString(R.string.err_http_fail));
+                    if(listener != null)
+                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.err_http_fail));
                 }
 
                 @Override
@@ -221,9 +241,12 @@ public class LetvApi extends BaseSiteApi{
                     String ret = response.body().string();
                     SCAlbums albums =  parseSearchResult(ret);
                     if(albums != null) {
-                        listener.onGetAlbumsSuccess(albums);
-                    } else
-                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                        if(listener != null)
+                            listener.onGetAlbumsSuccess(albums);
+                    } else {
+                        if(listener != null)
+                            listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                    }
                 }
             });
         } catch (UnsupportedEncodingException e) {
@@ -247,7 +270,8 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                if(listener != null)
+                    listener.onGetVideosFailed(SailorCast.getResource().getString(R.string.err_http_fail));
             }
 
             @Override
@@ -293,25 +317,24 @@ public class LetvApi extends BaseSiteApi{
                             }
                             else {
                                 if(listener!=null)
-                                    listener.onGetVideosFailed("null videos");
+                                    listener.onGetVideosFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                             }
-
                         }
                         if(listener!=null)
-                            listener.onGetVideosFailed("null videos");
+                            listener.onGetVideosFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                     }
                     if(listener!=null)
-                    listener.onGetVideosFailed("null videos");
+                        listener.onGetVideosFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                 } catch (JSONException e) {
-                    listener.onGetVideosFailed("Wrong Json");
+                    if(listener != null)
+                        listener.onGetVideosFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                     e.printStackTrace();
                 }
-
             }
         });
     }
 
-    private void fillAlbumDesc(SCAlbum album, String albumJsonString) {
+    private void fillAlbumDesc(SCAlbum album, String albumJsonString, OnGetAlbumDescListener listener) {
         try {
             JSONObject albumJson = new JSONObject(albumJsonString);
             if(albumJson.optJSONObject("body") != null ) {
@@ -367,9 +390,15 @@ public class LetvApi extends BaseSiteApi{
                         album.setHorImageUrl(StringEscapeUtils.unescapeJava(jsonImage.getString("320*200")));
                     }
                 }
-
+                if(listener != null)
+                    listener.onGetAlbumDescSuccess(album);
+            } else {
+                if(listener != null)
+                    listener.onGetAlbumDescFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
             }
         } catch (Exception e) {
+            if(listener != null)
+                listener.onGetAlbumDescFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
             e.printStackTrace();
         }
         return;
@@ -382,14 +411,16 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                if(listener != null) {
+                    listener.onGetAlbumDescFailed(SailorCast.getResource().getString(R.string.err_http_fail));
+                }
 
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 String ret = response.body().string();
-                fillAlbumDesc(album,ret);
-                listener.onGetAlbumDescSuccess(album);
+                fillAlbumDesc(album,ret, listener);
             }
         });
 
@@ -400,7 +431,8 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(jumpLink, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                if(listener != null)
+                    listener.onGetVideoPlayUrlFailed(SailorCast.getResource().getString(R.string.err_http_fail));
             }
 
             @Override
@@ -411,21 +443,25 @@ public class LetvApi extends BaseSiteApi{
                     String location = retJson.optString("location");
                     if(quality == QUALITY_SUPER) {
                         video.setM3U8Super(location);
-                        listener.onGetVideoPlayUrlSuper(video,location);
+                        if(listener != null)
+                            listener.onGetVideoPlayUrlSuper(video,location);
                     }
                     if(quality == QUALITY_HIGH) {
                         video.setM3U8High(location);
-                        listener.onGetVideoPlayUrlHigh(video,location);
+                        if(listener != null)
+                            listener.onGetVideoPlayUrlHigh(video,location);
                     }
                     if(quality == QUALITY_NORMAL) {
                         video.setM3U8Nor(location);
-                        listener.onGetVideoPlayUrlNormal(video,location);
+                        if(listener != null)
+                            listener.onGetVideoPlayUrlNormal(video,location);
                     }
 
                 } catch (Exception e) {
+                    if(listener != null)
+                        listener.onGetVideoPlayUrlFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -440,7 +476,8 @@ public class LetvApi extends BaseSiteApi{
             HttpUtils.asyncGet(url,new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-
+                    if(listener != null)
+                        listener.onGetVideoPlayUrlFailed(SailorCast.getResource().getString(R.string.err_http_fail));
                 }
 
                 @Override
@@ -502,6 +539,8 @@ public class LetvApi extends BaseSiteApi{
                         }
 
                     } catch (Exception e) {
+                        if(listener != null)
+                            listener.onGetVideoPlayUrlFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                         e.printStackTrace();
                     }
                 }
@@ -557,7 +596,8 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                listener.onGetAlbumsFailed("Http failure");
+                if(listener != null)
+                    listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.err_http_fail));
             }
 
             @Override
@@ -565,9 +605,12 @@ public class LetvApi extends BaseSiteApi{
                 String ret = response.body().string();
                 SCAlbums albums =  parseSearchResult(ret);
                 if(albums != null) {
-                    listener.onGetAlbumsSuccess(albums);
-                } else
-                    listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                    if(listener != null)
+                        listener.onGetAlbumsSuccess(albums);
+                } else {
+                    if(listener != null)
+                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                }
 
             }
         });
@@ -593,7 +636,8 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                listener.onGetChannelFilterFailed("http failure");
+                if(listener != null)
+                    listener.onGetChannelFilterFailed(SailorCast.getResource().getString(R.string.err_http_fail));
             }
 
             @Override
@@ -637,12 +681,14 @@ public class LetvApi extends BaseSiteApi{
                                 if(items.size() > 1)
                                     scfilter.addFilter(key,items);
                             }
-
-                            listener.onGetChannelFilterSuccess(scfilter);
+                            if(listener != null)
+                                listener.onGetChannelFilterSuccess(scfilter);
                             break;
                         }
                     }
                 } catch (Exception e) {
+                    if(listener != null)
+                        listener.onGetChannelFilterFailed(SailorCast.getResource().getString(R.string.err_wrong_data));
                     e.printStackTrace();
                 }
             }
