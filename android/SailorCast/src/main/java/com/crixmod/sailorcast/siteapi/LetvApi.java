@@ -99,14 +99,20 @@ public class LetvApi extends BaseSiteApi{
     }
 
 
-    private String makeFailReason(String url, String reason) {
-        SCFailLog r = new SCFailLog(SCSite.LETV,url,reason);
+    private String makeFailReason(String url,String functionName, String reason) {
+        SCFailLog r = new SCFailLog(SCSite.LETV,reason);
+        r.setTag(TAG);
+        r.setUrl(url);
+        r.setFunctionName(functionName);
         String ret = r.toJson();
         return ret;
     }
 
-     private String makeExceptionFailReason(String url, String reason, Exception e) {
-        SCFailLog r = new SCFailLog(SCSite.LETV,url,reason,e);
+     private String makeExceptionFailReason(String url,String functionName, String reason, Exception e) {
+        SCFailLog r = new SCFailLog(SCSite.LETV,reason,e);
+        r.setTag(TAG);
+        r.setUrl(url);
+        r.setFunctionName(functionName);
         String ret = r.toJson();
         return ret;
     }
@@ -231,9 +237,9 @@ public class LetvApi extends BaseSiteApi{
             HttpUtils.asyncGet(url,new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    String err = makeFailReason(url, SailorCast.getResource().getString(R.string.err_http_fail));
+                    String err = makeFailReason(url,"doSearch",SailorCast.getResource().getString(R.string.err_http_fail));
                     if(listener != null)
-                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.err_http_fail));
+                        listener.onGetAlbumsFailed(err);
                 }
 
                 @Override

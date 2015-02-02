@@ -11,6 +11,15 @@ import com.google.gson.annotations.SerializedName;
  */
 public class SCFailLog {
     @Expose
+    String tag;
+
+    @Expose
+    String functionName;
+
+    @Expose
+    String className;
+
+    @Expose
     SCSite site;
 
     @Expose
@@ -22,17 +31,14 @@ public class SCFailLog {
     @Expose
     String exceptionString = null;
 
-
-    public SCFailLog(int siteID, String url, String reason, Exception e) {
+    public SCFailLog(int siteID, String reason, Exception e) {
         this.site = new SCSite(siteID);
-        this.url = url;
         Reason = reason;
         if(e!=null)
             exceptionString = Log.getStackTraceString(e);
     }
-    public SCFailLog(int siteID, String url, String reason) {
+    public SCFailLog(int siteID, String reason) {
         this.site = new SCSite(siteID);
-        this.url = url;
         Reason = reason;
     }
 
@@ -40,5 +46,19 @@ public class SCFailLog {
         return  SailorCast.getGson().toJson(this);
     }
 
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
