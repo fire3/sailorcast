@@ -30,9 +30,9 @@ public class ImageTools {
 
         if(picUrl != null && !picUrl.isEmpty() && view != null  && height > 0 && width > 0) {
             if(height > width)
-                Picasso.with(view.getContext()).load(picUrl).error(R.drawable.loading).centerCrop().resize(height, width).into(view);
+                Picasso.with(view.getContext()).load(picUrl).error(R.drawable.loading).centerCrop().resize(width, height).into(view);
             else
-                Picasso.with(view.getContext()).load(picUrl).error(R.drawable.loading_hor).centerCrop().resize(height, width).into(view);
+                Picasso.with(view.getContext()).load(picUrl).error(R.drawable.loading_hor).centerCrop().resize(width, height).into(view);
         }
     }
 
