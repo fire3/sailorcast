@@ -17,6 +17,7 @@ public class SiteApi {
     public static int SITE_ID_YOUKU = SCSite.YOUKU;
     public static int SITE_ID_SOHU = SCSite.SOHU;
     public static int SITE_ID_LETV = SCSite.LETV;
+    public static int SITE_ID_IQIYI = SCSite.IQIYI;
 
     public static void cancel() {
         HttpUtils.cancelAll();
@@ -29,12 +30,15 @@ public class SiteApi {
             new YouKuApi().doSearch(key,listener);
         if(siteID == SITE_ID_LETV)
             new LetvApi().doSearch(key,listener);
+        if(siteID == SITE_ID_IQIYI)
+            new IqiyiApi().doSearch(key,listener);
     }
 
     public static void doSearchAll(String key, OnGetAlbumsListener listener) {
         new SohuApi().doSearch(key,listener);
         new YouKuApi().doSearch(key,listener);
         new LetvApi().doSearch(key,listener);
+        new IqiyiApi().doSearch(key,listener);
     }
 
     public static void doGetAlbumVideos(SCAlbum album, int pageNo, int pageSize,  OnGetVideosListener listener) {
@@ -44,6 +48,8 @@ public class SiteApi {
             new SohuApi().doGetAlbumVideos(album,pageNo,pageSize,listener);
         if(album.getSite().getSiteID() == SCSite.LETV)
             new LetvApi().doGetAlbumVideos(album,pageNo,pageSize,listener);
+        if(album.getSite().getSiteID() == SCSite.IQIYI)
+            new IqiyiApi().doGetAlbumVideos(album,pageNo,pageSize,listener);
 
     }
 
@@ -54,6 +60,8 @@ public class SiteApi {
             new SohuApi().doGetAlbumDesc(album,listener);
         if(album.getSite().getSiteID() == SCSite.LETV)
             new LetvApi().doGetAlbumDesc(album,listener);
+        if(album.getSite().getSiteID() == SCSite.IQIYI)
+            new IqiyiApi().doGetAlbumDesc(album,listener);
     }
 
     public static void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
