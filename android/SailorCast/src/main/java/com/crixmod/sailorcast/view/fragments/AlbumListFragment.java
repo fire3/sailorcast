@@ -17,6 +17,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.OnGetChannelFilterListener;
@@ -24,6 +25,7 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.AlbumFilterDialog;
 import com.crixmod.sailorcast.view.adapters.AlbumListAdapter;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -164,10 +166,11 @@ public class AlbumListFragment extends Fragment implements
     }
 
     @Override
-    public void onGetAlbumsFailed(String failReason) {
+    public void onGetAlbumsFailed(SCFailLog err) {
 
         try {
             if (getActivity() != null) {
+                MobclickAgent.reportError(getActivity(),err.toJson());
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -199,8 +202,11 @@ public class AlbumListFragment extends Fragment implements
 
 
     @Override
-    public void onGetChannelFilterFailed(String failReason) {
+    public void onGetChannelFilterFailed(SCFailLog err) {
 
+        if(getActivity() != null) {
+            MobclickAgent.reportError(getActivity(),err.toJson());
+        }
     }
 
     public void showAlbumFilterDialog(FragmentActivity activity) {

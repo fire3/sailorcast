@@ -9,6 +9,7 @@ import com.crixmod.sailorcast.model.SCBanners;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCChannelFilterItem;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -39,6 +40,7 @@ public class SohuApi extends BaseSiteApi {
     private final static String API_ALBUM_INFO = "http://api.tv.sohu.com/v4/album/info/" ;
     private final static String API_ALBUM_VIDOES = "http://api.tv.sohu.com/v4/album/videos/" ;
     private final static String API_SEARCH = "http://api.tv.sohu.com/v4/search/album.json?o=&all=0&ds=&" + API_KEY + "&key=";
+    private static final String TAG = "SohuApi";
 
     private static int ORDER_DESCENDING = 1;
     private static int ORDER_ASCENDING = 0;
@@ -107,6 +109,45 @@ public class SohuApi extends BaseSiteApi {
         return null;
     }
 
+    private SCFailLog makeHttpFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_HTTP_FAILURE);
+        err.setFunctionName(functionName);
+        err.setClassName("SohuApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
+
+    private SCFailLog makeHttpFailLog(String url, String functionName, Exception e) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_HTTP_FAILURE);
+        err.setException(e);
+        err.setFunctionName(functionName);
+        err.setClassName("SohuApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
+
+    private SCFailLog makeJsonFailLog(String url, String functionName, Exception e) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_JSON_ERR);
+        err.setException(e);
+        err.setFunctionName(functionName);
+        err.setClassName("SohuApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
+
+    private SCFailLog makeJsonFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_JSON_ERR);
+        err.setFunctionName(functionName);
+        err.setClassName("SohuApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
+
+
     private String getChannelAlbumUrl(SCChannel channel, int pageNo, int pageSize) {
         return String.format(API_CHANNEL_ALBUM_FORMAT,channelToCid(channel),pageNo,pageSize);
     }
@@ -129,23 +170,38 @@ public class SohuApi extends BaseSiteApi {
         try {
             searchKey = URLEncoder.encode(key, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            listener.onGetAlbumsFailed("Error search key");
+            if(listener != null) {
+                SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_URL_ERR);
+                err.setFunctionName("doSearch");
+                err.setException(e);
+                err.setTag(TAG);
+                err.setClassName("SohuApi");
+                err.setReason(searchKey);
+                listener.onGetAlbumsFailed(err);
+            }
             e.printStackTrace();
             return;
         }
-        String url = API_SEARCH + searchKey;
+        final String url = API_SEARCH + searchKey;
 
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                if(listener != null) {
+                    SCFailLog err = makeHttpFailLog(url,"doSearch",e);
+                    listener.onGetAlbumsFailed(err);
+                }
+
                 e.printStackTrace();
-                listener.onGetAlbumsFailed("http failure");
             }
 
             @Override
             public void onResponse(Response response) {
                 if (!response.isSuccessful()) {
-                    listener.onGetAlbumsFailed("response failed");
+                    if(listener != null) {
+                        SCFailLog err = makeHttpFailLog(url,"doSearch");
+                        listener.onGetAlbumsFailed(err);
+                    }
                     return;
                 }
                 SearchResults results = null;
@@ -153,12 +209,22 @@ public class SohuApi extends BaseSiteApi {
                     results = SailorCast.getGson().fromJson(response.body().string(), SearchResults.class);
 
                     SCAlbums albums = toSCAlbums(results);
-                    if(albums != null)
-                        listener.onGetAlbumsSuccess(albums);
-                    else
-                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                    if(albums != null) {
+                        if(listener != null)
+                            listener.onGetAlbumsSuccess(albums);
+                    }
+                    else {
+                        if(listener != null) {
+                            SCFailLog err =  makeJsonFailLog(url,"doSearch");
+                            listener.onGetAlbumsFailed(err);
+                        }
+                    }
 
                 } catch (IOException e) {
+                    if(listener != null) {
+                        SCFailLog err =  makeJsonFailLog(url,"doSearch",e);
+                        listener.onGetAlbumsFailed(err);
+                    }
                     e.printStackTrace();
                 }
             }
@@ -167,40 +233,54 @@ public class SohuApi extends BaseSiteApi {
 
     @Override
     public void doGetAlbumVideos(final SCAlbum album, final int pageNo, final int pageSize, final OnGetVideosListener listener) {
-        String url;
+        final String url;
         url = API_ALBUM_VIDOES + album.getAlbumId() + ".json?" + "page=" + pageNo + "&page_size=" + pageSize +
                 "&order=" + ORDER_ASCENDING + "&site=1&with_trailer=1&" + API_KEY;
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                if(listener != null) {
+                    SCFailLog err = makeHttpFailLog(url,"doGetAlbumVideos",e);
+                    listener.onGetVideosFailed(err);
+                }
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    listener.onGetVideosFailed("response failed");
+                    if(listener != null) {
+                        SCFailLog err = makeHttpFailLog(url, "doGetAlbumVideos");
+                        listener.onGetVideosFailed(err);
+                    }
                     return;
                 }
-                Videos videos = SailorCast.getGson().fromJson(response.body().string(),Videos.class);
-                if(videos.getData() != null) {
-                    SCVideos scVideos = new SCVideos();
-                    int i = 0;
-                    for (Video v : videos.getData().getVideos()) {
-                        i++ ;
-                        SCVideo scVideo = new SCVideo();
-                        scVideo.setSCSite(SCSite.SOHU);
-                        scVideo.setHorPic(v.getHorHighPic());
-                        scVideo.setVerPic(v.getVerHighPic());
-                        scVideo.setVideoID(v.getVid().toString());
-                        scVideo.setVideoTitle(v.getVideoName());
-                        scVideo.setM3U8Nor(v.getUrlNor());
-                        scVideo.setM3U8High(v.getUrlHigh());
-                        scVideo.setM3U8Super(v.getUrlSuper());
-                        scVideo.setAlbumID(album.getAlbumId());
-                        scVideos.add(scVideo);
+                try {
+                    Videos videos = SailorCast.getGson().fromJson(response.body().string(), Videos.class);
+                    if (videos.getData() != null) {
+                        SCVideos scVideos = new SCVideos();
+                        int i = 0;
+                        for (Video v : videos.getData().getVideos()) {
+                            i++;
+                            SCVideo scVideo = new SCVideo();
+                            scVideo.setSCSite(SCSite.SOHU);
+                            scVideo.setHorPic(v.getHorHighPic());
+                            scVideo.setVerPic(v.getVerHighPic());
+                            scVideo.setVideoID(v.getVid().toString());
+                            scVideo.setVideoTitle(v.getVideoName());
+                            scVideo.setM3U8Nor(v.getUrlNor());
+                            scVideo.setM3U8High(v.getUrlHigh());
+                            scVideo.setM3U8Super(v.getUrlSuper());
+                            scVideo.setAlbumID(album.getAlbumId());
+                            scVideos.add(scVideo);
+                        }
+                        listener.onGetVideosSuccess(scVideos);
                     }
-                    listener.onGetVideosSuccess(scVideos);
+                } catch (Exception e) {
+                    if(listener != null) {
+                        SCFailLog err = makeJsonFailLog(url, "doGetAlbumVideos", e);
+                        listener.onGetVideosFailed(err);
+                    }
+                    e.printStackTrace();
                 }
 
             }
@@ -208,7 +288,7 @@ public class SohuApi extends BaseSiteApi {
     }
 
 
-    private void fillAlbumDesc(SCAlbum album, Album sohuAlbum, OnGetAlbumDescListener listener) {
+    private void fillAlbumDesc(String url, SCAlbum album, Album sohuAlbum, OnGetAlbumDescListener listener) {
         if(sohuAlbum.getData() != null) {
             //album.setVideosCount(sohuAlbum.getData().getLatestVideoCount());
             //TotalVideoCount is 0 sometimes, use latestVideoCount instead.
@@ -220,28 +300,39 @@ public class SohuApi extends BaseSiteApi {
             album.setDesc(sohuAlbum.getData().getAlbumDesc());
             album.setMainActor(sohuAlbum.getData().getMainActor());
             album.setDirector(sohuAlbum.getData().getDirector());
-            listener.onGetAlbumDescSuccess(album);
-        } else
-            listener.onGetAlbumDescFailed("Sohu Album Data is null");
+            if(listener != null)
+                listener.onGetAlbumDescSuccess(album);
+        } else {
+            if(listener != null) {
+                SCFailLog err = makeJsonFailLog(url,"fillAlbumDesc");
+                listener.onGetAlbumDescFailed(err);
+            }
+        }
     }
 
     @Override
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
-        String url = API_ALBUM_INFO + album.getAlbumId() + ".json?" + API_KEY;
+        final String url = API_ALBUM_INFO + album.getAlbumId() + ".json?" + API_KEY;
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                if(listener != null) {
+                    SCFailLog err = makeHttpFailLog(url, "doGetAlbumDesc", e);
+                    listener.onGetAlbumDescFailed(err);
+                }
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    listener.onGetAlbumDescFailed("response failed");
+                    if(listener != null) {
+                        SCFailLog err = makeHttpFailLog(url, "doGetAlbumDesc");
+                        listener.onGetAlbumDescFailed(err);
+                    }
                     return;
                 }
                 Album a = SailorCast.getGson().fromJson(response.body().string(), Album.class);
-                fillAlbumDesc(album, a, listener);
+                fillAlbumDesc(url,album, a, listener);
             }
         });
     }
@@ -257,17 +348,23 @@ public class SohuApi extends BaseSiteApi {
             listener.onGetVideoPlayUrlSuper(video,video.getM3U8Super());
     }
 
-    public void doGetChannelAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
+    public void doGetChannelAlbumsByUrl(final String url, final OnGetAlbumsListener listener) {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                listener.onGetAlbumsFailed("Http failure");
+                if(listener != null) {
+                    SCFailLog err = makeHttpFailLog(url, "doGetChannelAlbumsByUrl",e);
+                    listener.onGetAlbumsFailed(err);
+                }
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    listener.onGetAlbumsFailed("response failed");
+                    if(listener != null) {
+                        SCFailLog err = makeHttpFailLog(url, "doGetChannelAlbumsByUrl");
+                        listener.onGetAlbumsFailed(err);
+                    }
                     return;
                 }
                 SearchResults results = null;
@@ -275,12 +372,22 @@ public class SohuApi extends BaseSiteApi {
                     results = SailorCast.getGson().fromJson(response.body().string(), SearchResults.class);
 
                     SCAlbums albums = toSCAlbums(results);
-                    if(albums != null)
-                        listener.onGetAlbumsSuccess(albums);
-                    else
-                        listener.onGetAlbumsFailed(SailorCast.getResource().getString(R.string.fail_reason_no_results));
+                    if(albums != null) {
+                        if(listener != null)
+                            listener.onGetAlbumsSuccess(albums);
+                    }
+                    else {
+                        if(listener != null) {
+                            SCFailLog err = makeJsonFailLog(url,"doGetChannelAlbumsByUrl");
+                            listener.onGetAlbumsFailed(err);
+                        }
+                    }
 
                 } catch (IOException e) {
+                    if(listener != null) {
+                        SCFailLog err = makeJsonFailLog(url,"doGetChannelAlbumsByUrl",e);
+                        listener.onGetAlbumsFailed(err);
+                    }
                     e.printStackTrace();
                 }
             }
@@ -290,7 +397,11 @@ public class SohuApi extends BaseSiteApi {
     public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
         String url = getChannelAlbumUrl(channel, pageNo, pageSize);
         if(url == null) {
-            listener.onGetAlbumsFailed("wrong url");
+            SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_URL_ERR);
+            err.setFunctionName("doGetChannelAlbums");
+            err.setReason(channel.getChannelName());
+            if(listener != null)
+                listener.onGetAlbumsFailed(err);
             return;
         }
         doGetChannelAlbumsByUrl(url,listener);
@@ -300,61 +411,77 @@ public class SohuApi extends BaseSiteApi {
     public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
         String url = getChannelAlbumUrlByFilter(channel, filter, pageNo, pageSize);
         if(url == null) {
-            listener.onGetAlbumsFailed("wrong url");
+            SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_URL_ERR);
+            err.setFunctionName("doGetChannelAlbums");
+            err.setReason(channel.getChannelName());
+            if(listener != null)
+                listener.onGetAlbumsFailed(err);
             return;
         }
         doGetChannelAlbumsByUrl(url,listener);
     }
 
     @Override
-    public void doGetChannelFilter(SCChannel channel, final OnGetChannelFilterListener listener) {
-        String url = getChannelFilterUrl(channel);
-        if(url != null) {
-            HttpUtils.asyncGet(url, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    listener.onGetChannelFilterFailed("http failure");
-                }
+    public void doGetChannelFilter(final SCChannel channel, final OnGetChannelFilterListener listener) {
+        final String url = getChannelFilterUrl(channel);
+         if(url == null) {
+            SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_URL_ERR);
+            err.setFunctionName("doGetChannelFilter");
+            err.setReason(channel.getChannelName());
+            if(listener != null)
+                listener.onGetChannelFilterFailed(err);
+            return;
+        }
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                SCFailLog err = makeHttpFailLog(url,"doGetChannelFilter",e);
+                if(listener != null)
+                    listener.onGetChannelFilterFailed(err);
+            }
 
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    String ret = response.body().string();
-                    try {
-                        JSONObject retJson = new JSONObject(ret);
-                        JSONObject resultsJson = retJson.optJSONObject("data");
-                        if(resultsJson != null) {
-                            JSONArray filterJsonArray = resultsJson.optJSONArray("categorys");
-                            if(filterJsonArray != null && filterJsonArray.length() > 0) {
-                                SCChannelFilter filter = new SCChannelFilter();
-                                for (int i = 0; i < filterJsonArray.length(); i++) {
-                                    JSONObject filterJson = filterJsonArray.getJSONObject(i);
-                                    JSONArray filterItemsJson = filterJson.optJSONArray("cates");
-                                    String key = filterJson.optString("cate_alias");
-                                    ArrayList<SCChannelFilterItem> filterItems = new ArrayList<SCChannelFilterItem>();
-                                    for (int j = 0; j < filterItemsJson.length(); j++) {
-                                        JSONObject filterItemJson = filterItemsJson.getJSONObject(j);
-                                        String searchVal = filterItemJson.optString("search_key");
-                                        String displayName = filterItemJson.optString("name");
-                                        if(searchVal == null)
-                                            searchVal = "";
-                                        SCChannelFilterItem filterItem = new SCChannelFilterItem(searchVal,displayName);
-                                        filterItem.setParentKey(key);
-                                        filterItem.setSearchKey(key);
-                                        filterItems.add(filterItem);
-                                    }
-                                    filter.addFilter(key,filterItems);
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject resultsJson = retJson.optJSONObject("data");
+                    if(resultsJson != null) {
+                        JSONArray filterJsonArray = resultsJson.optJSONArray("categorys");
+                        if(filterJsonArray != null && filterJsonArray.length() > 0) {
+                            SCChannelFilter filter = new SCChannelFilter();
+                            for (int i = 0; i < filterJsonArray.length(); i++) {
+                                JSONObject filterJson = filterJsonArray.getJSONObject(i);
+                                JSONArray filterItemsJson = filterJson.optJSONArray("cates");
+                                String key = filterJson.optString("cate_alias");
+                                ArrayList<SCChannelFilterItem> filterItems = new ArrayList<SCChannelFilterItem>();
+                                for (int j = 0; j < filterItemsJson.length(); j++) {
+                                    JSONObject filterItemJson = filterItemsJson.getJSONObject(j);
+                                    String searchVal = filterItemJson.optString("search_key");
+                                    String displayName = filterItemJson.optString("name");
+                                    if(searchVal == null)
+                                        searchVal = "";
+                                    SCChannelFilterItem filterItem = new SCChannelFilterItem(searchVal,displayName);
+                                    filterItem.setParentKey(key);
+                                    filterItem.setSearchKey(key);
+                                    filterItems.add(filterItem);
                                 }
-                                listener.onGetChannelFilterSuccess(filter);
+                                filter.addFilter(key,filterItems);
                             }
+                            if(listener != null)
+                                listener.onGetChannelFilterSuccess(filter);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-            });
-        } else
-            listener.onGetChannelFilterFailed("wrong channel");
+                } catch (JSONException e) {
+                    if(listener != null) {
+                        SCFailLog err = makeJsonFailLog(url,"doGetChannelFilter",e);
+                        listener.onGetChannelFilterFailed(err);
+                    }
 
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private SCAlbums toSCAlbums(SearchResults results) {
@@ -403,7 +530,7 @@ public class SohuApi extends BaseSiteApi {
         return null;
     }
 
-
+/*
     public void  getBanners(final OnGetBannersListener listener) {
         String url = API_HOME_URL;
         HttpUtils.asyncGet(url,new Callback() {
@@ -491,4 +618,5 @@ public class SohuApi extends BaseSiteApi {
         });
 
     }
+    */
 }

@@ -20,11 +20,13 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumDetailActivity;
+import com.umeng.analytics.MobclickAgent;
 
 public class SearchResultFragment extends Fragment
 implements OnGetAlbumsListener
@@ -129,13 +131,14 @@ implements OnGetAlbumsListener
     }
 
     @Override
-    public void onGetAlbumsFailed(final String failReason) {
+    public void onGetAlbumsFailed(final SCFailLog err) {
         if(getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mFailReason = failReason;
+                    mFailReason = getResources().getString(R.string.fail_reason_no_results);
                     mEmpty.setText(mFailReason);
+                    MobclickAgent.reportError(getActivity(),err.toJson());
                 }
             });
         }

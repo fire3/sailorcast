@@ -57,6 +57,10 @@ public class SCChannel {
 
     }
 
+    public String getChannelName() {
+        return mChannelName;
+    }
+
     public int getChannelID() {
         return mChannelID;
     }

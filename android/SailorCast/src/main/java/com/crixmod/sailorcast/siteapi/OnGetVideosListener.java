@@ -1,6 +1,7 @@
 package com.crixmod.sailorcast.siteapi;
 
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCVideos;
 
 /**
@@ -8,5 +9,5 @@ import com.crixmod.sailorcast.model.SCVideos;
  */
 public interface OnGetVideosListener {
     public void onGetVideosSuccess(SCVideos videos);
-    public void onGetVideosFailed(String failReason);
+    public void onGetVideosFailed(SCFailLog failReason);
 }

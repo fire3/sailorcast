@@ -10,6 +10,13 @@ import com.google.gson.annotations.SerializedName;
  * Created by fire3 on 15-2-2.
  */
 public class SCFailLog {
+    public final static int TYPE_HTTP_FAILURE = 1;
+    public final static int TYPE_JSON_ERR = 2;
+    public final static int TYPE_URL_ERR = 3;
+
+    @Expose
+    int type;
+
     @Expose
     String tag;
 
@@ -31,14 +38,17 @@ public class SCFailLog {
     @Expose
     String exceptionString = null;
 
-    public SCFailLog(int siteID, String reason, Exception e) {
+    public SCFailLog(int siteID, int  type) {
         this.site = new SCSite(siteID);
-        Reason = reason;
+        this.type = type;
+    }
+
+    public void setException(Exception e) {
         if(e!=null)
             exceptionString = Log.getStackTraceString(e);
     }
-    public SCFailLog(int siteID, String reason) {
-        this.site = new SCSite(siteID);
+
+    public void setReason(String reason) {
         Reason = reason;
     }
 

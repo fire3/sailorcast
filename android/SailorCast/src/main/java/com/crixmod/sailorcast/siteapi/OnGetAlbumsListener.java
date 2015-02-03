@@ -2,6 +2,7 @@ package com.crixmod.sailorcast.siteapi;
 
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
+import com.crixmod.sailorcast.model.SCFailLog;
 
 import java.util.ArrayList;
 
@@ -10,5 +11,5 @@ import java.util.ArrayList;
  */
 public interface OnGetAlbumsListener {
     public void onGetAlbumsSuccess(SCAlbums albums);
-    public void onGetAlbumsFailed(String failReason);
+    public void onGetAlbumsFailed(SCFailLog failReason);
 }

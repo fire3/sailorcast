@@ -20,6 +20,7 @@ import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.database.BookmarkDbHelper;
 import com.crixmod.sailorcast.database.HistoryDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.upnp.CallableRendererFilter;
 import com.crixmod.sailorcast.model.upnp.IRendererCommand;
@@ -356,8 +357,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     @Override
-    public void onGetAlbumDescFailed(String failReason) {
-
+    public void onGetAlbumDescFailed(SCFailLog err) {
+        MobclickAgent.reportError(this,err.toJson());
     }
 
     @Override
@@ -428,8 +429,9 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     @Override
-    public void onGetVideoPlayUrlFailed(String reason) {
+    public void onGetVideoPlayUrlFailed(SCFailLog err) {
         hideAllPlayButton();
+        MobclickAgent.reportError(this,err.toJson());
     }
 
 

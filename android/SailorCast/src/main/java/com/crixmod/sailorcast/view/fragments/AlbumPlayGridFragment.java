@@ -12,12 +12,14 @@ import android.view.ViewTreeObserver;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.adapters.AlbumPlayGridAdapter;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -178,7 +180,8 @@ public class AlbumPlayGridFragment extends Fragment implements
 
     public void loadMoreVideos() {
         if(mIsBackward == false) {
-            mPageNo++;
+            if(mPageNo < mPageTotal)
+                mPageNo++;
             if(mPageNo <= mPageTotal) {
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
             } else {
@@ -193,7 +196,8 @@ public class AlbumPlayGridFragment extends Fragment implements
         } else {
             if(mPageNo > 0)
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
-            mPageNo--;
+            if(mPageNo > 0)
+                mPageNo--;
             if(mPageNo == 0) {
                 if(mGridView != null) {
                     mGridView.post(new Runnable() {
@@ -276,18 +280,23 @@ public class AlbumPlayGridFragment extends Fragment implements
     }
 
     @Override
-    public void onGetVideosFailed(String failReason) {
+    public void onGetVideosFailed(final SCFailLog failReason) {
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if(mGridView != null) {
-                    mGridView.setIsLoading(false);
-                    mGridView.setHasMoreItems(false);
+                    if(mGridView.isLoading() == true) {
+                        mGridView.setIsLoading(false);
+                        mGridView.setHasMoreItems(false);
+                    }
+                }
+
+                if(mPageNo > 0 && mPageNo <= mPageTotal) {
+                    MobclickAgent.reportError(getActivity(),failReason.toJson());
                 }
             }
         });
-
     }
 
     @Override
