@@ -190,24 +190,28 @@ public class IqiyiApi extends BaseSiteApi {
                             int category_id = albumJson.optInt("category_id");
                             if(category_id < 7) {
                                 // 排除一些无聊的频道
-                                SCAlbum album = new SCAlbum(SCSite.IQIYI);
-                                String albumName = albumJson.optString("title");
-                                album.setTitle(albumName);
-                                String albumImage = albumJson.optString("img");
-                                album.setVerImageUrl(albumImage);
-                                String albumDesc = albumJson.optString("desc");
-                                album.setDesc(albumDesc);
-                                String albumDirector = albumJson.optString("directors");
-                                album.setDirector(albumDirector);
-                                String albumActor = albumJson.optString("mainactors");
-                                album.setMainActor(albumActor);
-                                String albumTip = albumJson.optString("tv_focus");
-                                album.setTip(albumTip);
-                                int albumTotal = albumJson.optInt("episode_count");
-                                album.setVideosTotal(albumTotal);
-                                String albumId = String.valueOf(albumJson.optInt("album_id"));
-                                album.setAlbumId(albumId);
-                                albums.add(album);
+                                int purchase_type = albumJson.optInt("purchase_type");
+                                // 排除 purchase_type = 1 的vip视频
+                                if(purchase_type == 0) {
+                                    SCAlbum album = new SCAlbum(SCSite.IQIYI);
+                                    String albumName = albumJson.optString("title");
+                                    album.setTitle(albumName);
+                                    String albumImage = albumJson.optString("img");
+                                    album.setVerImageUrl(albumImage);
+                                    String albumDesc = albumJson.optString("desc");
+                                    album.setDesc(albumDesc);
+                                    String albumDirector = albumJson.optString("directors");
+                                    album.setDirector(albumDirector);
+                                    String albumActor = albumJson.optString("mainactors");
+                                    album.setMainActor(albumActor);
+                                    String albumTip = albumJson.optString("tv_focus");
+                                    album.setTip(albumTip);
+                                    int albumTotal = albumJson.optInt("episode_count");
+                                    album.setVideosTotal(albumTotal);
+                                    String albumId = String.valueOf(albumJson.optInt("album_id"));
+                                    album.setAlbumId(albumId);
+                                    albums.add(album);
+                                }
                             }
 
                         }
