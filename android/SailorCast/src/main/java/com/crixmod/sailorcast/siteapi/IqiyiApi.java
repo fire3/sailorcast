@@ -12,7 +12,9 @@ import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.utils.HttpUtils;
+import com.crixmod.sailorcast.utils.MD5;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -29,7 +31,12 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Random;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -47,12 +54,23 @@ public class IqiyiApi extends BaseSiteApi {
     public static final int PLAY_SECRET_KEY_ONE = 1121111727;
     public static final String PLAY_SECRET_KEY_TWO = ",rI1:?CJczS3AwJ$";
 
+
+    private final static int CID_MOVIE = 1;
+    private final static int CID_SHOW = 2;
+    private final static int CID_COMIC = 4;
+    private final static int CID_VARIETY = 6;
+    private final static int CID_ENT = 7;
+    private final static int CID_DOCUMENTARY = 3;
+    private final static int CID_MUSIC = 5;
+    private final static int CID_SPORT = 17;
+
+
     private final static String SEARCH_URL_FORMAT = "http://iface.iqiyi.com/api/searchIface?key=2019620214d1a82fc76d0b4b3c6fa685" +
             "&all_episode=-1&need_video_img=0" +
             "&keyword=%s&category_id=0&" +
             "type=json&page_number=1&page_size=30&sort=6&version=5.9.1";
 
-    private final static String ALBUM_VIDEOS_FORMAT = "http://iface2.iqiyi.com/php/xyz/entry/galaxy.php?key=317e617581c95c3e8a996f8bff69607b&device_id=357070056881552&network=12&ua=GT-I9300&os=4.3&version=5.3.1&category_id=2&f_ps=10&s=1&ps=30&pn=1&pcat=2&hwd=1&v5=1&compat=1&platform=GPad&f=1&udid=3fa69706efe86bbd&openudid=3fa69706efe86bbd&uniqid=9c185b315590159c739e02f77ad4bba9&ppid=";
+    private final static String ALBUM_VIDEOS_FORMAT = "http://cache.video.qiyi.com/jp/avlist/%s/%d/%d/?albumId=%s&pageNo=%d&pageNum=%d";
     private final static String IQIYI_MKEY = "317e617581c95c3e8a996f8bff69607b";
 
     private  Hashtable<String, String> getSignedHeader(String paramString)
@@ -63,7 +81,6 @@ public class IqiyiApi extends BaseSiteApi {
     private  Hashtable<String, String> getSignedHeader(String paramString1, int paramInt, String paramString2)
     {
         long l1 = System.currentTimeMillis() / 1000L;
-        //l1 = 1422952262;
         long l2 = l1 ^ paramInt;
         String str = md5(l1 + paramString2 + paramString1 + "5.3.1");
         Hashtable localHashtable = new Hashtable();
@@ -245,11 +262,17 @@ public class IqiyiApi extends BaseSiteApi {
         return unzipped;
     }
 
-    @Override
-    public void doGetAlbumVideos(SCAlbum album, int pageNo, int pageSize, OnGetVideosListener listener) {
-
-        String url = ALBUM_VIDEOS_FORMAT;
+    private Hashtable<String, String> getHeader() {
         Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY);
+        return head;
+    }
+
+    @Override
+    public void doGetAlbumVideos(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
+
+        final String url = String.format(ALBUM_VIDEOS_FORMAT,album.getAlbumId(),pageNo,pageSize,album.getAlbumId(),pageNo,pageSize);
+
+        /*
         Request request = new Request.Builder().url(url)
                 //.addHeader("Accept-Encoding", "gzip")
                 .addHeader("t", head.get("t"))
@@ -258,8 +281,9 @@ public class IqiyiApi extends BaseSiteApi {
         Log.d("fire3","doGetAlbumVideos: url" + url);
         Log.d("fire3","doGetAlbumVideos: t: " + head.get("t"));
         Log.d("fire3","doGetAlbumVideos: sign: " + head.get("sign"));
+        */
 
-        HttpUtils.asyncGet(request, new Callback() {
+        HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
                 Log.d("fire3","onFailure");
@@ -267,8 +291,65 @@ public class IqiyiApi extends BaseSiteApi {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                String ret = response.body().string();
-                Log.d("fire3", ret);
+                String ret = response.body().string().substring(13);
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    String code = retJson.optString("code");
+                    if(code.equals("A00000")) {
+                        JSONObject retData = retJson.optJSONObject("data");
+                        JSONArray vList = retData.optJSONArray("vlist");
+                        if(vList.length() > 0) {
+                            SCVideos videos = new SCVideos();
+
+                            for (int i = 0; i < vList.length(); i++) {
+                                JSONObject vJson = vList.getJSONObject(i);
+
+                                SCVideo v = new SCVideo();
+                                v.setAlbumID(album.getAlbumId());
+                                v.setSCSite(SCSite.IQIYI);
+                                String title = vJson.optString("vn");
+                                String shortTitle = vJson.optString("shortTitle");
+                                if(title != null && !title.isEmpty())
+                                    v.setVideoTitle(title);
+                                else if (shortTitle != null && !shortTitle.isEmpty()){
+                                    v.setVideoTitle(shortTitle);
+                                }
+
+                                int pd = vJson.optInt("pd");
+                                v.setSeqInAlbum(pd);
+
+                                String vUrl = vJson.optString("vurl");
+                                v.setIqiyiVideoURL(vUrl);
+
+                                String id = vJson.optString("id");
+                                v.setVideoID(id);
+
+                                String vid = vJson.optString("vid");
+                                v.setIqiyiVid(vid);
+
+                                String vpic = vJson.optString("vpic");
+                                v.setHorPic(vpic);
+
+                                videos.add(v);
+                            }
+
+                            if(listener != null) {
+                                listener.onGetVideosSuccess(videos);
+                            }
+                        }
+
+                    } else {
+                        if(listener != null) {
+                            SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_JSON_ERR);
+                            err.setReason(retJson.toString());
+                            err.setFunctionName("doGetAlbumVideos");
+                            err.setUrl(url);
+                            listener.onGetVideosFailed(err);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -280,9 +361,124 @@ public class IqiyiApi extends BaseSiteApi {
             listener.onGetAlbumDescSuccess(album);
     }
 
-    @Override
-    public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
+    private String genUUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString().replaceAll("-","");
+    }
 
+    private String getVideoVMSURL(SCVideo video) {
+        String uid = genUUID();
+        Random r = new Random();
+        String tm =String.format("%d",((r.nextInt(1000-100))+100));
+        String enc = md5("ts56gh"+tm+video.getVideoID());
+        String tn = String.valueOf(r.nextDouble());
+        String authkey = md5(""+tm+video.getVideoID());
+        String tvid = video.getVideoID();
+        String vid = video.getIqiyiVid();
+        String vmsreq="http://cache.video.qiyi.com/vms?key=fvip&src=1702633101b340d8917a69cf8a4b8c7" +
+                "&tvId="+tvid+"&vid="+vid+"&vinfo=1&tm="+tm+
+                "&enc="+enc+
+                "&qyid="+uid+"&tn="+tn +"&um=0" +
+                "&authkey="+authkey;
+
+        return vmsreq;
+
+    }
+
+    private String getRealM3U8(String m3u8Url) {
+        String FORMAT = "http://cache.m.iqiyi.com/dc/dt/mobile/%s?qd_src=5be6a2fdfe4f4a1a8c7b08ee46a18887";
+        return String.format(FORMAT,m3u8Url);
+    }
+
+    @Override
+    public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
+        final String url = getVideoVMSURL(video);
+
+        HttpUtils.asyncGet(url,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    String code = retJson.optString("code");
+                    if(code.equals("A000000")) {
+                        JSONArray vs = retJson.optJSONObject("data")
+                                .optJSONObject("vp")
+                                .optJSONArray("tkl")
+                                .getJSONObject(0)
+                                .optJSONArray("vs");
+
+                        /*
+                            bid 决定清晰度
+                            bid == 96 流畅
+                            bid == 1 普通
+                            bid == 2 高清
+                            bid == 3 超清
+                            bid == 4 超高清
+                            bid == 5 FULL_HD
+                            bid == 10 4K
+                         */
+                        Integer bids[] = new Integer[vs.length()];
+                        HashMap<Integer,Integer> bidMap = new HashMap<Integer, Integer>();
+
+                        for (int i = 0; i < vs.length(); i++) {
+                            JSONObject v = vs.getJSONObject(i);
+                            int bid = v.optInt("bid");
+                            bids[i] = bid;
+                            bidMap.put(bid,i);
+                        }
+                        Arrays.sort(bids);
+                        /*这里采用倒序，最高的bid设置为Super */
+                        int count = 0;
+                        for (int i = (bids.length - 1); i >=0; i--) {
+                            int bid = bids[i];
+                            int index = bidMap.get(bid);
+                            JSONObject v = vs.getJSONObject(index);
+                            String m3u8 = v.optString("m3u8Url");
+                            if(count == 4)
+                                break;
+                            if(count == 0) {
+                                if(m3u8!=null && !m3u8.isEmpty()) {
+                                    String realM3U8 = getRealM3U8(m3u8);
+                                    video.setM3U8Super(realM3U8);
+                                    if(listener != null)
+                                        listener.onGetVideoPlayUrlSuper(video,realM3U8);
+                                }
+                            }
+                            if(count == 1) {
+                                if(m3u8!=null && !m3u8.isEmpty()) {
+                                    String realM3U8 = getRealM3U8(m3u8);
+                                    video.setM3U8Nor(realM3U8);
+                                    if(listener != null)
+                                        listener.onGetVideoPlayUrlHigh(video,realM3U8);
+                                }
+                            }
+                            if(count == 2) {
+                                if(m3u8!=null && !m3u8.isEmpty()) {
+                                    String realM3U8 = getRealM3U8(m3u8);
+                                    video.setM3U8Nor(realM3U8);
+                                    if(listener != null)
+                                        listener.onGetVideoPlayUrlNormal(video,realM3U8);
+                                }
+                            }
+                            count++;
+                        }
+                    } else {
+                        //错误情况
+                    }
+                } catch (Exception e) {
+                    //错误情况
+                    e.printStackTrace();
+                }
+
+                Log.d("fire3",ret);
+            }
+        });
     }
 
     @Override

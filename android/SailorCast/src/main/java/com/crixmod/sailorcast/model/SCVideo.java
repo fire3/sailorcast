@@ -19,6 +19,8 @@ public class SCVideo implements Parcelable {
     String mAlbumID = null;
     Integer mSeqInAlbum = 0;  // Start from 1
     String mVideoMID = null; //This is for Letv
+    String mIqiyiURL = null; //This is for Iqiyi
+    String mIqiyiVid = null; //This is for Iqiyi
     SCSite mSCSite = new SCSite(SCSite.UNKNOWN);
     public SCVideo() {
     }
@@ -112,6 +114,22 @@ public class SCVideo implements Parcelable {
         this.mVideoMID = mVideoMID;
     }
 
+    public String getIqiyiVideoURL() {
+        return mIqiyiURL;
+    }
+
+    public void setIqiyiVideoURL(String videoURL) {
+        this.mIqiyiURL = videoURL;
+    }
+
+    public String getIqiyiVid() {
+        return mIqiyiVid;
+    }
+
+    public void setIqiyiVid(String mIqiyiVid) {
+        this.mIqiyiVid = mIqiyiVid;
+    }
+
     @Override
     public String toString() {
         return "SCVideo{" +
@@ -160,6 +178,8 @@ public class SCVideo implements Parcelable {
         parcel.writeInt(mSeqInAlbum);
         parcel.writeString(mVideoMID);
         parcel.writeInt(mSCSite.getSiteID());
+        parcel.writeString(mIqiyiURL);
+        parcel.writeString(mIqiyiVid);
 
     }
     private SCVideo (Parcel in) {
@@ -174,6 +194,8 @@ public class SCVideo implements Parcelable {
         this.mSeqInAlbum = in.readInt();
         this.mVideoMID = in.readString();
         this.mSCSite = new SCSite(in.readInt());
+        this.mIqiyiURL = in.readString();
+        this.mIqiyiVid = in.readString();
     }
 
     public static final Parcelable.Creator<SCVideo> CREATOR = new Parcelable.Creator<SCVideo>() {

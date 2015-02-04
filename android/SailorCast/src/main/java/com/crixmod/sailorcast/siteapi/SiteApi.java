@@ -71,6 +71,8 @@ public class SiteApi {
             new SohuApi().doGetVideoPlayUrl(video,listener);
         if(video.getSite().getSiteID() == SCSite.LETV)
             new LetvApi().doGetVideoPlayUrl(video,listener);
+        if(video.getSite().getSiteID() == SCSite.IQIYI)
+            new IqiyiApi().doGetVideoPlayUrl(video,listener);
     }
 
     public static int getSupportSiteNumber() {
