@@ -184,6 +184,16 @@ public class AlbumPlayGridFragment extends Fragment implements
                 mPageNo++;
             if(mPageNo <= mPageTotal) {
                 SiteApi.doGetAlbumVideos(mAlbum, mPageNo, mPageSize, this);
+                if(mPageNo == mPageTotal) {
+                    if(mGridView != null) {
+                        mGridView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mGridView.setHasMoreItems(false);
+                            }
+                        });
+                    }
+                }
             } else {
                 if(mGridView != null)
                     mGridView.post(new Runnable() {
