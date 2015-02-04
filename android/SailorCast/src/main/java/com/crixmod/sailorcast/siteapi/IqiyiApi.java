@@ -73,6 +73,9 @@ public class IqiyiApi extends BaseSiteApi {
     private final static String ALBUM_VIDEOS_FORMAT = "http://cache.video.qiyi.com/jp/avlist/%s/%d/%d/?albumId=%s&pageNo=%d&pageNum=%d";
     private final static String IQIYI_MKEY = "317e617581c95c3e8a996f8bff69607b";
 
+    private final static String ALBUM_VIDEOS_NEBULA_FORMAT = "http://iface2.iqiyi.com/php/xyz/entry/nebula.php?key=" +
+            "317e617581c95c3e8a996f8bff69607b&version=5.3.1&uniqid=%s&platform=GPad&block=0&w=1&compat=1&other=1&v5=1&ad_str=1&many_id=%s_0_";
+
     private  Hashtable<String, String> getSignedHeader(String paramString)
     {
         return getSignedHeader(paramString, 1111111727, "D9g6XYm(B-:o1nu|");
@@ -230,58 +233,18 @@ public class IqiyiApi extends BaseSiteApi {
         });
     }
 
-    private String decompress(String zipText) throws IOException {
-        byte[] compressed = zipText.getBytes();
-            GZIPInputStream gzipInputStream = new GZIPInputStream(
-                    new ByteArrayInputStream(compressed));
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        for (int value = 0; value != -1;) {
-            value = gzipInputStream.read();
-            if (value != -1) {
-                baos.write(value);
-            }
-        }
-        gzipInputStream.close();
-        baos.close();
-        String sReturn = new String(baos.toByteArray(), "UTF-8");
-        return sReturn;
-    }
-
-    private String unzipString(String zippedText) throws Exception
-    {
-        ByteArrayInputStream bais = new ByteArrayInputStream(zippedText.getBytes("UTF-8"));
-        GZIPInputStream gzis = new GZIPInputStream(bais);
-        InputStreamReader reader = new InputStreamReader(gzis);
-        BufferedReader in = new BufferedReader(reader);
-
-        String unzipped = "";
-        while ((unzipped = in.readLine()) != null)
-            unzipped+=unzipped;
-
-        return unzipped;
-    }
-
-    private Hashtable<String, String> getHeader() {
+    private Hashtable<String, String> getGalaxyHeader() {
         Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY);
         return head;
     }
 
-    @Override
-    public void doGetAlbumVideos(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
+    private Hashtable<String, String> getNebulaHeader() {
+        Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY,0x42d2ceaf,",rI1:?CJczS3AwJ$");
+        return head;
+    }
 
-        final String url = String.format(ALBUM_VIDEOS_FORMAT,album.getAlbumId(),pageNo,pageSize,album.getAlbumId(),pageNo,pageSize);
-
-        /*
-        Request request = new Request.Builder().url(url)
-                //.addHeader("Accept-Encoding", "gzip")
-                .addHeader("t", head.get("t"))
-                .addHeader("sign",head.get("sign"))
-                .build();
-        Log.d("fire3","doGetAlbumVideos: url" + url);
-        Log.d("fire3","doGetAlbumVideos: t: " + head.get("t"));
-        Log.d("fire3","doGetAlbumVideos: sign: " + head.get("sign"));
-        */
+    private void doGetAlbumVideosPcMethod(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
+         final String url = String.format(ALBUM_VIDEOS_FORMAT,album.getAlbumId(),pageNo,pageSize,album.getAlbumId(),pageNo,pageSize);
 
         HttpUtils.asyncGet(url, new Callback() {
             @Override
@@ -352,7 +315,73 @@ public class IqiyiApi extends BaseSiteApi {
                 }
             }
         });
+    }
 
+    private void doGetAlbumVideosNebulaMethod(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
+             String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
+        Hashtable<String, String> head = getNebulaHeader();
+
+        Request request = new Request.Builder().url(url)
+                //.addHeader("Accept-Encoding", "gzip")
+                .addHeader("t", head.get("t"))
+                .addHeader("sign",head.get("sign"))
+                .build();
+        HttpUtils.asyncGet(request,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject tvJson = retJson.optJSONObject("tv").optJSONObject("0");
+                    SCVideos videos = new SCVideos();
+
+                    SCVideo v = new SCVideo();
+                    v.setAlbumID(album.getAlbumId());
+                    v.setSCSite(SCSite.IQIYI);
+                    v.setSeqInAlbum(1);
+                    v.setVideoTitle(tvJson.optString("_n"));
+                    v.setHorPic(tvJson.optString("_img"));
+                    v.setVideoID(tvJson.optString("_id"));
+                    v.setIqiyiVid(tvJson.optString("_v"));
+
+                    /*
+                    JSONArray resJson = tvJson.optJSONArray("res");
+                    for (int i = 0; i < resJson.length(); i++) {
+                        JSONObject resJ = resJson.getJSONObject(i);
+                        if(resJ.optString("t")!=null && resJ.optString("t").equals("MP4_200K")) {
+                            v.setM3U8Nor(resJ.optString("vid"));
+                        }
+                        if(resJ.optString("t")!=null && resJ.optString("t").equals("MP4_400K")) {
+                            v.setM3U8High(resJ.optString("vid"));
+                        }
+                    }
+                    */
+                    videos.add(v);
+
+                    if(listener != null) {
+                        listener.onGetVideosSuccess(videos);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+    }
+
+    @Override
+    public void doGetAlbumVideos(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
+        if(album.getVideosTotal() == 1)
+            doGetAlbumVideosNebulaMethod(album,pageNo,pageSize,listener);
+        else
+            doGetAlbumVideosPcMethod(album, pageNo, pageSize, listener);
     }
 
     @Override
@@ -392,6 +421,7 @@ public class IqiyiApi extends BaseSiteApi {
 
     @Override
     public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
+
         final String url = getVideoVMSURL(video);
 
         HttpUtils.asyncGet(url,new Callback() {
@@ -429,8 +459,9 @@ public class IqiyiApi extends BaseSiteApi {
                         for (int i = 0; i < vs.length(); i++) {
                             JSONObject v = vs.getJSONObject(i);
                             int bid = v.optInt("bid");
+                            Log.d("fire3",String.format("found bid:%d index:%d",bid,i));
                             bids[i] = bid;
-                            bidMap.put(bid,i);
+                            bidMap.put(bid, i);
                         }
                         Arrays.sort(bids);
                         /*这里采用倒序，最高的bid设置为Super */
@@ -440,6 +471,8 @@ public class IqiyiApi extends BaseSiteApi {
                             int index = bidMap.get(bid);
                             JSONObject v = vs.getJSONObject(index);
                             String m3u8 = v.optString("m3u8Url");
+                            if(bid > 10)
+                                continue;
                             if(count == 4)
                                 break;
                             if(count == 0) {
@@ -475,8 +508,6 @@ public class IqiyiApi extends BaseSiteApi {
                     //错误情况
                     e.printStackTrace();
                 }
-
-                Log.d("fire3",ret);
             }
         });
     }
