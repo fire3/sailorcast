@@ -84,12 +84,16 @@ public class AlbumListAdapter extends BaseAdapter {
     private void setupViewHolder(View view, int i, final ViewHolder viewHolder, final SCAlbum album) {
         viewHolder.videoTitle.setText(album.getTitle());
         int x = 0,y = 0;
+        String imageUrl = null;
         if(mColumns == 3) {
             Point point = ImageTools.getGridVerPosterSize(mContext, mColumns);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(point.x,point.y);
             viewHolder.videoImage.setLayoutParams(params);
             x = point.x;
             y = point.y;
+
+            if(album.getVerImageUrl() != null)
+                imageUrl = album.getVerImageUrl();
         }
 
         if(mColumns == 2) {
@@ -98,11 +102,13 @@ public class AlbumListAdapter extends BaseAdapter {
             viewHolder.videoImage.setLayoutParams(params);
             x = point.x;
             y = point.y;
+            if(album.getHorImageUrl() != null)
+                imageUrl = album.getHorImageUrl();
         }
-        if(album.getVerImageUrl() != null) {
-            ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),x,y);
-        } else if(album.getHorImageUrl() != null) {
-            ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),x,y);
+
+
+        if(imageUrl != null) {
+            ImageTools.displayImage(viewHolder.videoImage,imageUrl,x,y);
         } else {
             if(mColumns == 2)
                 viewHolder.videoImage.setImageDrawable(SailorCast.getResource().getDrawable(R.drawable.loading_hor));
