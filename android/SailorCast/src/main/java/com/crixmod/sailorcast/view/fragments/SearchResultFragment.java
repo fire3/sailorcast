@@ -228,7 +228,7 @@ implements OnGetAlbumsListener
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     AlbumDetailActivity.launch((Activity) mContext, album);
+                     AlbumDetailActivity.launch((Activity) mContext, album,0,true);
                 }
             });
         }
