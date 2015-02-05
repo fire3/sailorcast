@@ -1,13 +1,11 @@
 package com.crixmod.sailorcast.view.fragments;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -170,7 +168,8 @@ public class AlbumListFragment extends Fragment implements
 
         try {
             if (getActivity() != null) {
-                MobclickAgent.reportError(getActivity(),err.toJson());
+                if(err.getType() == SCFailLog.TYPE_FATAL_ERR)
+                    MobclickAgent.reportError(getActivity(),err.toJson());
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

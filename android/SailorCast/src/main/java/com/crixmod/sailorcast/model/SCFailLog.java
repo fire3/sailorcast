@@ -11,8 +11,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class SCFailLog {
     public final static int TYPE_HTTP_FAILURE = 1;
-    public final static int TYPE_JSON_ERR = 2;
+    public final static int TYPE_FATAL_ERR = 2;
     public final static int TYPE_URL_ERR = 3;
+    public static final int TYPE_NO_RESULT = 4;
 
     @Expose
     int type;
@@ -70,5 +71,10 @@ public class SCFailLog {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+
+    public int getType() {
+        return type;
     }
 }

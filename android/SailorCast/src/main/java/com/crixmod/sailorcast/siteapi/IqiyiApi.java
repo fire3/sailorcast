@@ -139,16 +139,6 @@ public class IqiyiApi extends BaseSiteApi {
         return "";
     }
 
-
-    private SCFailLog makeHttpFailLog(String url, String functionName) {
-        SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_HTTP_FAILURE);
-        err.setFunctionName(functionName);
-        err.setClassName("IqiyiApi");
-        err.setTag(TAG);
-        err.setUrl(url);
-        return err;
-    }
-
     private SCFailLog makeHttpFailLog(String url, String functionName, Exception e) {
         SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_HTTP_FAILURE);
         err.setException(e);
@@ -159,8 +149,8 @@ public class IqiyiApi extends BaseSiteApi {
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName, Exception e) {
-        SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName, Exception e) {
+        SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_FATAL_ERR);
         err.setException(e);
         err.setFunctionName(functionName);
         err.setClassName("IqiyiApi");
@@ -169,8 +159,8 @@ public class IqiyiApi extends BaseSiteApi {
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName) {
-        SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_FATAL_ERR);
         err.setFunctionName(functionName);
         err.setClassName("IqiyiApi");
         err.setTag(TAG);
@@ -178,6 +168,14 @@ public class IqiyiApi extends BaseSiteApi {
         return err;
     }
 
+    private SCFailLog makeNoResultFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_NO_RESULT);
+        err.setFunctionName(functionName);
+        err.setClassName("IqiyiApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
 
 
     @Override
@@ -240,14 +238,14 @@ public class IqiyiApi extends BaseSiteApi {
                             listener.onGetAlbumsSuccess(albums);
                     } else {
                         if (listener != null) {
-                            SCFailLog err = makeJsonFailLog(url, "doSearch");
+                            SCFailLog err = makeNoResultFailLog(url, "doSearch");
                             err.setReason(ret);
                             listener.onGetAlbumsFailed(err);
                         }
                     }
                 } catch (Exception e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"doSearch",e);
+                        SCFailLog err = makeFatalFailLog(url, "doSearch", e);
                         err.setReason(ret);
                         listener.onGetAlbumsFailed(err);
                     }
@@ -273,6 +271,10 @@ public class IqiyiApi extends BaseSiteApi {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
+                SCFailLog err = makeHttpFailLog(url,"doGetAlbumVideosPcMethod",e);
+                if(listener != null) {
+                    listener.onGetVideosFailed(err);
+                }
             }
 
             @Override
@@ -326,14 +328,15 @@ public class IqiyiApi extends BaseSiteApi {
 
                     } else {
                         if(listener != null) {
-                            SCFailLog err = new SCFailLog(SCSite.IQIYI,SCFailLog.TYPE_JSON_ERR);
-                            err.setReason(retJson.toString());
-                            err.setFunctionName("doGetAlbumVideos");
-                            err.setUrl(url);
+                            SCFailLog err = makeNoResultFailLog(url,"doGetAlbumVideosPcMethod");
                             listener.onGetVideosFailed(err);
                         }
                     }
                 } catch (Exception e) {
+                    SCFailLog err = makeFatalFailLog(url, "doGetAlbumVideosPcMethod", e);
+                    if(listener != null) {
+                        listener.onGetVideosFailed(err);
+                    }
                     e.printStackTrace();
                 }
             }
@@ -341,7 +344,7 @@ public class IqiyiApi extends BaseSiteApi {
     }
 
     private void doGetAlbumVideosNebulaMethod(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
-        String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
+        final String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
         Hashtable<String, String> head = getNebulaHeader();
 
         Request request = new Request.Builder().url(url)
@@ -352,7 +355,10 @@ public class IqiyiApi extends BaseSiteApi {
         HttpUtils.asyncGet(request,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                SCFailLog err = makeHttpFailLog(url,"doGetAlbumVideosNebulaMethod",e);
+                if(listener != null) {
+                    listener.onGetVideosFailed(err);
+                }
             }
 
             @Override
@@ -372,18 +378,6 @@ public class IqiyiApi extends BaseSiteApi {
                     v.setVideoID(tvJson.optString("_id"));
                     v.setIqiyiVid(tvJson.optString("_v"));
 
-                    /*
-                    JSONArray resJson = tvJson.optJSONArray("res");
-                    for (int i = 0; i < resJson.length(); i++) {
-                        JSONObject resJ = resJson.getJSONObject(i);
-                        if(resJ.optString("t")!=null && resJ.optString("t").equals("MP4_200K")) {
-                            v.setM3U8Nor(resJ.optString("vid"));
-                        }
-                        if(resJ.optString("t")!=null && resJ.optString("t").equals("MP4_400K")) {
-                            v.setM3U8High(resJ.optString("vid"));
-                        }
-                    }
-                    */
                     videos.add(v);
 
                     if(listener != null) {
@@ -391,6 +385,11 @@ public class IqiyiApi extends BaseSiteApi {
                     }
 
                 } catch (Exception e) {
+
+                    SCFailLog err = makeFatalFailLog(url, "doGetAlbumVideosNebulaMethod", e);
+                    if(listener != null) {
+                        listener.onGetVideosFailed(err);
+                    }
                     e.printStackTrace();
                 }
 
@@ -410,7 +409,7 @@ public class IqiyiApi extends BaseSiteApi {
     @Override
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
 
-        String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
+        final String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
         Hashtable<String, String> head = getNebulaHeader();
 
         Request request = new Request.Builder().url(url)
@@ -421,7 +420,10 @@ public class IqiyiApi extends BaseSiteApi {
         HttpUtils.asyncGet(request,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                SCFailLog err = makeHttpFailLog(url, "doGetAlbumDesc", e);
+                if(listener != null) {
+                    listener.onGetAlbumDescFailed(err);
+                }
             }
 
             @Override
@@ -438,6 +440,10 @@ public class IqiyiApi extends BaseSiteApi {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    SCFailLog err = makeFatalFailLog(url, "doGetAlbumDesc", e);
+                    if(listener != null) {
+                        listener.onGetAlbumDescFailed(err);
+                    }
                 }
 
             }
@@ -484,7 +490,10 @@ public class IqiyiApi extends BaseSiteApi {
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                SCFailLog err = makeHttpFailLog(url, "doGetVideoPlayUrl", e);
+                if(listener != null) {
+                    listener.onGetVideoPlayUrlFailed(err);
+                }
             }
 
             @Override
@@ -559,16 +568,24 @@ public class IqiyiApi extends BaseSiteApi {
                         }
                     } else {
                         //错误情况
+                        SCFailLog err = makeNoResultFailLog(url, "doGetVideoPlayUrl");
+                        if(listener != null) {
+                            listener.onGetVideoPlayUrlFailed(err);
+                        }
                     }
                 } catch (Exception e) {
                     //错误情况
                     e.printStackTrace();
+                    SCFailLog err = makeFatalFailLog(url, "doGetVideoPlayUrl", e);
+                    if(listener != null) {
+                        listener.onGetVideoPlayUrlFailed(err);
+                    }
                 }
             }
         });
     }
 
-    public void getChannelAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
+    public void getChannelAlbumsByUrl(final String url, final OnGetAlbumsListener listener) {
                 Hashtable<String, String> head = getGalaxyHeader();
 
         Request request = new Request.Builder().url(url)
@@ -581,6 +598,10 @@ public class IqiyiApi extends BaseSiteApi {
             @Override
             public void onFailure(Request request, IOException e) {
 
+                SCFailLog err = makeHttpFailLog(url, "getChannelAlbumsByUrl", e);
+                if(listener != null) {
+                    listener.onGetAlbumsFailed(err);
+                }
             }
 
             @Override
@@ -594,71 +615,63 @@ public class IqiyiApi extends BaseSiteApi {
                     for (int i = 0; i < albumIdList.length(); i++) {
                         String id = albumIdList.optString(i);
                         JSONObject albumJson = albumArray.optJSONObject(id);
-                        SCAlbum album = new SCAlbum(SCSite.IQIYI);
+                        //有时会出现"_a"这个对象，剧集信息会放在这个里面，比如动漫栏目
+                        if(albumJson.has("_a"))
+                            albumJson = albumJson.optJSONObject("_a");
+                        if(albumJson != null) {
+                            SCAlbum album = new SCAlbum(SCSite.IQIYI);
 
-                        String albumID = albumJson.optString("_id");
-                        album.setAlbumId(albumID);
+                            String albumID = id;
+                            album.setAlbumId(albumID);
 
-                        String title = albumJson.optString("_t");
-                        album.setTitle(title);
+                            String title = albumJson.optString("_t");
+                            album.setTitle(title);
 
-                        String h1Image = albumJson.optString("h1_img");
-                        String h2Image = albumJson.optString("h2_img");
-                        String h3Image = albumJson.optString("h3_img");
-                        if(h1Image != null && !h1Image.isEmpty())
-                            album.setVerImageUrl(h1Image);
-                        else if(h2Image != null && !h2Image.isEmpty())
-                            album.setVerImageUrl(h2Image);
-                        else if(h3Image != null && !h3Image.isEmpty())
-                            album.setVerImageUrl(h3Image);
+                            String h1Image = albumJson.optString("h1_img");
+                            String h2Image = albumJson.optString("h2_img");
+                            String h3Image = albumJson.optString("h3_img");
+                            if (h1Image != null && !h1Image.isEmpty())
+                                album.setVerImageUrl(h1Image);
+                            else if (h2Image != null && !h2Image.isEmpty())
+                                album.setVerImageUrl(h2Image);
+                            else if (h3Image != null && !h3Image.isEmpty())
+                                album.setVerImageUrl(h3Image);
 
-                        String v1Image = albumJson.optString("v1_img");
-                        String v2Image = albumJson.optString("v2_img");
-                        String v3Image = albumJson.optString("v3_img");
-                        if(v1Image != null && !v1Image.isEmpty())
-                            album.setHorImageUrl(v1Image);
-                        else if(v2Image != null && !v2Image.isEmpty())
-                            album.setHorImageUrl(v2Image);
-                        else if(v3Image != null && !v3Image.isEmpty())
-                            album.setHorImageUrl(v3Image);
+                            String v1Image = albumJson.optString("v1_img");
+                            String v2Image = albumJson.optString("v2_img");
+                            String v3Image = albumJson.optString("v3_img");
+                            if (v1Image != null && !v1Image.isEmpty())
+                                album.setHorImageUrl(v1Image);
+                            else if (v2Image != null && !v2Image.isEmpty())
+                                album.setHorImageUrl(v2Image);
+                            else if (v3Image != null && !v3Image.isEmpty())
+                                album.setHorImageUrl(v3Image);
 
-                        String tip = albumJson.optString("tvfcs");
-                        album.setTip(tip);
+                            String tip = albumJson.optString("tvfcs");
+                            album.setTip(tip);
 
-                        JSONArray cast = albumJson.optJSONArray("cast");
-                        String actors = "";
-                        for (int j = 0; j < cast.length(); j++) {
-                            String name = cast.getJSONObject(j).optString("name");
-                           actors = actors + name + " ";
-                        }
-                        if(!actors.isEmpty())
-                            album.setMainActor(actors);
-
-                        JSONArray director = albumJson.optJSONArray("director");
-                        String directors = "";
-                        for (int j = 0; j < director.length(); j++) {
-                            String name = director.getJSONObject(j).optString("name");
-                            directors = directors + name + " ";
-                        }
-                        if(!directors.isEmpty())
-                            album.setDirector(directors);
-
-                        //p_s 是更新的剧集数目，在电影频道时可能为0。
-                        int p_s =  albumJson.optInt("p_s");
-                        album.setVideosTotal(p_s);
-                        if(p_s == 0) {
                             int _tvs = albumJson.optInt("_tvs");
                             album.setVideosTotal(_tvs);
-                        }
 
-                        albums.add(album);
+                            albums.add(album);
+                        }
                     }
                     if(albums.size() > 0) {
                         if(listener != null) {
                             listener.onGetAlbumsSuccess(albums);
                         }
+                    } else if (albums.size() == 0) {
+                        SCFailLog err = makeNoResultFailLog(url,"getChannelAlbumsByUrl");
+                        if(listener != null) {
+                            listener.onGetAlbumsFailed(err);
+                        }
                     }
                 } catch (Exception e) {
+
+                    SCFailLog err = makeFatalFailLog(url, "getChannelAlbumsByUrl", e);
+                    if(listener != null) {
+                        listener.onGetAlbumsFailed(err);
+                    }
                     e.printStackTrace();
                 }
 
@@ -733,12 +746,16 @@ public class IqiyiApi extends BaseSiteApi {
 
     @Override
     public void doGetChannelFilter(final SCChannel channel, final OnGetChannelFilterListener listener) {
-        String url = CHANNEL_FILTER_URL;
+        final String url = CHANNEL_FILTER_URL;
 
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
+                SCFailLog err = makeHttpFailLog(url, "doGetChannelFilter", e);
+                if(listener != null) {
+                    listener.onGetChannelFilterFailed(err);
+                }
             }
 
             @Override
@@ -790,18 +807,18 @@ public class IqiyiApi extends BaseSiteApi {
                                 }
 
                                 if(listener != null) {
-                                    Log.d("fire3",filter.toJson());
                                     listener.onGetChannelFilterSuccess(filter);
                                 }
 
                             }
                         }
                     }
-
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    SCFailLog err = makeFatalFailLog(url, "doGetChannelFilter", e);
+                    if(listener != null) {
+                        listener.onGetChannelFilterFailed(err);
+                    }
                 }
             }
         });

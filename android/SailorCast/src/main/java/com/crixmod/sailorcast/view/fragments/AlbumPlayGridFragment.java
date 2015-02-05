@@ -43,7 +43,7 @@ public class AlbumPlayGridFragment extends Fragment implements
     private boolean mIsShowTitle;
     private boolean mIsBackward;
     private int mPageNo = 0;
-    private int mPageSize = 48;//sohu最多一次列出50个剧集
+    private int mPageSize = 50;//sohu最多一次列出50个剧集
     private int mPageTotal;
     private AlbumPlayGridAdapter mAdapter;
     private int mInitialVideoNoInAlbum = 0;

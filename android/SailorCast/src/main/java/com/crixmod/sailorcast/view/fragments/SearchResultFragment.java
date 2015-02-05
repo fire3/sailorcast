@@ -138,7 +138,8 @@ implements OnGetAlbumsListener
                 public void run() {
                     mFailReason = getResources().getString(R.string.fail_reason_no_results);
                     mEmpty.setText(mFailReason);
-                    MobclickAgent.reportError(getActivity(),err.toJson());
+                    if(err.getType() == SCFailLog.TYPE_FATAL_ERR)
+                        MobclickAgent.reportError(getActivity(),err.toJson());
                 }
             });
         }

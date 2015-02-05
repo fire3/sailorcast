@@ -1,11 +1,8 @@
 package com.crixmod.sailorcast.siteapi;
 
-import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
-import com.crixmod.sailorcast.model.SCBanner;
-import com.crixmod.sailorcast.model.SCBanners;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCChannelFilterItem;
@@ -128,8 +125,8 @@ public class SohuApi extends BaseSiteApi {
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName, Exception e) {
-        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName, Exception e) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_FATAL_ERR);
         err.setException(e);
         err.setFunctionName(functionName);
         err.setClassName("SohuApi");
@@ -138,8 +135,8 @@ public class SohuApi extends BaseSiteApi {
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName) {
-        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_FATAL_ERR);
         err.setFunctionName(functionName);
         err.setClassName("SohuApi");
         err.setTag(TAG);
@@ -147,6 +144,15 @@ public class SohuApi extends BaseSiteApi {
         return err;
     }
 
+
+    private SCFailLog makeNoResultFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.SOHU,SCFailLog.TYPE_NO_RESULT);
+        err.setFunctionName(functionName);
+        err.setClassName("SohuApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
 
     private String getChannelAlbumUrl(SCChannel channel, int pageNo, int pageSize) {
         return String.format(API_CHANNEL_ALBUM_FORMAT,channelToCid(channel),pageNo,pageSize);
@@ -215,14 +221,14 @@ public class SohuApi extends BaseSiteApi {
                     }
                     else {
                         if(listener != null) {
-                            SCFailLog err =  makeJsonFailLog(url,"doSearch");
+                            SCFailLog err =  makeNoResultFailLog(url, "doSearch");
                             listener.onGetAlbumsFailed(err);
                         }
                     }
 
                 } catch (IOException e) {
                     if(listener != null) {
-                        SCFailLog err =  makeJsonFailLog(url,"doSearch",e);
+                        SCFailLog err =  makeFatalFailLog(url, "doSearch", e);
                         listener.onGetAlbumsFailed(err);
                     }
                     e.printStackTrace();
@@ -277,7 +283,7 @@ public class SohuApi extends BaseSiteApi {
                     }
                 } catch (Exception e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url, "doGetAlbumVideos", e);
+                        SCFailLog err = makeFatalFailLog(url, "doGetAlbumVideos", e);
                         listener.onGetVideosFailed(err);
                     }
                     e.printStackTrace();
@@ -289,24 +295,32 @@ public class SohuApi extends BaseSiteApi {
 
 
     private void fillAlbumDesc(String url, SCAlbum album, Album sohuAlbum, OnGetAlbumDescListener listener) {
-        if(sohuAlbum.getData() != null) {
-            //album.setVideosCount(sohuAlbum.getData().getLatestVideoCount());
-            //TotalVideoCount is 0 sometimes, use latestVideoCount instead.
-            if (sohuAlbum.getData().getLatestVideoCount() > 0)
-                album.setVideosTotal(sohuAlbum.getData().getLatestVideoCount());
-            else
-                album.setVideosTotal(sohuAlbum.getData().getTotalVideoCount());
+        try {
+            if (sohuAlbum.getData() != null) {
+                //album.setVideosCount(sohuAlbum.getData().getLatestVideoCount());
+                //TotalVideoCount is 0 sometimes, use latestVideoCount instead.
+                if (sohuAlbum.getData().getLatestVideoCount() > 0)
+                    album.setVideosTotal(sohuAlbum.getData().getLatestVideoCount());
+                else
+                    album.setVideosTotal(sohuAlbum.getData().getTotalVideoCount());
 
-            album.setDesc(sohuAlbum.getData().getAlbumDesc());
-            album.setMainActor(sohuAlbum.getData().getMainActor());
-            album.setDirector(sohuAlbum.getData().getDirector());
-            if(listener != null)
-                listener.onGetAlbumDescSuccess(album);
-        } else {
-            if(listener != null) {
-                SCFailLog err = makeJsonFailLog(url,"fillAlbumDesc");
+                album.setDesc(sohuAlbum.getData().getAlbumDesc());
+                album.setMainActor(sohuAlbum.getData().getMainActor());
+                album.setDirector(sohuAlbum.getData().getDirector());
+                if (listener != null)
+                    listener.onGetAlbumDescSuccess(album);
+            } else {
+                if (listener != null) {
+                    SCFailLog err = makeNoResultFailLog(url, "fillAlbumDesc");
+                    listener.onGetAlbumDescFailed(err);
+                }
+            }
+        } catch (Exception e) {
+            if (listener != null) {
+                SCFailLog err = makeFatalFailLog(url, "fillAlbumDesc");
                 listener.onGetAlbumDescFailed(err);
             }
+
         }
     }
 
@@ -378,14 +392,14 @@ public class SohuApi extends BaseSiteApi {
                     }
                     else {
                         if(listener != null) {
-                            SCFailLog err = makeJsonFailLog(url,"doGetChannelAlbumsByUrl");
+                            SCFailLog err = makeNoResultFailLog(url, "doGetChannelAlbumsByUrl");
                             listener.onGetAlbumsFailed(err);
                         }
                     }
 
                 } catch (IOException e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"doGetChannelAlbumsByUrl",e);
+                        SCFailLog err = makeFatalFailLog(url, "doGetChannelAlbumsByUrl", e);
                         listener.onGetAlbumsFailed(err);
                     }
                     e.printStackTrace();
@@ -474,7 +488,7 @@ public class SohuApi extends BaseSiteApi {
                     }
                 } catch (JSONException e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"doGetChannelFilter",e);
+                        SCFailLog err = makeFatalFailLog(url, "doGetChannelFilter", e);
                         listener.onGetChannelFilterFailed(err);
                     }
 

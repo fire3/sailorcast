@@ -2,7 +2,6 @@ package com.crixmod.sailorcast.siteapi;
 
 import android.util.Base64;
 
-import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
@@ -25,7 +24,6 @@ import com.squareup.okhttp.Response;
 import com.decapi.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -185,8 +183,8 @@ public class YouKuApi extends BaseSiteApi {
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName, Exception e) {
-        SCFailLog err = new SCFailLog(SCSite.YOUKU,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName, Exception e) {
+        SCFailLog err = new SCFailLog(SCSite.YOUKU,SCFailLog.TYPE_FATAL_ERR);
         err.setException(e);
         err.setFunctionName(functionName);
         err.setClassName("YoukuApi");
@@ -195,8 +193,17 @@ public class YouKuApi extends BaseSiteApi {
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName) {
-        SCFailLog err = new SCFailLog(SCSite.YOUKU,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.YOUKU,SCFailLog.TYPE_FATAL_ERR);
+        err.setFunctionName(functionName);
+        err.setClassName("YoukuApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
+
+    private SCFailLog makeNoResultFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.YOUKU,SCFailLog.TYPE_NO_RESULT);
         err.setFunctionName(functionName);
         err.setClassName("YoukuApi");
         err.setTag(TAG);
@@ -346,19 +353,19 @@ public class YouKuApi extends BaseSiteApi {
                                     listener.onGetAlbumsSuccess(albums);
                             }
                             else {
-                                SCFailLog err = makeJsonFailLog(searchUrl, "doSearch");
+                                SCFailLog err = makeNoResultFailLog(searchUrl, "doSearch");
                                 if(listener != null)
                                     listener.onGetAlbumsFailed(err);
                             }
                         }
                         else {
 
-                            SCFailLog err = makeJsonFailLog(searchUrl,"doSearch");
+                            SCFailLog err = makeNoResultFailLog(searchUrl, "doSearch");
                             if(listener != null)
                                 listener.onGetAlbumsFailed(err);
                         }
                     } catch (IOException e) {
-                        SCFailLog err = makeJsonFailLog(searchUrl,"doSearch",e);
+                        SCFailLog err = makeFatalFailLog(searchUrl, "doSearch", e);
                         if(listener != null)
                             listener.onGetAlbumsFailed(err);
                         e.printStackTrace();
@@ -454,7 +461,7 @@ public class YouKuApi extends BaseSiteApi {
                         album.setVideosTotal(0);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    SCFailLog err = makeJsonFailLog(url, "getAlbumUpdateVideosCount");
+                    SCFailLog err = makeFatalFailLog(url, "getAlbumUpdateVideosCount");
                     err.setReason(album.toJson());
                     if(listener != null) {
                         listener.onGetAlbumDescFailed(err);
@@ -560,7 +567,7 @@ public class YouKuApi extends BaseSiteApi {
                         listener.onGetVideosSuccess(scVideos);
                 }
                 else {
-                    SCFailLog err = makeJsonFailLog(url, "doGetAlbumVideos");
+                    SCFailLog err = makeNoResultFailLog(url, "doGetAlbumVideos");
                     err.setReason(ret);
                     if(listener != null)
                         listener.onGetVideosFailed(err);
@@ -724,7 +731,7 @@ public class YouKuApi extends BaseSiteApi {
                                     listener.onGetVideoPlayUrlHigh(video, video.getM3U8Super());
                             }
                         } catch (Exception e) {
-                            SCFailLog err = makeJsonFailLog(url, "doGetVideoPlayUrl", e);
+                            SCFailLog err = makeFatalFailLog(url, "doGetVideoPlayUrl", e);
                             err.setReason(video.toJson());
                             if(listener != null)
                                 listener.onGetVideoPlayUrlFailed(err);
@@ -753,7 +760,7 @@ public class YouKuApi extends BaseSiteApi {
                         listener.onGetAlbumsSuccess(albums);
                 } else {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"doGetChannelAlbumsByUrl");
+                        SCFailLog err = makeNoResultFailLog(url, "doGetChannelAlbumsByUrl");
                         err.setReason(ret);
                         listener.onGetAlbumsFailed(err);
                     }
@@ -881,7 +888,7 @@ public class YouKuApi extends BaseSiteApi {
                     }
                 } catch (Exception e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"doGetChannelFilter",e);
+                        SCFailLog err = makeFatalFailLog(url, "doGetChannelFilter", e);
                         listener.onGetChannelFilterFailed(err);
                     }
                     e.printStackTrace();

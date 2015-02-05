@@ -1,7 +1,5 @@
 package com.crixmod.sailorcast.siteapi;
 
-import android.util.Log;
-
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -18,7 +16,6 @@ import com.crixmod.sailorcast.utils.MD5;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.umeng.analytics.MobclickAgent;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
@@ -218,8 +215,8 @@ public class LetvApi extends BaseSiteApi{
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName, Exception e) {
-        SCFailLog err = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName, Exception e) {
+        SCFailLog err = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_FATAL_ERR);
         err.setException(e);
         err.setFunctionName(functionName);
         err.setClassName("LetvApi");
@@ -228,14 +225,24 @@ public class LetvApi extends BaseSiteApi{
         return err;
     }
 
-    private SCFailLog makeJsonFailLog(String url, String functionName) {
-        SCFailLog err = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_JSON_ERR);
+    private SCFailLog makeFatalFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_FATAL_ERR);
         err.setFunctionName(functionName);
         err.setClassName("LetvApi");
         err.setTag(TAG);
         err.setUrl(url);
         return err;
     }
+
+    private SCFailLog makeNoResultFailLog(String url, String functionName) {
+        SCFailLog err = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_NO_RESULT);
+        err.setFunctionName(functionName);
+        err.setClassName("LetvApi");
+        err.setTag(TAG);
+        err.setUrl(url);
+        return err;
+    }
+
 
     @Override
     public void doSearch(String key, final OnGetAlbumsListener listener) {
@@ -260,7 +267,7 @@ public class LetvApi extends BaseSiteApi{
                             listener.onGetAlbumsSuccess(albums);
                     } else {
                         if(listener != null) {
-                            SCFailLog err = makeJsonFailLog(url,"doSearch");
+                            SCFailLog err = makeNoResultFailLog(url, "doSearch");
                             listener.onGetAlbumsFailed(err);
                         }
                     }
@@ -338,26 +345,26 @@ public class LetvApi extends BaseSiteApi{
                             }
                             else {
                                 if(listener!=null) {
-                                    SCFailLog err = makeJsonFailLog(url,"doGetAlbumVideos");
+                                    SCFailLog err = makeNoResultFailLog(url, "doGetAlbumVideos");
                                     err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                                     listener.onGetVideosFailed(err);
                                 }
                             }
                         }
                         if(listener!=null) {
-                            SCFailLog err = makeJsonFailLog(url,"doGetAlbumVideos");
+                            SCFailLog err = makeNoResultFailLog(url, "doGetAlbumVideos");
                             err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                             listener.onGetVideosFailed(err);
                         }
                     }
                     if(listener!=null) {
-                        SCFailLog err = makeJsonFailLog(url,"doGetAlbumVideos");
+                        SCFailLog err = makeNoResultFailLog(url, "doGetAlbumVideos");
                         err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                         listener.onGetVideosFailed(err);
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"doGetAlbumVideos");
+                        SCFailLog err = makeFatalFailLog(url, "doGetAlbumVideos");
                         err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                         err.setException(e);
                         listener.onGetVideosFailed(err);
@@ -428,14 +435,14 @@ public class LetvApi extends BaseSiteApi{
                     listener.onGetAlbumDescSuccess(album);
             } else {
                 if(listener != null) {
-                    SCFailLog err = makeJsonFailLog(url,"doGetAlbumDesc");
+                    SCFailLog err = makeNoResultFailLog(url, "doGetAlbumDesc");
                     err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                     listener.onGetAlbumDescFailed(err);
                 }
             }
         } catch (Exception e) {
             if(listener != null) {
-                SCFailLog err = makeJsonFailLog(url,"doGetAlbumDesc");
+                SCFailLog err = makeFatalFailLog(url, "doGetAlbumDesc");
                 err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                 err.setException(e);
                 listener.onGetAlbumDescFailed(err);
@@ -503,7 +510,7 @@ public class LetvApi extends BaseSiteApi{
 
                 } catch (Exception e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(jumpLink, "getRealLink", e);
+                        SCFailLog err = makeFatalFailLog(jumpLink, "getRealLink", e);
                         err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                         listener.onGetVideoPlayUrlFailed(err);
                     }
@@ -589,7 +596,7 @@ public class LetvApi extends BaseSiteApi{
 
                     } catch (Exception e) {
                         if(listener != null) {
-                            SCFailLog err = makeJsonFailLog(url, "doGetVideoPlayUrl", e);
+                            SCFailLog err = makeFatalFailLog(url, "doGetVideoPlayUrl", e);
                             err.setReason(SailorCast.getResource().getString(R.string.err_wrong_data));
                             listener.onGetVideoPlayUrlFailed(err);
                         }
@@ -663,7 +670,7 @@ public class LetvApi extends BaseSiteApi{
                         listener.onGetAlbumsSuccess(albums);
                 } else {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url,"getAlbumsByUrl");
+                        SCFailLog err = makeNoResultFailLog(url, "getAlbumsByUrl");
                         err.setReason(SailorCast.getResource().getString(R.string.fail_reason_no_results));
                         listener.onGetAlbumsFailed(err);
                     }
@@ -747,7 +754,7 @@ public class LetvApi extends BaseSiteApi{
                     }
                 } catch (Exception e) {
                     if(listener != null) {
-                        SCFailLog err = makeJsonFailLog(url, "doGetChannelFilter", e);
+                        SCFailLog err = makeFatalFailLog(url, "doGetChannelFilter", e);
                         listener.onGetChannelFilterFailed(err);
                     }
                     e.printStackTrace();
