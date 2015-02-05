@@ -76,7 +76,7 @@ public class SiteApi {
     }
 
     public static int getSupportSiteNumber() {
-        return 3;
+        return 4;
     }
 
     public static String getSiteName(int siteID, Context mContext) {
@@ -86,6 +86,8 @@ public class SiteApi {
             return mContext.getResources().getString(R.string.site_letv);
         if(siteID == SCSite.SOHU)
             return mContext.getResources().getString(R.string.site_sohu);
+        if(siteID == SCSite.IQIYI)
+            return mContext.getResources().getString(R.string.site_iqiyi);
         return null;
     }
 
@@ -97,6 +99,8 @@ public class SiteApi {
             new YouKuApi().doGetChannelAlbumsByFilter(new SCChannel(channelID),pageNo,pageSize,filter,listener);
         if(siteID == SCSite.SOHU)
             new SohuApi().doGetChannelAlbumsByFilter(new SCChannel(channelID),pageNo,pageSize,filter,listener);
+        if(siteID == SCSite.IQIYI)
+            new IqiyiApi().doGetChannelAlbumsByFilter(new SCChannel(channelID),pageNo,pageSize,filter,listener);
 
     }
     public static void doGetChannelAlbums(int siteID, int channelID, int pageNo, int pageSize, OnGetAlbumsListener listener) {
@@ -106,6 +110,8 @@ public class SiteApi {
             new YouKuApi().doGetChannelAlbums(new SCChannel(channelID),pageNo,pageSize,listener);
         if(siteID == SCSite.SOHU)
             new SohuApi().doGetChannelAlbums(new SCChannel(channelID),pageNo,pageSize,listener);
+        if(siteID == SCSite.IQIYI)
+            new IqiyiApi().doGetChannelAlbums(new SCChannel(channelID),pageNo,pageSize,listener);
 
     }
 
@@ -117,6 +123,8 @@ public class SiteApi {
             new YouKuApi().doGetChannelFilter(new SCChannel(channelID),listener);
         if(siteID == SCSite.SOHU)
             new SohuApi().doGetChannelFilter(new SCChannel(channelID),listener);
+        if(siteID == SCSite.IQIYI)
+            new IqiyiApi().doGetChannelFilter(new SCChannel(channelID),listener);
     }
 
 

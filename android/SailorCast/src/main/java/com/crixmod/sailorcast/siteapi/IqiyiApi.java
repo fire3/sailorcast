@@ -1,8 +1,5 @@
 package com.crixmod.sailorcast.siteapi;
 
-import android.content.Context;
-import android.support.v4.app.ListFragment;
-import android.util.Base64;
 import android.util.Log;
 
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -14,7 +11,6 @@ import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.utils.HttpUtils;
-import com.crixmod.sailorcast.utils.MD5;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -23,21 +19,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.UUID;
-import java.util.zip.GZIPInputStream;
 
 /**
  * Created by fire3 on 15-2-3.
@@ -45,14 +35,14 @@ import java.util.zip.GZIPInputStream;
 public class IqiyiApi extends BaseSiteApi {
 
     private final static String TAG = "IqiyiApi";
-    public static final int GALAXY_SECRET_KEY_ONE = 1111111727;
-    public static final String GALAXY_SECRET_KEY_TWO = "D9g6XYm(B-:o1nu|";
-    public static final int MORE_SECRET_KEY_ONE = 1100016699;
-    public static final String MORE_SECRET_KEY_TWO = "m)*ra772e";
-    public static final int NEXT_SECRET_KEY_ONE = 1770021100;
-    public static final String NEXT_SECRET_KEY_TWO = "m9192nck:_77";
-    public static final int PLAY_SECRET_KEY_ONE = 1121111727;
-    public static final String PLAY_SECRET_KEY_TWO = ",rI1:?CJczS3AwJ$";
+    private static final int GALAXY_SECRET_KEY_ONE = 1111111727;
+    private static final String GALAXY_SECRET_KEY_TWO = "D9g6XYm(B-:o1nu|";
+    private static final int MORE_SECRET_KEY_ONE = 1100016699;
+    private static final String MORE_SECRET_KEY_TWO = "m)*ra772e";
+    private static final int NEXT_SECRET_KEY_ONE = 1770021100;
+    private static final String NEXT_SECRET_KEY_TWO = "m9192nck:_77";
+    private static final int PLAY_SECRET_KEY_ONE = 1121111727;
+    private static final String PLAY_SECRET_KEY_TWO = ",rI1:?CJczS3AwJ$";
 
 
     private final static int CID_MOVIE = 1;
@@ -76,9 +66,36 @@ public class IqiyiApi extends BaseSiteApi {
     private final static String ALBUM_VIDEOS_NEBULA_FORMAT = "http://iface2.iqiyi.com/php/xyz/entry/nebula.php?key=" +
             "317e617581c95c3e8a996f8bff69607b&version=5.3.1&uniqid=%s&platform=GPad&block=0&w=1&compat=1&other=1&v5=1&ad_str=1&many_id=%s_0_";
 
-    private  Hashtable<String, String> getSignedHeader(String paramString)
-    {
-        return getSignedHeader(paramString, 1111111727, "D9g6XYm(B-:o1nu|");
+    private final static String CHANNEL_ALBUMS_FORMAT = "http://iface2.iqiyi.com/php/xyz/entry/galaxy.php?" +
+            "key=317e617581c95c3e8a996f8bff69607b&version=5.3.1&category_id=%s&" +
+            "f_ps=10&s=6&pn=%d&ps=%d&pcat=2&hwd=1&v5=1&compat=1&platform=GPad&f=1&uniqid=%s";
+
+    private String getDefaultChannelUrl(SCChannel channel, int pageNo, int pageSize) {
+        String url = null;
+        switch (channel.getChannelID()) {
+            case SCChannel.MOVIE:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"1,0~0~0~120002",pageNo,pageSize,genUUID());
+                break;
+            case SCChannel.SHOW:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"2,0~0~0",pageNo,pageSize,genUUID());
+                break;
+            case SCChannel.COMIC:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"4,0~0~0",pageNo,pageSize,genUUID());
+                break;
+            case SCChannel.VARIETY:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"6,0~0",pageNo,pageSize,genUUID());
+                break;
+            case SCChannel.DOCUMENTARY:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"3,0",pageNo,pageSize,genUUID());
+                break;
+            case SCChannel.MUSIC:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"5,0~0~0",pageNo,pageSize,genUUID());
+                break;
+            case SCChannel.SPORT:
+                url = String.format(CHANNEL_ALBUMS_FORMAT,"17,0~0",pageNo,pageSize,genUUID());
+                break;
+        }
+        return url;
     }
 
     private  Hashtable<String, String> getSignedHeader(String paramString1, int paramInt, String paramString2)
@@ -238,12 +255,11 @@ public class IqiyiApi extends BaseSiteApi {
     }
 
     private Hashtable<String, String> getGalaxyHeader() {
-        Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY);
-        return head;
+        return getSignedHeader(IQIYI_MKEY, GALAXY_SECRET_KEY_ONE, GALAXY_SECRET_KEY_TWO);
     }
 
     private Hashtable<String, String> getNebulaHeader() {
-        Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY,0x42d2ceaf,",rI1:?CJczS3AwJ$");
+        Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY,PLAY_SECRET_KEY_ONE,PLAY_SECRET_KEY_TWO);
         return head;
     }
 
@@ -322,7 +338,7 @@ public class IqiyiApi extends BaseSiteApi {
     }
 
     private void doGetAlbumVideosNebulaMethod(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
-             String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
+        String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
         Hashtable<String, String> head = getNebulaHeader();
 
         Request request = new Request.Builder().url(url)
@@ -352,6 +368,7 @@ public class IqiyiApi extends BaseSiteApi {
                     v.setHorPic(tvJson.optString("_img"));
                     v.setVideoID(tvJson.optString("_id"));
                     v.setIqiyiVid(tvJson.optString("_v"));
+                    Log.d("fire3",tvJson.toString());
 
                     /*
                     JSONArray resJson = tvJson.optJSONArray("res");
@@ -389,9 +406,43 @@ public class IqiyiApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetAlbumDesc(SCAlbum album, OnGetAlbumDescListener listener) {
-        if(listener!=null)
-            listener.onGetAlbumDescSuccess(album);
+    public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
+
+        String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
+        Hashtable<String, String> head = getNebulaHeader();
+
+        Request request = new Request.Builder().url(url)
+                //.addHeader("Accept-Encoding", "gzip")
+                .addHeader("t", head.get("t"))
+                .addHeader("sign",head.get("sign"))
+                .build();
+        HttpUtils.asyncGet(request,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+
+                    album.setDesc(retJson.optString("desc"));
+                    album.setDirector(retJson.optString("_da"));
+                    album.setMainActor(retJson.optString("_ma"));
+                    if(listener != null) {
+                        listener.onGetAlbumDescSuccess(album);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+
     }
 
     private String genUUID() {
@@ -517,7 +568,107 @@ public class IqiyiApi extends BaseSiteApi {
     }
 
     @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, OnGetAlbumsListener listener) {
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getDefaultChannelUrl(channel,pageNo,pageSize);
+        if(url == null) {
+            return;
+        }
+        Hashtable<String, String> head = getGalaxyHeader();
+
+        Request request = new Request.Builder().url(url)
+                //.addHeader("Accept-Encoding", "gzip")
+                .addHeader("t", head.get("t"))
+                .addHeader("sign",head.get("sign"))
+                .build();
+
+        HttpUtils.asyncGet(request,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONArray albumIdList = retJson.optJSONArray("albumIdList").getJSONObject(0).optJSONArray("idlist");
+                    JSONObject albumArray = retJson.optJSONObject("albumArray");
+                    SCAlbums albums = new SCAlbums();
+                    for (int i = 0; i < albumIdList.length(); i++) {
+                        String id = albumIdList.optString(i);
+                        JSONObject albumJson = albumArray.optJSONObject(id);
+                        SCAlbum album = new SCAlbum(SCSite.IQIYI);
+
+                        String albumID = albumJson.optString("_id");
+                        album.setAlbumId(albumID);
+
+                        String title = albumJson.optString("_t");
+                        album.setTitle(title);
+
+                        String h1Image = albumJson.optString("h1_img");
+                        String h2Image = albumJson.optString("h2_img");
+                        String h3Image = albumJson.optString("h3_img");
+                        if(h1Image != null && !h1Image.isEmpty())
+                            album.setVerImageUrl(h1Image);
+                        else if(h2Image != null && !h2Image.isEmpty())
+                            album.setVerImageUrl(h2Image);
+                        else if(h3Image != null && !h3Image.isEmpty())
+                            album.setVerImageUrl(h3Image);
+
+                        String v1Image = albumJson.optString("v1_img");
+                        String v2Image = albumJson.optString("v2_img");
+                        String v3Image = albumJson.optString("v3_img");
+                        if(v1Image != null && !v1Image.isEmpty())
+                            album.setHorImageUrl(v1Image);
+                        else if(v2Image != null && !v2Image.isEmpty())
+                            album.setHorImageUrl(v2Image);
+                        else if(v3Image != null && !v3Image.isEmpty())
+                            album.setHorImageUrl(v3Image);
+
+                        String tip = albumJson.optString("tvfcs");
+                        album.setTip(tip);
+
+                        JSONArray cast = albumJson.optJSONArray("cast");
+                        String actors = "";
+                        for (int j = 0; j < cast.length(); j++) {
+                            String name = cast.getJSONObject(j).optString("name");
+                           actors = actors + name + " ";
+                        }
+                        if(!actors.isEmpty())
+                            album.setMainActor(actors);
+
+                        JSONArray director = albumJson.optJSONArray("director");
+                        String directors = "";
+                        for (int j = 0; j < director.length(); j++) {
+                            String name = director.getJSONObject(j).optString("name");
+                            directors = directors + name + " ";
+                        }
+                        if(!directors.isEmpty())
+                            album.setDirector(directors);
+
+                        //p_s 是更新的剧集数目，在电影频道时可能为0。
+                        int p_s =  albumJson.optInt("p_s");
+                        album.setVideosTotal(p_s);
+                        if(p_s == 0) {
+                            int _tvs = albumJson.optInt("_tvs");
+                            album.setVideosTotal(_tvs);
+                        }
+                        Log.d("fire3",album.toJson());
+
+                        albums.add(album);
+                    }
+                    if(albums.size() > 0) {
+                        if(listener != null) {
+                            listener.onGetAlbumsSuccess(albums);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
     }
 

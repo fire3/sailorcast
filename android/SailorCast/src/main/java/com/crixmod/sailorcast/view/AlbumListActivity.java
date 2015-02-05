@@ -143,6 +143,8 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
                     mSiteID = SCSite.SOHU;
                 if(position == 1)
                     mSiteID = SCSite.LETV;
+                if(position == 2)
+                    mSiteID = SCSite.IQIYI;
             }
             else
                 mSiteID = position;

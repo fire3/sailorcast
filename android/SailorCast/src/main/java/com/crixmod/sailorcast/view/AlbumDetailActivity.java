@@ -68,16 +68,18 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAlbum = getIntent().getParcelableExtra("album");
-        mInitialVideoNoInAlbum = getIntent().getIntExtra("videoNo",0);
+        mInitialVideoNoInAlbum = getIntent().getIntExtra("videoNo", 0);
         mIsShowTitle = getIntent().getBooleanExtra("showTitle",false);
-        SiteApi.doGetAlbumDesc(mAlbum, this);
         findViews();
         setTitle(mAlbum.getTitle());
         mBookmarkDb = new BookmarkDbHelper(this);
         mHistoryDb = new HistoryDbHelper(this);
         mIsFav =  mBookmarkDb.getAlbumById(mAlbum.getAlbumId(),mAlbum.getSite().getSiteID()) != null;
-
+        SiteApi.doGetAlbumDesc(mAlbum, this);
     }
+
+
+
 
 
     @Override
