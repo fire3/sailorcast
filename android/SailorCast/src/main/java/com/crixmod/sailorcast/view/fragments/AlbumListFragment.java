@@ -9,8 +9,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
@@ -39,6 +41,7 @@ public class AlbumListFragment extends Fragment implements
     private int mChannelID;
     private int mSiteID;
     private PagingGridView mGridView;
+    private TextView mEmptyView;
     private int mPageNo = 0;
     private int mPageSize = 30;
     private AlbumListAdapter mAdapter;
@@ -101,7 +104,10 @@ public class AlbumListFragment extends Fragment implements
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
+        mEmptyView = (TextView) view.findViewById(android.R.id.empty);
+        mEmptyView.setText(getResources().getString(R.string.loading));
 
+        mGridView.setEmptyView(mEmptyView);
         mGridView.setNumColumns(mColumns);
         mGridView.setAdapter(mAdapter);
         mGridView.setHasMoreItems(true);
@@ -176,7 +182,11 @@ public class AlbumListFragment extends Fragment implements
                         if (mGridView != null) {
                             mGridView.setIsLoading(false);
                             mGridView.setHasMoreItems(false);
+                            mEmptyView.setText(getResources().getString(R.string.album_no_videos));
                         }
+
+                        if (mSwipeContainer != null)
+                            mSwipeContainer.setRefreshing(false);
                     }
                 });
             }
@@ -231,6 +241,7 @@ public class AlbumListFragment extends Fragment implements
             mAdapter.setColumns(mColumns);
         }
         mGridView.setAdapter(mAdapter);
+        mEmptyView.setText(getResources().getString(R.string.loading));
         loadMoreAlbums();
     }
 }

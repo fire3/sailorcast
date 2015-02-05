@@ -755,7 +755,7 @@ public class YouKuApi extends BaseSiteApi {
             public void onResponse(Response response) throws IOException {
                 String ret = response.body().string();
                 SCAlbums albums =  parseAlbumListResult(ret);
-                if(albums != null) {
+                if(albums != null && albums.size() > 0) {
                     if(listener != null)
                         listener.onGetAlbumsSuccess(albums);
                 } else {

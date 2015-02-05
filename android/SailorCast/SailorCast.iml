@@ -86,6 +86,7 @@
     <orderEntry type="library" exported="" name="jetty-server-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="okio-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="analytics-5.4.1" level="project" />
     <orderEntry type="library" exported="" name="commons-lang-2.6" level="project" />
     <orderEntry type="library" exported="" name="umeng-update-v2.5.0" level="project" />
     <orderEntry type="library" exported="" name="seamless-swing-1.1.0" level="project" />
@@ -93,7 +94,6 @@
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="jetty-security-8.1.12.v20130726" level="project" />
     <orderEntry type="library" exported="" name="okhttp-urlconnection-2.1.0" level="project" />
-    <orderEntry type="library" exported="" name="analytics-5.2.4" level="project" />
     <orderEntry type="library" exported="" name="cling-core-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="javax.servlet-3.0.0.v201112011016" level="project" />
     <orderEntry type="library" exported="" name="jetty-http-8.1.12.v20130726" level="project" />
