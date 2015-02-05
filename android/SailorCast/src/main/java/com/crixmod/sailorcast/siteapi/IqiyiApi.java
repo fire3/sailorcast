@@ -6,6 +6,7 @@ import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
+import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -69,6 +71,8 @@ public class IqiyiApi extends BaseSiteApi {
     private final static String CHANNEL_ALBUMS_FORMAT = "http://iface2.iqiyi.com/php/xyz/entry/galaxy.php?" +
             "key=317e617581c95c3e8a996f8bff69607b&version=5.3.1&category_id=%s&" +
             "f_ps=10&s=6&pn=%d&ps=%d&pcat=2&hwd=1&v5=1&compat=1&platform=GPad&f=1&uniqid=%s";
+
+    private final static String CHANNEL_FILTER_URL = "http://iface2.iqiyi.com/st/nav/1.2.json";
 
     private String getDefaultChannelUrl(SCChannel channel, int pageNo, int pageSize) {
         String url = null;
@@ -269,7 +273,6 @@ public class IqiyiApi extends BaseSiteApi {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                Log.d("fire3","onFailure");
             }
 
             @Override
@@ -368,7 +371,6 @@ public class IqiyiApi extends BaseSiteApi {
                     v.setHorPic(tvJson.optString("_img"));
                     v.setVideoID(tvJson.optString("_id"));
                     v.setIqiyiVid(tvJson.optString("_v"));
-                    Log.d("fire3",tvJson.toString());
 
                     /*
                     JSONArray resJson = tvJson.optJSONArray("res");
@@ -514,7 +516,6 @@ public class IqiyiApi extends BaseSiteApi {
                         for (int i = 0; i < vs.length(); i++) {
                             JSONObject v = vs.getJSONObject(i);
                             int bid = v.optInt("bid");
-                            Log.d("fire3",String.format("found bid:%d index:%d",bid,i));
                             bids[i] = bid;
                             bidMap.put(bid, i);
                         }
@@ -567,13 +568,8 @@ public class IqiyiApi extends BaseSiteApi {
         });
     }
 
-    @Override
-    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
-        String url = getDefaultChannelUrl(channel,pageNo,pageSize);
-        if(url == null) {
-            return;
-        }
-        Hashtable<String, String> head = getGalaxyHeader();
+    public void getChannelAlbumsByUrl(String url, final OnGetAlbumsListener listener) {
+                Hashtable<String, String> head = getGalaxyHeader();
 
         Request request = new Request.Builder().url(url)
                 //.addHeader("Accept-Encoding", "gzip")
@@ -654,7 +650,6 @@ public class IqiyiApi extends BaseSiteApi {
                             int _tvs = albumJson.optInt("_tvs");
                             album.setVideosTotal(_tvs);
                         }
-                        Log.d("fire3",album.toJson());
 
                         albums.add(album);
                     }
@@ -669,16 +664,148 @@ public class IqiyiApi extends BaseSiteApi {
 
             }
         });
+    }
+    @Override
+    public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
+        String url = getDefaultChannelUrl(channel,pageNo,pageSize);
+        if(url == null) {
+            return;
+        }
+        getChannelAlbumsByUrl(url,listener);
+    }
 
+
+    private String getAlbumListUrlByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter) {
+        String filterString = "" + channelToCateID(channel) + ",";
+        ArrayList<SCChannelFilterItem> items = filter.getSelectedItems();
+        int[] keys = new int[items.size()];
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        for (int i = 0; i < items.size(); i++) {
+            SCChannelFilterItem item = items.get(i);
+            int searchKey = Integer.parseInt(item.getSearchKey());
+            keys[i] = searchKey;
+            map.put(searchKey,i);
+        }
+
+        Arrays.sort(keys);
+        for (int i = 0; i < keys.length; i++) {
+            int pos = map.get(keys[i]);
+            SCChannelFilterItem item = items.get(pos);
+            if(item.getSearchVal() != null)
+                filterString = filterString + item.getSearchVal() + "~";
+        }
+
+        // delete last "~"
+        if (filterString.length() > 0 && filterString.charAt(filterString.length()-1)=='~') {
+            filterString = filterString.substring(0, filterString.length()-1);
+        }
+
+        return String.format(CHANNEL_ALBUMS_FORMAT,filterString,pageNo,pageSize,genUUID());
     }
 
     @Override
     public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
+        String url = getAlbumListUrlByFilter(channel,pageNo,pageSize,filter);
+        getChannelAlbumsByUrl(url,listener);
 
+    }
+
+    private int channelToCateID(SCChannel channel) {
+        switch (channel.getChannelID()) {
+            case SCChannel.SPORT:
+                return CID_SPORT;
+            case SCChannel.MOVIE:
+                return CID_MOVIE;
+            case SCChannel.MUSIC:
+                return CID_MUSIC;
+            case SCChannel.DOCUMENTARY:
+                return CID_DOCUMENTARY;
+            case SCChannel.VARIETY:
+                return CID_VARIETY;
+            case SCChannel.COMIC:
+                return CID_COMIC;
+            case SCChannel.SHOW:
+                return CID_SHOW;
+        }
+        return 0;
     }
 
     @Override
-    public void doGetChannelFilter(SCChannel channel, OnGetChannelFilterListener listener) {
+    public void doGetChannelFilter(final SCChannel channel, final OnGetChannelFilterListener listener) {
+        String url = CHANNEL_FILTER_URL;
+
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONArray retJson =  new JSONArray(ret);
+                    for (int i = 0; i < retJson.length(); i++) {
+                        JSONArray catList = retJson.getJSONObject(i).optJSONArray("cateList");
+                        for (int j = 0; j < catList.length(); j++) {
+                            JSONObject cateJson =  catList.getJSONObject(j);
+                            String cat = cateJson.optString("catId");
+                            int catId =  Integer.parseInt(cat);
+                            int cid = channelToCateID(channel);
+                            if(catId == cid) {
+                                JSONArray subList = cateJson.optJSONArray("subList");
+                                SCChannelFilter filter = new SCChannelFilter();
+
+                                for (int k = 0; k < subList.length(); k++) {
+
+                                    ArrayList<SCChannelFilterItem> items = new ArrayList<SCChannelFilterItem>();
+
+                                    String subID = subList.getJSONObject(k).getString("subId");
+                                    String subName = subList.getJSONObject(k).getString("subName");
+
+                                    JSONArray leafList = subList.getJSONObject(k).getJSONArray("leafList");
+                                    for (int l = 0; l < leafList.length() ; l++) {
+                                        if(subID.equals("7") && subName.equals("是否付费")) {
+                                            String leafName = leafList.getJSONObject(l).optString("leafName");
+                                            String leafKey = leafList.getJSONObject(l).optString("leafId");
+                                            if(leafName.equals("免费")) {
+                                                SCChannelFilterItem item = new SCChannelFilterItem(leafKey, leafName);
+                                                item.setSearchKey(""+k);
+                                                item.setParentKey(""+k);
+                                                items.add(item);
+                                            }
+                                        } else {
+                                            String leafName = leafList.getJSONObject(l).optString("leafName");
+                                            String leafKey = leafList.getJSONObject(l).optString("leafId");
+                                            SCChannelFilterItem item = new SCChannelFilterItem(leafKey, leafName);
+                                            item.setSearchKey(""+k);
+                                            item.setParentKey(""+k);
+                                            items.add(item);
+                                        }
+
+                                    }
+
+                                    filter.addFilter(""+k,items);
+                                }
+
+                                if(listener != null) {
+                                    Log.d("fire3",filter.toJson());
+                                    listener.onGetChannelFilterSuccess(filter);
+                                }
+
+                            }
+                        }
+                    }
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
+
 }
