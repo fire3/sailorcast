@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.1.3.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_facebook_1.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_facebook_2.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_instagram.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_laiwang_1.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_laiwang_2.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_QQZone_1.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_QQZone_2.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_Scrshot_Lib.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_Shake_Lib.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_tencentWB_1.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_tencentWB_2.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_WeiXin.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_yixin_1.jar"/>
+	<classpathentry kind="lib" path="libs/SocialSDK_yixin_2.jar"/>
+	<classpathentry kind="lib" path="libs/umeng_social_sdk.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
