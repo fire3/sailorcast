@@ -28,6 +28,8 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/beans.xml'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
     productFlavors {
     }
@@ -62,4 +64,5 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile project(path: ':decapi')
     compile files('libs/umeng-update-v2.5.0.jar')
+    compile project(':social_sdk_library_project')
 }

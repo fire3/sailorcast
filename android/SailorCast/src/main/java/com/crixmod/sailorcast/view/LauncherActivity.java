@@ -10,11 +10,20 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.fragments.CompassFragment;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.media.UMImage;
 import com.umeng.update.UmengUpdateAgent;
 
 public class LauncherActivity extends BaseToolbarActivity {
 
     private CompassFragment mFragment;
+
+    // 首先在您的Activity中添加如下成员变量
+    final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
+// 设置分享内容
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +37,16 @@ public class LauncherActivity extends BaseToolbarActivity {
         ft.commit();
         getFragmentManager().executePendingTransactions();
         MobclickAgent.updateOnlineConfig(this);
+
+        //社会化分享
+        mController.setShareContent("友盟社会化组件（SDK）让移动应用快速整合社交分享功能，http://www.umeng.com/social");
+// 设置分享图片, 参数2为图片的url地址
+        mController.setShareMedia(new UMImage(this,
+                "http://www.umeng.com/images/pic/banner_module_social.png"));
+
+        mController.getConfig().removePlatform( SHARE_MEDIA.RENREN, SHARE_MEDIA.DOUBAN);
+
+        mController.openShare(this, false);
     }
 
     @Override

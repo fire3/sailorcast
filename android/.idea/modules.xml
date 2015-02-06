@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/SailorCast/SailorCast.iml" filepath="$PROJECT_DIR$/SailorCast/SailorCast.iml" />
       <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/decapi/decapi.iml" filepath="$PROJECT_DIR$/decapi/decapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/social_sdk_library_project/social_sdk_library_project.iml" filepath="$PROJECT_DIR$/social_sdk_library_project/social_sdk_library_project.iml" />
     </modules>
   </component>
 </project>
