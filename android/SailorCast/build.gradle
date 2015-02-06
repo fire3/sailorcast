@@ -62,7 +62,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.+'
     compile 'com.umeng.analytics:analytics:latest.integration'
-    compile project(path: ':decapi')
+    compile project(':decapi')
     compile files('libs/umeng-update-v2.5.0.jar')
     compile project(':social_sdk_library_project')
 }

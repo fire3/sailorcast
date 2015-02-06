@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -473,6 +474,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onDlnaButtonClick(View button) {
         final String url = (String) button.getTag(R.id.key_video_url);
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
+        Log.d("fire3", "play " + url);
 
 		final Collection<IUpnpDevice> upnpDevices = SailorCast.upnpServiceController.getServiceListener()
 				.getFilteredDeviceList(new CallableRendererFilter());

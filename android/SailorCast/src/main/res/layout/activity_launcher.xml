@@ -23,6 +23,7 @@
     <ImageView
         android:layout_marginTop="@dimen/margin_medium"
         android:scaleType="fitCenter"
+        android:id="@+id/home_logo"
         android:src="@drawable/home_logo"
         android:layout_width="match_parent"
         android:layout_height="120dp" />

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,22 +21,22 @@ import com.crixmod.sailorcast.view.HistoryActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CompassFragment#newInstance} factory method to
+ * Use the {@link LauncherFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CompassFragment extends Fragment {
+public class LauncherFragment extends Fragment {
 
     private GridView mGrid;
     private CompassAdapter mAdapter;
 
-    public static CompassFragment newInstance() {
-        CompassFragment fragment = new CompassFragment();
+    public static LauncherFragment newInstance() {
+        LauncherFragment fragment = new LauncherFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public CompassFragment() {
+    public LauncherFragment() {
         // Required empty public constructor
     }
 
@@ -51,7 +50,7 @@ public class CompassFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_compass, container, false);
+        View view =  inflater.inflate(R.layout.fragment_launcher, container, false);
         mGrid = (GridView) view.findViewById(R.id.grid);
         mGrid.setAdapter(mAdapter);
 

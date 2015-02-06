@@ -67,4 +67,9 @@
     <string name="err_wrong_data">数据解析错误</string>
     <string name="err_http_fail">网络请求失败</string>
 
+    <string name="share_thanks">感谢您对本软件的支持！</string>
+    <string name="share_title">《水手放映室》——电视盒的另一半</string>
+    <string name="share_content">《水手放映室》——最方便的DLNA网络视频投射应用，您家中电视盒的完美伴侣。</string>
+    <string name="app_website">http://www.sailorcast.com</string>
+
 </resources>
