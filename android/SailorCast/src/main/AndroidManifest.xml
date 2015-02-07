@@ -132,6 +132,9 @@
             android:exported="true"
             android:screenOrientation="portrait" />
 
+        <!-- Umeng feedback -->
+        <activity
+            android:name="com.umeng.fb.ConversationActivity"/>
     </application>
 
 </manifest>

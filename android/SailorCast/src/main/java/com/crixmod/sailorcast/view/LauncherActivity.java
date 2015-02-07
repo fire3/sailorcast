@@ -32,14 +32,13 @@ import com.umeng.socialize.weixin.media.CircleShareContent;
 import com.umeng.socialize.weixin.media.WeiXinShareContent;
 import com.umeng.update.UmengUpdateAgent;
 
-public class LauncherActivity extends BaseToolbarActivity {
+public class LauncherActivity extends BaseToolbarActivity implements LauncherFragment.OnLauncherFragmentInteraction {
 
     private LauncherFragment mFragment;
 
     // 首先在您的Activity中添加如下成员变量
     final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
-// 设置分享内容
-
+    // 设置分享内容
     final String mWeixinAppID = "wx5ed52c376b413795";
     final String mWeixinAppSecret = "86025fe7d16c8bbddcf60c19a1af8542";
 
@@ -66,6 +65,8 @@ public class LauncherActivity extends BaseToolbarActivity {
         setupQQShare();
         setupSinaShare();
 
+        /*
+
         final Activity activity = this;
         ImageView mHomeLogo = (ImageView) findViewById(R.id.home_logo);
         mHomeLogo.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +75,7 @@ public class LauncherActivity extends BaseToolbarActivity {
                 mController.openShare(activity, false);
             }
         });
+        */
 
     }
 
@@ -235,5 +237,10 @@ public class LauncherActivity extends BaseToolbarActivity {
     protected void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    public void onSocialShareClicked() {
+        mController.openShare(this,false);
     }
 }

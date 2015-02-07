@@ -22,7 +22,9 @@ public class SCChannel {
     //public static final int   ENT = 8;  //娱乐
     public static final int   LOCAL_BOOKMARK = 8;
     public static final int   LOCAL_HISTORY = 9;
-    private static final int  MAX_CHANNEL_ID = 9;  //如果增加频道，注意修改该值
+    public static final int   LOCAL_FEEDBACK = 10;
+    public static final int   LOCAL_SHARE = 11;
+    private static final int  MAX_CHANNEL_ID = 11;  //如果增加频道，注意修改该值
 
     private String mChannelName = "unknown";
 
@@ -52,6 +54,10 @@ public class SCChannel {
             mChannelName = SailorCast.getResource().getString(R.string.channel_bookmark);
         else if(mChannelID == LOCAL_HISTORY)
             mChannelName = SailorCast.getResource().getString(R.string.channel_history);
+        else if(mChannelID == LOCAL_SHARE)
+            mChannelName = SailorCast.getResource().getString(R.string.channel_share);
+        else if(mChannelID == LOCAL_FEEDBACK)
+            mChannelName = SailorCast.getResource().getString(R.string.channel_feedback);
         else
             mChannelName = "unknown";
 
@@ -79,7 +85,10 @@ public class SCChannel {
     }
 
     public boolean isLocalChannel() {
-        if(mChannelID == LOCAL_BOOKMARK || mChannelID == LOCAL_HISTORY)
+        if(mChannelID == LOCAL_BOOKMARK
+                || mChannelID == LOCAL_HISTORY
+                || mChannelID == LOCAL_FEEDBACK
+                || mChannelID == LOCAL_SHARE)
             return true;
         else
             return false;

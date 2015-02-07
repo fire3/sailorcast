@@ -36,11 +36,13 @@ android {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
     mavenLocal()
     maven {
-        url 'http://4thline.org/m2'
+        url "http://4thline.org/m2"
     }
+    maven { url "https://raw.githubusercontent.com/umeng/mvn-repo-umeng/master/repository" }
 }
 
 
@@ -62,6 +64,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.+'
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.umeng:fb:5.1.0'
     compile project(':decapi')
     compile files('libs/umeng-update-v2.5.0.jar')
     compile project(':social_sdk_library_project')

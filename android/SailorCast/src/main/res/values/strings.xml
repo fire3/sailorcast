@@ -71,5 +71,8 @@
     <string name="share_title">《水手放映室》——电视盒的另一半</string>
     <string name="share_content">《水手放映室》——最方便的DLNA网络视频投射应用，您家中电视盒的完美伴侣。</string>
     <string name="app_website">http://www.sailorcast.com</string>
+    <string name="channel_share">感谢支持</string>
+    <string name="channel_feedback">意见反馈</string>
+    <string name="feedback_welcom">您好，欢迎您反馈使用的感受和建议！</string>
 
 </resources>

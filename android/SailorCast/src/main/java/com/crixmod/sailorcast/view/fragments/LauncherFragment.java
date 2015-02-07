@@ -18,6 +18,7 @@ import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.view.AlbumListActivity;
 import com.crixmod.sailorcast.view.BookmarkActivity;
 import com.crixmod.sailorcast.view.HistoryActivity;
+import com.umeng.fb.FeedbackAgent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +29,7 @@ public class LauncherFragment extends Fragment {
 
     private GridView mGrid;
     private CompassAdapter mAdapter;
+    private OnLauncherFragmentInteraction mListener;
 
     public static LauncherFragment newInstance() {
         LauncherFragment fragment = new LauncherFragment();
@@ -122,6 +124,12 @@ public class LauncherFragment extends Fragment {
                 case    SCChannel.LOCAL_HISTORY:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_history));
                     break;
+                case    SCChannel.LOCAL_SHARE:
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_thumbup));
+                    break;
+                case    SCChannel.LOCAL_FEEDBACK:
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_comment));
+                    break;
             }
 
             textView.setText(channel.toString());
@@ -154,9 +162,52 @@ public class LauncherFragment extends Fragment {
                 });
             }
 
+            if(channel.getChannelID() == SCChannel.LOCAL_SHARE) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mListener.onSocialShareClicked();
+                    }
+                });
+            }
+
+            if(channel.getChannelID() == SCChannel.LOCAL_FEEDBACK) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FeedbackAgent agent = new FeedbackAgent(mContext);
+                        agent.setWelcomeInfo(getString(R.string.feedback_welcom));
+                        agent.startFeedbackActivity();
+                    }
+                });
+            }
+
+
 
             return convertView;
         }
+    }
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnLauncherFragmentInteraction) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
+    public interface OnLauncherFragmentInteraction {
+        void onSocialShareClicked();
     }
 
 }
