@@ -164,7 +164,7 @@
     <div class="go-get-it section">
       <div class="inner">
         <img src="images/readtime-logo-big.jpg" />
-        <a href="http://www.sailorcast.com/apks/SailorCast-latest.apk" class="button gradient">现在下载</a>
+        <a href="http://www.sailorcast.com/apks/SailorCast-latest.apk" class="button" id="J_weixin">现在下载</a>
       </div>
     </div>
 
@@ -178,6 +178,35 @@
       </div>
     </div>
   </div>
+
+<div id="weixin-tip"><p><img src="images/live_weixin.png" alt="微信打开"/><span id="close" title="关闭" class="close">×</span></p></div>
+    <script type="text/javascript">
+    var is_weixin = (function() {
+        var ua = navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+            return true;
+        } else {
+            return false;
+        }
+    })();
+    window.onload = function(){
+        var winHeight = typeof window.innerHeight != 'undefined' ? window.innerHeight : document.documentElement.clientHeight;
+        var btn = document.getElementById('J_weixin');
+        var tip = document.getElementById('weixin-tip');
+        var close = document.getElementById('close');
+        if(is_weixin){
+            btn.onclick = function(e){
+                tip.style.height = winHeight + 'px';
+                tip.style.display = 'block';
+                return false;
+            }
+            close.onclick = function(){
+                tip.style.display = 'none';
+            }
+        }
+    }
+
+    </script>
 
   <script src="js/libs/skrollr.min.js"></script>
   <!--[if lt IE 9]>
