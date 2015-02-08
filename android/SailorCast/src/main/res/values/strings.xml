@@ -10,7 +10,7 @@
     <string name="site_sohu">搜狐视频</string>
     <string name="site_youku">优酷视频</string>
     <string name="site_letv">乐视视频</string>
-    <string name="site_iqiyi">爱奇艺</string>
+    <string name="site_iqiyi">爱奇艺视频</string>
     <string name="fail_reason_no_results">对不起，没有搜索到任何结果...</string>
     <string name="fail_reason_searching">努力搜索中...</string>
     <string name="director">导演：</string>
@@ -56,8 +56,8 @@
     <string name="home_button_text">首页</string>
     <string name="channel_bookmark">我的收藏</string>
     <string name="channel_history">播放历史</string>
-    <string name="title_activity_bookmark">BookmarkActivity</string>
-    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_bookmark">我的收藏</string>
+    <string name="title_activity_history">播放历史</string>
     <string name="actor">演员：</string>
     <string name="album_no_videos">对不起，没有找到可供播放的影片...</string>
     <string name="action_order_forward">顺序显示</string>
