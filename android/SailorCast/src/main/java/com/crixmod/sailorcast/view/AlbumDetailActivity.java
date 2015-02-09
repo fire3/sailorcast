@@ -383,7 +383,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             @Override
             public void run() {
                 mDlnaNorButton.setVisibility(View.VISIBLE);
-                //mPlayNorButton.setVisibility(View.VISIBLE);
+                mPlayNorButton.setVisibility(View.VISIBLE);
 
                 mPlayNorButton.setTag(R.id.key_video_url, urlNormal);
                 mPlayNorButton.setTag(R.id.key_video, v);
@@ -401,7 +401,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             @Override
             public void run() {
                 mDlnaHighButton.setVisibility(View.VISIBLE);
-                //mPlayHighButton.setVisibility(View.VISIBLE);
+                mPlayHighButton.setVisibility(View.VISIBLE);
 
                 mPlayHighButton.setTag(R.id.key_video_url,urlHigh);
                 mPlayHighButton.setTag(R.id.key_video,v);
@@ -419,7 +419,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             @Override
             public void run() {
                 mDlnaSuperButton.setVisibility(View.VISIBLE);
-                //mPlaySuperButton.setVisibility(View.VISIBLE);
+                mPlaySuperButton.setVisibility(View.VISIBLE);
 
                 mPlaySuperButton.setTag(R.id.key_video_url, urlSuper);
                 mPlaySuperButton.setTag(R.id.key_video, v);
@@ -462,7 +462,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onPlayButtonClick(View button) {
         String url = (String) button.getTag(R.id.key_video_url);
         if(url != null) {
-            //BaiduPlayerActivity.launch(this,url);
+            BaiduPlayerActivity.launch(this,url);
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
     }

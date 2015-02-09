@@ -124,6 +124,21 @@
             android:screenOrientation="portrait">
         </activity>
 
+         <activity
+            android:name="com.crixmod.sailorcast.view.BaiduPlayerActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="true"
+            android:label="PlayingActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".wxapi.WXEntryActivity"
