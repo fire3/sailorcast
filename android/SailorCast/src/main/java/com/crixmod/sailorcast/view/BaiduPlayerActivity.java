@@ -13,8 +13,8 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -25,7 +25,6 @@ import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
 import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
-import com.baidu.cyberplayer.subtitle.SubtitleManager;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCFailLog;
@@ -39,6 +38,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         OnCompletionListener,
         OnErrorListener,
         OnInfoListener,
+        VideoControllerView.MediaPlayerControl,
         OnPlayingBufferCacheListener,
         OnGetVideosListener,
         OnGetVideoPlayUrlListener
@@ -59,6 +59,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     private BVideoView mVV = null;
     private BMediaController mVVCtl = null;
+    private VideoControllerView controller = null;
+    private RelativeLayout root;
     private RelativeLayout mViewHolder = null;
     private LinearLayout mControllerHolder = null;
 
@@ -104,6 +106,67 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     @Override
     public void onGetVideosFailed(SCFailLog failReason) {
+
+    }
+
+    // Implement VideoMediaController.MediaPlayerControl
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public int getDuration() {
+        return 0;
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return 0;
+    }
+
+    @Override
+    public void seekTo(int pos) {
+
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return false;
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return false;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return false;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return false;
+    }
+
+    @Override
+    public boolean isFullScreen() {
+        return false;
+    }
+
+    @Override
+    public void toggleFullScreen() {
 
     }
 
@@ -162,7 +225,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
                                 SYNC_Playing.wait();
                                 Log.v(TAG, "wait player status to idle");
                             } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
                         }
@@ -207,8 +269,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
         @Override
         public void onClick(View v) {
-            // TODO Auto-generated method stub
-            Log.v(TAG, "pre btn clicked");
             /**
              * 如果已经开发播放，先停止播放
              */
@@ -229,7 +289,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
         @Override
         public void onClick(View v) {
-            Log.v(TAG, "next btn clicked");
         }
     };
 
@@ -237,7 +296,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.controllerplaying);
+        setContentView(R.layout.activity_baidu_player);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
@@ -272,6 +331,9 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private void initUI() {
         mViewHolder = (RelativeLayout) findViewById(R.id.view_holder);
         mControllerHolder = (LinearLayout) findViewById(R.id.controller_holder);
+        root = (RelativeLayout) findViewById(R.id.root);
+
+        controller = new VideoControllerView(this);
 
         /**
          * 设置ak及sk的前16位
@@ -282,9 +344,10 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
          *创建BVideoView和BMediaController
          */
         mVV = new BVideoView(this);
-        mVVCtl = new BMediaController(this);
+        //mVVCtl = new BMediaController(this);
+
         mViewHolder.addView(mVV);
-        mControllerHolder.addView(mVVCtl);
+        //mControllerHolder.addView(mVVCtl);
 
         /**
          * 注册listener
@@ -293,12 +356,12 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mVV.setOnCompletionListener(this);
         mVV.setOnErrorListener(this);
         mVV.setOnInfoListener(this);
-        mVVCtl.setPreNextListener(mPreListener, mNextListener);
+        //mVVCtl.setPreNextListener(mPreListener, mNextListener);
 
         /**
          * 关联BMediaController
          */
-        mVV.setMediaController(mVVCtl);
+        //mVV.setMediaController(mVVCtl);
         /**
          * 设置解码模式
          */
@@ -306,11 +369,16 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        controller.show();
+        return false;
+    }
+
+
+    @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
         MobclickAgent.onPause(this);
-        Log.v(TAG, "onPause");
         /**
          * 在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
          */
@@ -323,10 +391,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
         MobclickAgent.onResume(this);
-        Log.v(TAG, "onResume");
         if (null != mWakeLock && (!mWakeLock.isHeld())) {
             mWakeLock.acquire();
         }
@@ -339,7 +405,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop");
     }
 
     @Override
@@ -349,12 +414,10 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
          * 结束后台事件处理线程
          */
         mHandlerThread.quit();
-        Log.v(TAG, "onDestroy");
     }
 
     @Override
     public boolean onInfo(int what, int extra) {
-        // TODO Auto-generated method stub
         switch (what) {
             /**
              * 开始缓冲
@@ -377,7 +440,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
      */
     @Override
     public void onPlayingBufferCache(int percent) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -386,8 +448,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
      */
     @Override
     public boolean onError(int what, int extra) {
-        // TODO Auto-generated method stub
-        Log.v(TAG, "onError");
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
@@ -400,9 +460,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
      */
     @Override
     public void onCompletion() {
-        // TODO Auto-generated method stub
-        Log.v(TAG, "onCompletion");
-
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
@@ -414,9 +471,9 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
      */
     @Override
     public void onPrepared() {
-        // TODO Auto-generated method stub
-        Log.v(TAG, "onPrepared");
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
+        controller.setMediaPlayer(this);
+        controller.setAnchorView((RelativeLayout) findViewById(R.id.root));
     }
 
 
