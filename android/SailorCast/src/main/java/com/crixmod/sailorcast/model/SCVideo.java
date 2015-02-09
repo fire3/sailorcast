@@ -22,6 +22,10 @@ public class SCVideo implements Parcelable {
     String mIqiyiURL = null; //This is for Iqiyi
     String mIqiyiVid = null; //This is for Iqiyi
     SCSite mSCSite = new SCSite(SCSite.UNKNOWN);
+
+    public final static int QUALITY_SUPER = 1;
+    public final static int QUALITY_HIGH = 2;
+    public final static int QUALITY_NORMAL = 3;
     public SCVideo() {
     }
 

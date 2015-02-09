@@ -27,13 +27,22 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.baidu.cyberplayer.subtitle.SubtitleManager;
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.model.SCAlbum;
+import com.crixmod.sailorcast.model.SCFailLog;
+import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.SCVideos;
+import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
+import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.umeng.analytics.MobclickAgent;
 
 public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         OnCompletionListener,
         OnErrorListener,
         OnInfoListener,
-        OnPlayingBufferCacheListener {
+        OnPlayingBufferCacheListener,
+        OnGetVideosListener,
+        OnGetVideoPlayUrlListener
+{
     private final String TAG = "VideoViewPlayingActivity";
 
     /**
@@ -64,6 +73,39 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     private WakeLock mWakeLock = null;
     private static final String POWER_LOCK = "VideoViewPlayingActivity";
+    private SCAlbum mAlbum;
+    private SCVideo mVideo;
+    private SCVideos mVideos;
+
+    @Override
+    public void onGetVideoPlayUrlNormal(SCVideo v, String urlNormal) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlHigh(SCVideo v, String urlHigh) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlSuper(SCVideo v, String urlSuper) {
+
+    }
+
+    @Override
+    public void onGetVideoPlayUrlFailed(SCFailLog reason) {
+
+    }
+
+    @Override
+    public void onGetVideosSuccess(SCVideos videos) {
+
+    }
+
+    @Override
+    public void onGetVideosFailed(SCFailLog failReason) {
+
+    }
 
     /**
      * 播放状态
@@ -80,18 +122,27 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
      */
     private int mLastPos = 0;
 
-    //add for subtitle
-    private Button mSubtitleButton;
-    private RelativeLayout mRoot;
-    private SubtitleManager mSubtitleManager;
-
-
-     public static void launch(Activity fromActivity, String url) {
+    public static void launch(Activity fromActivity, String url) {
         Intent mpdIntent = new Intent(fromActivity, BaiduPlayerActivity.class)
                 .setData(Uri.parse(url));
         fromActivity.startActivity(mpdIntent);
     }
 
+    public static void launch(Activity fromActivity,SCAlbum mAlbum, SCVideo video, int quality) {
+        String url = null;
+        if(quality == SCVideo.QUALITY_HIGH)
+            url = video.getM3U8High();
+        if(quality == SCVideo.QUALITY_SUPER)
+            url = video.getM3U8Super();
+        if(quality == SCVideo.QUALITY_NORMAL)
+            url = video.getM3U8Nor();
+        Intent mpdIntent = new Intent(fromActivity, BaiduPlayerActivity.class)
+                .putExtra("video",video)
+                .putExtra("album",mAlbum)
+                .setData(Uri.parse(url));
+
+        fromActivity.startActivity(mpdIntent);
+    }
 
     class EventHandler extends Handler {
         public EventHandler(Looper looper) {
@@ -191,6 +242,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
 
+        mAlbum = getIntent().getParcelableExtra("album");
+        mVideo = getIntent().getParcelableExtra("video");
         mIsHwDecode = getIntent().getBooleanExtra("isHW", false);
         Uri uriPath = getIntent().getData();
         if (null != uriPath) {
