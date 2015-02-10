@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
+import com.crixmod.sailorcast.utils.ImageTools;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -98,6 +100,7 @@ public class VitamioPlayerActivity extends Activity
 
     public void onCompletion(MediaPlayer arg0) {
         Log.d(TAG, "onCompletion called");
+        finish();
     }
 
     public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
@@ -109,6 +112,9 @@ public class VitamioPlayerActivity extends Activity
         mIsVideoSizeKnown = true;
         mVideoWidth = width;
         mVideoHeight = height;
+        int ScreenWidth = ImageTools.getScreenWidthPixels(this);
+        mVideoHeight = Math.round( (float)height/(float)width  * (float)ScreenWidth);
+        mVideoWidth = ScreenWidth;
         if (mIsVideoReadyToBePlayed && mIsVideoSizeKnown) {
             startVideoPlayback();
         }
