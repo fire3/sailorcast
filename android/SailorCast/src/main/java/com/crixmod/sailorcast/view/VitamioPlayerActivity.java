@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -22,6 +24,8 @@ import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.umeng.analytics.MobclickAgent;
+
+import java.lang.ref.WeakReference;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -55,6 +59,8 @@ public class VitamioPlayerActivity extends Activity
     private RelativeLayout mVideoTitleView;
     private TextView mVideoTitle;
     private SCVideo mVideo;
+    private Handler mHandler;
+    private static final int    FADE_OUT = 1;
 
     /**
      * Called when the activity is first created.
@@ -78,6 +84,7 @@ public class VitamioPlayerActivity extends Activity
         mVideoTitleView.setVisibility(View.GONE);
         mVideoTitle = (TextView) findViewById(R.id.video_title);
         mVideoTitle.setText(mVideo.getVideoTitle());
+        mHandler = new MessageHandler(mVideoTitleView);
 
         ImageView close = (ImageView) findViewById(R.id.video_close);
         close.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +95,26 @@ public class VitamioPlayerActivity extends Activity
         });
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private static class MessageHandler extends Handler {
+        private final WeakReference<RelativeLayout> mView;
+
+        MessageHandler(RelativeLayout view) {
+            mView = new WeakReference<RelativeLayout>(view);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            RelativeLayout view = mView.get();
+            if (view == null) {
+                return;
+            }
+            switch (msg.what) {
+                case FADE_OUT:
+                    view.setVisibility(View.GONE);
+                    break;
+            }
+        }
     }
 
     private void playVideo() {
@@ -111,19 +138,31 @@ public class VitamioPlayerActivity extends Activity
         }
     }
 
-  private void toggleControlsVisibility()  {
+    private  void showTitle() {
+        if(mVideoTitleView != null) {
+            mVideoTitleView.setVisibility(View.VISIBLE);
+            int timeout = 3000;
+            if(mHandler != null) {
+                Message msg = mHandler.obtainMessage(FADE_OUT);
+                mHandler.removeMessages(FADE_OUT);
+                mHandler.sendMessageDelayed(msg, timeout);
+            }
+        }
+    }
+
+    private void hideTitle() {
+        if(mVideoTitleView != null) {
+            mVideoTitleView.setVisibility(View.GONE);
+        }
+    }
+
+    private void toggleControlsVisibility()  {
     if (controller.isShowing()) {
         controller.hide();
-        mVideoTitleView.setVisibility(View.GONE);
+        hideTitle();
     } else {
         controller.show();
-        mVideoTitleView.setVisibility(View.VISIBLE);
-        mVideoTitleView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mVideoTitleView.setVisibility(View.GONE);
-            }
-        },3000);
+        showTitle();
     }
   }
 
@@ -239,6 +278,7 @@ public class VitamioPlayerActivity extends Activity
                 startVideoPlayback();
             }
         }
+        showTitle();
     }
 
     @Override
@@ -247,6 +287,7 @@ public class VitamioPlayerActivity extends Activity
             if(mMediaPlayer.isPlaying())
                 mMediaPlayer.pause();
         }
+        showTitle();
 
     }
 
@@ -270,7 +311,7 @@ public class VitamioPlayerActivity extends Activity
     public void seekTo(int pos) {
         if (mMediaPlayer != null)
             mMediaPlayer.seekTo(pos);
-
+        showTitle();
     }
 
     @Override

@@ -14,9 +14,15 @@ public class PagingGridView extends HeaderGridView {
 		void onLoadMoreItems();
 	}
 
+    public interface Scrollable {
+        void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount);
+    }
+
+
 	private boolean isLoading;
 	private boolean hasMoreItems;
 	private Pagingable pagingableListener;
+    private Scrollable scrollableListener;
 	private LoadingView loadinView;
 
 	public PagingGridView(Context context) {
@@ -44,6 +50,10 @@ public class PagingGridView extends HeaderGridView {
 
 	public void setPagingableListener(Pagingable pagingableListener) {
 		this.pagingableListener = pagingableListener;
+	}
+
+	public void setScrollableListener(Scrollable scrollableListener) {
+		this.scrollableListener = scrollableListener;
 	}
 
 	public void setHasMoreItems(boolean hasMoreItems) {
@@ -81,6 +91,8 @@ public class PagingGridView extends HeaderGridView {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if(scrollableListener != null)
+                    scrollableListener.onScroll(view,firstVisibleItem,visibleItemCount,totalItemCount);
 				if (totalItemCount > 0) {
 					int lastVisibleItem = firstVisibleItem + visibleItemCount;
 					if (!isLoading && hasMoreItems && (lastVisibleItem == totalItemCount)) {

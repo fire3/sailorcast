@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +113,23 @@ public class AlbumListFragment extends Fragment implements
         mGridView.setNumColumns(mColumns);
         mGridView.setAdapter(mAdapter);
         mGridView.setHasMoreItems(true);
+        mGridView.setScrollableListener(new PagingGridView.Scrollable() {
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                boolean enable = false;
+                if (mGridView != null && mGridView.getChildCount() > 0) {
+                    // check if the first item of the list is visible
+                    boolean firstItemVisible = mGridView.getFirstVisiblePosition() == 0;
+                    // check if the top of the first item is visible
+                    boolean topOfFirstItemVisible = mGridView.getChildAt(0).getTop() >= 0;
+                    // enabling or disabling the refresh layout
+
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+                mSwipeContainer.setEnabled(enable);
+            }
+        });
         mGridView.setPagingableListener(new PagingGridView.Pagingable() {
 
             @Override
@@ -120,27 +138,6 @@ public class AlbumListFragment extends Fragment implements
             }
         });
 
-        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
-                boolean enable = false;
-                if (mGridView != null && mGridView.getChildCount() > 0) {
-                    // check if the first item of the list is visible
-                    boolean firstItemVisible = mGridView.getFirstVisiblePosition() == 0;
-                    // check if the top of the first item is visible
-                    boolean topOfFirstItemVisible = mGridView.getChildAt(0).getTop() == 0;
-                    // enabling or disabling the refresh layout
-                    enable = firstItemVisible && topOfFirstItemVisible;
-                }
-                mSwipeContainer.setEnabled(enable);
-            }
-        });
         return view;
     }
 
