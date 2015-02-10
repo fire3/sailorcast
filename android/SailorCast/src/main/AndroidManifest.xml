@@ -150,6 +150,31 @@
         <!-- Umeng feedback -->
         <activity
             android:name="com.umeng.fb.ConversationActivity"/>
+
+        <!-- vitamio -->
+        <activity android:name="io.vov.vitamio.activity.InitActivity"
+            tools:replace="android:configChanges"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+         <activity
+            android:name="com.crixmod.sailorcast.view.VitamioPlayerActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="true"
+            android:label="PlayingActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+
     </application>
 
 </manifest>

@@ -174,4 +174,6 @@
 -keep class im.yixin.sdk.api.YXMessage {*;}
 -keep class im.yixin.sdk.api.** implements im.yixin.sdk.api.YXMessage$YXMessageData{*;}
 
+-keep class io.vov.utils.** { *; }
+-keep class io.vov.vitamio.** { *; }
 #-libraryjars libs/SocialSDK_QQZone_2.jar

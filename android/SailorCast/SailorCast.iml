@@ -115,6 +115,7 @@
     <orderEntry type="library" exported="" name="picasso-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="jetty-continuation-8.1.12.v20130726" level="project" />
     <orderEntry type="module" module-name="social_sdk_library_project" exported="" />
+    <orderEntry type="module" module-name="vitamio" exported="" />
     <orderEntry type="module" module-name="decapi" exported="" />
   </component>
 </module>

@@ -87,6 +87,7 @@
             android:paddingBottom="4dip"
             android:paddingLeft="10dip"
             android:paddingRight="4dip"
+            android:visibility="gone"
             android:layout_gravity="top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

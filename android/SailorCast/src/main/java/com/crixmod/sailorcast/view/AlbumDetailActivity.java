@@ -462,7 +462,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onPlayButtonClick(View button) {
         String url = (String) button.getTag(R.id.key_video_url);
         if(url != null) {
-            BaiduPlayerActivity.launch(this,url);
+            //BaiduPlayerActivity.launch(this,url);
+            VitamioPlayerActivity.launch(this,url);
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
     }

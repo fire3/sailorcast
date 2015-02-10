@@ -68,4 +68,5 @@ dependencies {
     compile project(':decapi')
     compile files('libs/umeng-update-v2.5.0.jar')
     compile project(':social_sdk_library_project')
+    compile project(':vitamio')
 }
