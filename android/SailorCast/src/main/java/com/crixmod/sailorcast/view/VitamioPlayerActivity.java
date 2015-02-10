@@ -21,6 +21,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.ImageTools;
+import com.umeng.analytics.MobclickAgent;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
@@ -136,19 +137,18 @@ public class VitamioPlayerActivity extends Activity
     }
 
     public void onBufferingUpdate(MediaPlayer arg0, int percent) {
-        // Log.d(TAG, "onBufferingUpdate percent:" + percent);
         mLoadingPercentView.setText("" + percent + "%");
     }
 
     public void onCompletion(MediaPlayer arg0) {
-        Log.d(TAG, "onCompletion called");
         finish();
     }
 
     public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-        Log.v(TAG, "onVideoSizeChanged called");
         if (width == 0 || height == 0) {
             Log.e(TAG, "invalid video width(" + width + ") or height(" + height + ")");
+            MobclickAgent.reportError(this, "invalid video width(" + width + ") or " +
+                    "height(" + height + ")" + " video: " + mVideo.toJson());
             return;
         }
         mIsVideoSizeKnown = true;
@@ -163,7 +163,6 @@ public class VitamioPlayerActivity extends Activity
     }
 
     public void onPrepared(MediaPlayer mediaplayer) {
-        Log.d(TAG, "onPrepared called");
         mIsVideoReadyToBePlayed = true;
         if (mIsVideoReadyToBePlayed && mIsVideoSizeKnown) {
             startVideoPlayback();
@@ -174,16 +173,13 @@ public class VitamioPlayerActivity extends Activity
     }
 
     public void surfaceChanged(SurfaceHolder surfaceholder, int i, int j, int k) {
-        Log.d(TAG, "surfaceChanged called");
 
     }
 
     public void surfaceDestroyed(SurfaceHolder surfaceholder) {
-        Log.d(TAG, "surfaceDestroyed called");
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.d(TAG, "surfaceCreated called");
         path = extras.getString(MEDIA);
         playVideo();
 
@@ -197,8 +193,15 @@ public class VitamioPlayerActivity extends Activity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
         releaseMediaPlayer();
         doCleanUp();
     }
@@ -225,22 +228,25 @@ public class VitamioPlayerActivity extends Activity
     }
 
     private void startVideoPlayback() {
-        Log.v(TAG, "startVideoPlayback");
         holder.setFixedSize(mVideoWidth, mVideoHeight);
         mMediaPlayer.start();
     }
 
     @Override
     public void start() {
-        if (mMediaPlayer != null)
-            mMediaPlayer.start();
-
+        if (mMediaPlayer != null) {
+            if (mIsVideoReadyToBePlayed && mIsVideoSizeKnown) {
+                startVideoPlayback();
+            }
+        }
     }
 
     @Override
     public void pause() {
-        if (mMediaPlayer != null)
-            mMediaPlayer.pause();
+        if (mMediaPlayer != null) {
+            if(mMediaPlayer.isPlaying())
+                mMediaPlayer.pause();
+        }
 
     }
 
