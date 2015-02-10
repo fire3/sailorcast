@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
@@ -112,9 +113,32 @@ public class AlbumListFragment extends Fragment implements
         mGridView.setAdapter(mAdapter);
         mGridView.setHasMoreItems(true);
         mGridView.setPagingableListener(new PagingGridView.Pagingable() {
+
             @Override
             public void onLoadMoreItems() {
                 loadMoreAlbums();
+            }
+        });
+
+        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+                if (mGridView != null && mGridView.getChildCount() > 0) {
+                    // check if the first item of the list is visible
+                    boolean firstItemVisible = mGridView.getFirstVisiblePosition() == 0;
+                    // check if the top of the first item is visible
+                    boolean topOfFirstItemVisible = mGridView.getChildAt(0).getTop() == 0;
+                    // enabling or disabling the refresh layout
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+                mSwipeContainer.setEnabled(enable);
             }
         });
         return view;

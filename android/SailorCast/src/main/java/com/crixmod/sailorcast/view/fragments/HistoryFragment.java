@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -83,6 +84,28 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+
+        mGrid.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+                if (mGrid != null && mGrid.getChildCount() > 0) {
+                    // check if the first item of the list is visible
+                    boolean firstItemVisible = mGrid.getFirstVisiblePosition() == 0;
+                    // check if the top of the first item is visible
+                    boolean topOfFirstItemVisible = mGrid.getChildAt(0).getTop() == 0;
+                    // enabling or disabling the refresh layout
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+                mSwipeContainer.setEnabled(enable);
+            }
+        });
         return view;
     }
 

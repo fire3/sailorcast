@@ -47,6 +47,7 @@
             <ImageView
                 android:id="@+id/video_close"
                 android:layout_margin="@dimen/margin_medium"
+                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/umeng_update_close_bg_normal"
                 android:layout_width="wrap_content"
@@ -55,6 +56,7 @@
                 android:textColor="@color/white"
                 android:id="@+id/video_title"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:textSize="@dimen/abc_text_size_large_material"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
