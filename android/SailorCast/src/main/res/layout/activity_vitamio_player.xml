@@ -16,6 +16,24 @@
             android:id="@+id/surface"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/loading"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
+            <TextView
+                android:paddingLeft="@dimen/margin_medium"
+                android:id="@+id/loading_percent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

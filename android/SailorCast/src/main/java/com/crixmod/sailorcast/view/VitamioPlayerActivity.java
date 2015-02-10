@@ -26,7 +26,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crixmod.sailorcast.R;
@@ -40,6 +43,7 @@ import io.vov.vitamio.MediaPlayer.OnVideoSizeChangedListener;
 
 public class VitamioPlayerActivity extends Activity
         implements OnBufferingUpdateListener,
+        MediaPlayer.OnInfoListener,
         OnCompletionListener, OnPreparedListener, OnVideoSizeChangedListener, SurfaceHolder.Callback,
 VideoControllerView.MediaPlayerControl{
 
@@ -60,6 +64,9 @@ VideoControllerView.MediaPlayerControl{
 	private boolean mIsVideoSizeKnown = false;
 	private boolean mIsVideoReadyToBePlayed = false;
     private VideoControllerView controller;
+    private boolean needResume;
+    private LinearLayout mLoadingView;
+    private TextView mLoadingPercentView;
 
     /**
 	 * 
@@ -76,7 +83,9 @@ VideoControllerView.MediaPlayerControl{
 		holder.addCallback(this);
 		holder.setFormat(PixelFormat.RGBA_8888); 
 		extras = getIntent().getExtras();
-
+        mLoadingView = (LinearLayout) findViewById(R.id.loading);
+        mLoadingView.setVisibility(View.INVISIBLE);
+        mLoadingPercentView = (TextView) findViewById(R.id.loading_percent);
 	}
 
 	private void playVideo() {
@@ -88,6 +97,7 @@ VideoControllerView.MediaPlayerControl{
 			mMediaPlayer.setDisplay(holder);
 			mMediaPlayer.prepareAsync();
 			mMediaPlayer.setOnBufferingUpdateListener(this);
+            mMediaPlayer.setOnInfoListener(this);
 			mMediaPlayer.setOnCompletionListener(this);
 			mMediaPlayer.setOnPreparedListener(this);
 			mMediaPlayer.setOnVideoSizeChangedListener(this);
@@ -107,7 +117,7 @@ VideoControllerView.MediaPlayerControl{
 
 	public void onBufferingUpdate(MediaPlayer arg0, int percent) {
 		// Log.d(TAG, "onBufferingUpdate percent:" + percent);
-
+        mLoadingPercentView.setText(""+percent+"%");
 	}
 
 	public void onCompletion(MediaPlayer arg0) {
@@ -268,5 +278,40 @@ VideoControllerView.MediaPlayerControl{
     @Override
     public void toggleFullScreen() {
 
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        switch (what) {
+            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                //Begin buffer, pause playing
+                if (isPlaying()) {
+                    stopPlayer();
+                    needResume = true;
+                }
+                mLoadingView.setVisibility(View.VISIBLE);
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                //The buffering is done, resume playing
+                if (needResume)
+                    startPlayer();
+                mLoadingView.setVisibility(View.GONE);
+                break;
+            case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
+                //Display video download speed
+                //Log.d("fire3","download rate:" + extra);
+                break;
+        }
+        return true;
+    }
+
+    private void startPlayer() {
+        if(mMediaPlayer != null)
+            mMediaPlayer.start();
+    }
+
+    private void stopPlayer() {
+        if(mMediaPlayer != null)
+            mMediaPlayer.stop();
     }
 }
