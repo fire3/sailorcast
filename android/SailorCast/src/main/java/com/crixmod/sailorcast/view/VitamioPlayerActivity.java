@@ -113,10 +113,16 @@ public class VitamioPlayerActivity extends Activity
   private void toggleControlsVisibility()  {
     if (controller.isShowing()) {
         controller.hide();
-        mVideoTitleView.setVisibility(View.INVISIBLE);
+        mVideoTitleView.setVisibility(View.GONE);
     } else {
         controller.show();
         mVideoTitleView.setVisibility(View.VISIBLE);
+        mVideoTitleView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mVideoTitleView.setVisibility(View.GONE);
+            }
+        },3000);
     }
   }
 
