@@ -176,4 +176,13 @@
 
 -keep class io.vov.utils.** { *; }
 -keep class io.vov.vitamio.** { *; }
+
+# For Vitamio classes
+-keep public class io.vov.vitamio.MediaPlayer { *; }
+-keep public class io.vov.vitamio.IMediaScannerService { *; }
+-keep public class io.vov.vitamio.MediaScanner { *; }
+-keep public class io.vov.vitamio.MediaScannerClient { *; }
+-keep public class io.vov.vitamio.VitamioLicense { *; }
+-keep public class io.vov.vitamio.Vitamio { *; }
+-keep public class io.vov.vitamio.MediaMetadataRetriever { *; }
 #-libraryjars libs/SocialSDK_QQZone_2.jar
