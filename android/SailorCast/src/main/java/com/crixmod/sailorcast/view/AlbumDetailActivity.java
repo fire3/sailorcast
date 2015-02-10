@@ -460,10 +460,11 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
      * @param button
      */
     public void onPlayButtonClick(View button) {
-        String url = (String) button.getTag(R.id.key_video_url);
+        final String url = (String) button.getTag(R.id.key_video_url);
+        final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
         if(url != null) {
             //BaiduPlayerActivity.launch(this,url);
-            VitamioPlayerActivity.launch(this,url);
+            VitamioPlayerActivity.launch(this,v,url);
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
     }
@@ -475,7 +476,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onDlnaButtonClick(View button) {
         final String url = (String) button.getTag(R.id.key_video_url);
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
-        Log.d("fire3", "play " + url);
 
 		final Collection<IUpnpDevice> upnpDevices = SailorCast.upnpServiceController.getServiceListener()
 				.getFilteredDeviceList(new CallableRendererFilter());

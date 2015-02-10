@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     android:gravity="center_horizontal|center_vertical"
+    android:keepScreenOn="true"
     android:orientation="vertical" >
 
     <FrameLayout
@@ -34,6 +35,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+        
+        <RelativeLayout
+            android:background="#CC000000"
+            android:id="@+id/video_title_container"
+            android:orientation="horizontal"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/video_close"
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:layout_alignParentLeft="true"
+                android:src="@android:drawable/ic_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:textColor="@color/white"
+                android:id="@+id/video_title"
+                android:layout_centerHorizontal="true"
+                android:textSize="@dimen/abc_text_size_large_material"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
     </FrameLayout>
 
 </LinearLayout>

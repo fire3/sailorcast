@@ -10,12 +10,16 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
+import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.ImageTools;
 
 import io.vov.vitamio.LibsChecker;
@@ -40,12 +44,16 @@ public class VitamioPlayerActivity extends Activity
     private String path;
     private Bundle extras;
     private static final String MEDIA = "media";
+    private static final String VIDEO = "video";
     private boolean mIsVideoSizeKnown = false;
     private boolean mIsVideoReadyToBePlayed = false;
     private VideoControllerView controller;
     private boolean needResume;
     private LinearLayout mLoadingView;
     private TextView mLoadingPercentView;
+    private RelativeLayout mVideoTitleView;
+    private TextView mVideoTitle;
+    private SCVideo mVideo;
 
     /**
      * Called when the activity is first created.
@@ -61,9 +69,24 @@ public class VitamioPlayerActivity extends Activity
         holder.addCallback(this);
         holder.setFormat(PixelFormat.RGBA_8888);
         extras = getIntent().getExtras();
+        mVideo = extras.getParcelable(VIDEO);
         mLoadingView = (LinearLayout) findViewById(R.id.loading);
         mLoadingView.setVisibility(View.INVISIBLE);
         mLoadingPercentView = (TextView) findViewById(R.id.loading_percent);
+        mVideoTitleView = (RelativeLayout) findViewById(R.id.video_title_container);
+        mVideoTitleView.setVisibility(View.GONE);
+        mVideoTitle = (TextView) findViewById(R.id.video_title);
+        mVideoTitle.setText(mVideo.getVideoTitle());
+
+        ImageView close = (ImageView) findViewById(R.id.video_close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void playVideo() {
@@ -87,10 +110,23 @@ public class VitamioPlayerActivity extends Activity
         }
     }
 
+  private void toggleControlsVisibility()  {
+    if (controller.isShowing()) {
+        controller.hide();
+        mVideoTitleView.setVisibility(View.INVISIBLE);
+    } else {
+        controller.show();
+        mVideoTitleView.setVisibility(View.VISIBLE);
+    }
+  }
+
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        controller.show();
-        return false;
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            toggleControlsVisibility();
+        }
+        return true;
     }
 
     public void onBufferingUpdate(MediaPlayer arg0, int percent) {
@@ -147,8 +183,9 @@ public class VitamioPlayerActivity extends Activity
 
     }
 
-    public static void launch(Activity fromActivity, String url) {
+    public static void launch(Activity fromActivity,SCVideo video, String url) {
         Intent mpdIntent = new Intent(fromActivity, VitamioPlayerActivity.class)
+                .putExtra(VIDEO,video)
                 .putExtra(MEDIA, url);
         fromActivity.startActivity(mpdIntent);
     }
