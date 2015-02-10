@@ -14,10 +14,15 @@
         <item name="android:windowBackground">@color/calypso_blue_light</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="windowActionBar">false</item>
-
+        <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
         <item name="android:editTextStyle">@android:style/Widget.EditText</item>
     </style>
 
+    <style name="SeekBarAppTheme"
+        parent="android:Widget.Holo.Light.SeekBar">
+        <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+        <item name="android:thumb">@drawable/apptheme_scrubber_control_selector_holo_light</item></style>
 	<!-- Drawer style -->
 	<style name="drawer">
 		<item name="android:background">@color/grey_medium_dark</item>
