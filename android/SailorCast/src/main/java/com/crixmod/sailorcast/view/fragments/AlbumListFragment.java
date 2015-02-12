@@ -159,13 +159,15 @@ public class AlbumListFragment extends Fragment implements
                 if (albums.get(0).getVerImageUrl() == null) {
                     mColumns = 2;
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mGridView.setNumColumns(mColumns);
-                            mAdapter.setColumns(mColumns);
-                        }
-                    });
+                    if(getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mGridView.setNumColumns(mColumns);
+                                mAdapter.setColumns(mColumns);
+                            }
+                        });
+                    }
                 }
             }
         }

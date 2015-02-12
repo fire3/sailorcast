@@ -114,15 +114,18 @@ implements OnGetAlbumsListener
     @Override
     public void onGetAlbumsSuccess(SCAlbums albums) {
         for(SCAlbum a : albums) {
-            mAdapter.addAlbum(a);
+            if(mAdapter != null)
+                mAdapter.addAlbum(a);
         }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mAdapter != null)
-                    mAdapter.notifyDataSetChanged();
-            }
-        });
+        if(getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter != null)
+                        mAdapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     @Override

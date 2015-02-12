@@ -234,21 +234,25 @@ public class AlbumPlayGridFragment extends Fragment implements
                 else
                     index = videos.size() - i - 1;
                 SCVideo v = videos.get(index);
-                mAdapter.addVideo(v);
+                if(mAdapter != null)
+                    mAdapter.addVideo(v);
 
             }
             if (mInitialVideoNoInAlbum > mAdapter.getCount())
                 loadMoreVideos();
-
-            if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
-                mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
+            if(mAdapter != null) {
+                if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
+                    if(mListener != null)
+                        mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
+                }
             }
             if(getActivity() != null) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
 
-                        mAdapter.notifyDataSetChanged();
+                        if(mAdapter != null)
+                            mAdapter.notifyDataSetChanged();
                         if (mGridView != null) {
                             mGridView.setIsLoading(false);
                         /*
@@ -287,8 +291,10 @@ public class AlbumPlayGridFragment extends Fragment implements
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mGridView.setHasMoreItems(false);
-                        mGridView.setIsLoading(false);
+                        if(mGridView != null) {
+                            mGridView.setHasMoreItems(false);
+                            mGridView.setIsLoading(false);
+                        }
                     }
                 });
             }
@@ -328,7 +334,8 @@ public class AlbumPlayGridFragment extends Fragment implements
             mGridView.setItemChecked(position, true);
             mCurrentSelected = position;
         }
-        mListener.onAlbumPlayVideoSelected(v, position);
+        if(mListener != null)
+            mListener.onAlbumPlayVideoSelected(v, position);
     }
 
     /**
