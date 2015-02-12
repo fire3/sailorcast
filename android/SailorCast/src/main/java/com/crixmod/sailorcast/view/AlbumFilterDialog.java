@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -101,11 +103,36 @@ public class AlbumFilterDialog extends DialogFragment {
             int columnCount = 5;
             int cateCount = items.size();
             int count = ((cateCount % columnCount) == 0) ? cateCount / columnCount : (cateCount / columnCount + 1);
+
+            //计算最宽的一行字数
+            int lineLength = 0;
+            int maxLength = 0;
+            for (int j = 0; j < count; j++) {
+                lineLength = 0;
+                for (int k = 0; k < columnCount; k++) {
+                    int index = j * columnCount + k;
+                    if (index < cateCount) {
+                        lineLength = lineLength + items.get(index).getDisplayName().length();
+                    }
+                }
+
+                if(lineLength > maxLength)
+                    maxLength = lineLength;
+            }
+
+            //如果最宽的一行超过13个字，则设置成3列显示
+            if(maxLength > 13)
+                columnCount = 3;
+
+            //重新根据3列进行计算。
+            cateCount = items.size();
+            count = ((cateCount % columnCount) == 0) ? cateCount / columnCount : (cateCount / columnCount + 1);
+
             for (int j = 0; j < count; j++) {
                 TableRow row = new TableRow(getActivity());
                 TableLayout.LayoutParams lp = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.setMargins(0, 5, 0, 5);
+                lp.setMargins(0, 3, 0, 3);
                 row.setLayoutParams(lp);
                 tableLayout.addView(row);
                 for (int k = 0; k < columnCount; k++) {
@@ -113,9 +140,10 @@ public class AlbumFilterDialog extends DialogFragment {
                     if (index < cateCount) {
                         CheckedTextView text = new CheckedTextView(getActivity());
                         TableRow.LayoutParams param = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        param.setMargins(5, 5, 5, 5);
+                        param.setMargins(3, 3, 3, 3);
                         text.setLayoutParams(param);
                         text.setTextSize(15);
+                        text.setEllipsize(TextUtils.TruncateAt.END);
                         text.setText(items.get(index).getDisplayName());
                         text.setTag(R.id.key_filter_item, items.get(index));
                         items.get(index).setChecked(false);
@@ -175,7 +203,8 @@ public class AlbumFilterDialog extends DialogFragment {
             Button okButton = new Button(getActivity());
             p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             p.setMargins(20, 5, 20, 5);
-            okButton.setBackground(getResources().getDrawable(R.drawable.square_border));
+            //okButton.setBackground(getResources().getDrawable(R.drawable.square_border));
+            okButton.setBackgroundResource(R.drawable.square_border);
             okButton.setLayoutParams(p);
             okButton.setText(getResources().getString(R.string.btn_ok));
 
@@ -183,7 +212,8 @@ public class AlbumFilterDialog extends DialogFragment {
             p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             p.setMargins(20, 5, 20, 5);
             cancelButton.setLayoutParams(p);
-            cancelButton.setBackground(getResources().getDrawable(R.drawable.square_border));
+            cancelButton.setBackgroundResource(R.drawable.square_border);
+            //cancelButton.setBackground(getResources().getDrawable(R.drawable.square_border));
             cancelButton.setText(getResources().getString(R.string.btn_cancel));
 
             buttonContainer.addView(cancelButton);

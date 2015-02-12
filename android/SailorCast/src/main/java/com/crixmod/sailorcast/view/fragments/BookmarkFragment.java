@@ -78,7 +78,7 @@ public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         mSwipeContainer = (SwipeRefreshLayout) view;
         mSwipeContainer.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
-        mSwipeContainer.setColorScheme(android.R.color.holo_blue_bright,
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);

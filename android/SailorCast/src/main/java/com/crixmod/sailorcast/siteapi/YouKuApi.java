@@ -62,7 +62,6 @@ public class YouKuApi extends BaseSiteApi {
     //得到剧集中每一个video的ID接口： SHOW_VIDEOS_BASE + showid +  SHOW_VIDEOS_PID  + GUID + SHOW_VIDEOS_FIELDS + pageNo + SHOW_VIDEOS_PZ + pageSize
     private static final String SHOW_VIDEOS_BASE =  "http://api.mobile.youku.com/shows/";
     private static final String SHOW_VIDEOS_PID = "/reverse/videos?pid=0865e0628a79dfbb&ver=4.4&guid=";
-    private static final String SHOW_VIDEOS_FIELDS ="&fields=" + URLEncoder.encode("is_new|vid|titl|lim") + "&pg=";
     //private static final String SHOW_VIDEOS_FIELDS ="&fields=" + URLEncoder.encode("is_new|vid|titl|lim") + "&pg=";
     private static final String SHOW_VIDEOS_PZ = "&pz=";
 
@@ -234,7 +233,13 @@ public class YouKuApi extends BaseSiteApi {
             if(item.getSearchKey() != null)
                 filterString += item.getSearchKey() + ":" + item.getSearchVal() + "|";
         }
-        String finalFilter =  URLEncoder.encode(filterString);
+        String finalFilter = null;
+        try {
+            finalFilter = URLEncoder.encode(filterString, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         String url = String.format(CHANNEL_ALBUMS_LIST_FILTER_FORMAT,pid,gid,cid,subCid,finalFilter,pageNo,pageSize);
         return url;
@@ -305,7 +310,14 @@ public class YouKuApi extends BaseSiteApi {
     }
 
     private String getShowVideosUrl(String showID, int pageNo, int pageSize) {
-            return (SHOW_VIDEOS_BASE + showID +  SHOW_VIDEOS_PID  + getGUID() +  SHOW_VIDEOS_FIELDS + pageNo + SHOW_VIDEOS_PZ + pageSize);
+        String SHOW_VIDEOS_FIELDS = null;
+        try {
+            SHOW_VIDEOS_FIELDS = "&fields=" + URLEncoder.encode("is_new|vid|titl|lim", "UTF-8") + "&pg=";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return (SHOW_VIDEOS_BASE + showID +  SHOW_VIDEOS_PID  + getGUID() +  SHOW_VIDEOS_FIELDS + pageNo + SHOW_VIDEOS_PZ + pageSize);
     }
 
     private String getVideoInfoUrl(String videoID) {
@@ -691,9 +703,14 @@ public class YouKuApi extends BaseSiteApi {
 
         String plainTxt = sid + "_" + videoID + "_" + token;
         String s;
-        String ep;
+        String ep  = null;
         s = Base64.encodeToString(encToByteArray(decryptions.AESEnc(plainTxt, YOUKU_KEY)), Base64.NO_WRAP);
-        ep = URLEncoder.encode(s);
+        try {
+            ep = URLEncoder.encode(s,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         return url + "&oip=" + oip + "&sid=" + sid + "&token=" + token + "&did=" + did + "&ev=1&ctype=20&ep=" + ep;
     }
@@ -900,7 +917,14 @@ public class YouKuApi extends BaseSiteApi {
 
     public String  getKeyWordsSuggestionUrl(String keyword) {
         String format = "http://search.api.3g.youku.com/keywords/suggest?pid=%s&guid=%s&keywords=%s";
-        return String.format(format,YOUKU_PID,getGUID(),URLEncoder.encode(keyword));
+        String key = null;
+        try {
+            key = URLEncoder.encode(keyword,"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return String.format(format,YOUKU_PID,getGUID(),key);
     }
 
     public String getHotKeyWordsUrl(int pageSize) {

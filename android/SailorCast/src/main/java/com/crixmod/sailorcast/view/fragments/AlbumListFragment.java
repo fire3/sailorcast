@@ -101,7 +101,7 @@ public class AlbumListFragment extends Fragment implements
         View view =  inflater.inflate(R.layout.fragment_album_list, container, false);
         mSwipeContainer = (SwipeRefreshLayout) view;
         mSwipeContainer.setOnRefreshListener((SwipeRefreshLayout.OnRefreshListener) this);
-        mSwipeContainer.setColorScheme(android.R.color.holo_blue_bright,
+        mSwipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);

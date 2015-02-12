@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -180,7 +181,13 @@ public class IqiyiApi extends BaseSiteApi {
 
     @Override
     public void doSearch(String key, final OnGetAlbumsListener listener) {
-        String encodeKey = URLEncoder.encode(key);
+        String encodeKey = null;
+        try {
+            encodeKey = URLEncoder.encode(key, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
         final String url = String.format(SEARCH_URL_FORMAT,encodeKey);
         HttpUtils.asyncGet(url, new Callback() {
             @Override

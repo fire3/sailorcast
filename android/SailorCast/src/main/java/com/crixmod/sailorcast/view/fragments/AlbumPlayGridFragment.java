@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCVideo;
@@ -242,13 +243,14 @@ public class AlbumPlayGridFragment extends Fragment implements
             if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection) {
                 mListener.onAlbumPlayVideoSelected(mAdapter.getItem(mInitialVideoNoInAlbum), mInitialVideoNoInAlbum);
             }
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+            if(getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    mAdapter.notifyDataSetChanged();
-                    if(mGridView != null) {
-                        mGridView.setIsLoading(false);
+                        mAdapter.notifyDataSetChanged();
+                        if (mGridView != null) {
+                            mGridView.setIsLoading(false);
                         /*
                         mGridView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                             @Override
@@ -263,51 +265,59 @@ public class AlbumPlayGridFragment extends Fragment implements
                             }
                         });
                         */
-                        mGridView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection == true) {
-                                    mGridView.setSelection(mInitialVideoNoInAlbum);
-                                    mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
-                                    mFirstSelection = false;
-                                    SystemClock.sleep(100);
-                                    mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                            mGridView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mAdapter.getCount() > mInitialVideoNoInAlbum && mFirstSelection == true) {
+                                        mGridView.setSelection(mInitialVideoNoInAlbum);
+                                        mGridView.setItemChecked(mInitialVideoNoInAlbum, true);
+                                        mFirstSelection = false;
+                                        SystemClock.sleep(100);
+                                        mGridView.smoothScrollToPosition(mInitialVideoNoInAlbum);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
         }
         else {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mGridView.setHasMoreItems(false);
-                    mGridView.setIsLoading(false);
-                }
-            });
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGridView.setHasMoreItems(false);
+                        mGridView.setIsLoading(false);
+                    }
+                });
+            }
         }
     }
 
     @Override
     public void onGetVideosFailed(final SCFailLog failReason) {
+        try {
+            if(getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mGridView != null) {
+                            if (mGridView.isLoading() == true) {
+                                mGridView.setIsLoading(false);
+                                mGridView.setHasMoreItems(false);
+                            }
+                        }
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(mGridView != null) {
-                    if(mGridView.isLoading() == true) {
-                        mGridView.setIsLoading(false);
-                        mGridView.setHasMoreItems(false);
+                        if (mPageNo > 0 && mPageNo <= mPageTotal) {
+                            MobclickAgent.reportError(getActivity(), failReason.toJson());
+                        }
                     }
-                }
-
-                if(mPageNo > 0 && mPageNo <= mPageTotal) {
-                    MobclickAgent.reportError(getActivity(),failReason.toJson());
-                }
+                });
             }
-        });
+        } catch (Exception e) {
+            MobclickAgent.reportError(SailorCast.getContext(),e.toString());
+        }
     }
 
     @Override
