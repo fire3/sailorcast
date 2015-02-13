@@ -58,6 +58,7 @@ public class VitamioPlayerActivity extends Activity
     private TextView mLoadingPercentView;
     private RelativeLayout mVideoTitleView;
     private TextView mVideoTitle;
+    private TextView mDecodeMode;
     private SCVideo mVideo;
     private Handler mHandler;
     private static final int    FADE_OUT = 1;
@@ -84,6 +85,7 @@ public class VitamioPlayerActivity extends Activity
         mVideoTitleView.setVisibility(View.GONE);
         mVideoTitle = (TextView) findViewById(R.id.video_title);
         mVideoTitle.setText(mVideo.getVideoTitle());
+        mDecodeMode = (TextView) findViewById(R.id.video_decode_mode);
         mHandler = new MessageHandler(mVideoTitleView);
 
         ImageView close = (ImageView) findViewById(R.id.video_close);
