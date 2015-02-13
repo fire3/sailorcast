@@ -435,7 +435,17 @@ public class VideoControllerView extends FrameLayout {
             doToggleFullscreen();
             show(sDefaultTimeout);
         }
+
     };
+
+    private void updatePausePlay(boolean isPlaying) {
+        if (mRoot == null || mPauseButton == null || mPlayer == null) {
+            return;
+        }
+        mPauseButton.invalidate();
+        mPauseButton.setChecked(isPlaying);
+        mPauseButton.refreshDrawableState();
+    }
 
     public void updatePausePlay() {
         if (mRoot == null || mPauseButton == null || mPlayer == null) {
@@ -443,9 +453,9 @@ public class VideoControllerView extends FrameLayout {
         }
 
         if (mPlayer.isPlaying()) {
-            mPauseButton.setChecked(true);
+            mPauseButton.setChecked(true);  // true == display pause  button
         } else {
-            mPauseButton.setChecked(false);
+            mPauseButton.setChecked(false);  // false == display resume button
         }
     }
 
@@ -469,10 +479,11 @@ public class VideoControllerView extends FrameLayout {
 
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
+            updatePausePlay(false);
         } else {
             mPlayer.start();
+            updatePausePlay(true);
         }
-        updatePausePlay();
     }
 
     private void doToggleFullscreen() {

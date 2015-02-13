@@ -464,8 +464,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
         if(url != null) {
             //BaiduPlayerActivity.launch(this,url);
-            VitamioPlayerActivity.launch(this,v,url);
-            //MediaPlayerActivity.launch(this,v,url);
+            //VitamioPlayerActivity.launch(this,v,url);
+            BaiduPlayerActivity.launch(this,v,url);
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
     }

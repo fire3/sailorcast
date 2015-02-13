@@ -159,7 +159,7 @@
         </activity>
 
          <activity
-            android:name="com.crixmod.sailorcast.view.MediaPlayerActivity"
+            android:name="com.crixmod.sailorcast.view.BaiduPlayerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="true"
             android:label="PlayingActivity"
