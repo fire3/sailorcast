@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,18 +28,12 @@ import com.crixmod.sailorcast.utils.ImageTools;
 import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.WeakReference;
+import java.net.URI;
 
-import io.vov.vitamio.LibsChecker;
-import io.vov.vitamio.MediaPlayer;
-import io.vov.vitamio.MediaPlayer.OnBufferingUpdateListener;
-import io.vov.vitamio.MediaPlayer.OnCompletionListener;
-import io.vov.vitamio.MediaPlayer.OnPreparedListener;
-import io.vov.vitamio.MediaPlayer.OnVideoSizeChangedListener;
-
-public class VitamioPlayerActivity extends Activity
-        implements OnBufferingUpdateListener,
+public class MediaPlayerActivity extends Activity
+        implements MediaPlayer.OnBufferingUpdateListener,
         MediaPlayer.OnInfoListener,
-        OnCompletionListener, OnPreparedListener, OnVideoSizeChangedListener, SurfaceHolder.Callback,
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnVideoSizeChangedListener, SurfaceHolder.Callback,
         VideoControllerView.MediaPlayerControl {
 
     private static final String TAG = "MediaPlayerDemo";
@@ -75,8 +71,6 @@ public class VitamioPlayerActivity extends Activity
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        if (!LibsChecker.checkVitamioLibs(this))
-            return;
         setContentView(R.layout.activity_vitamio_player);
         mPreview = (SurfaceView) findViewById(R.id.surface);
         holder = mPreview.getHolder();
@@ -158,8 +152,9 @@ public class VitamioPlayerActivity extends Activity
         doCleanUp();
         try {
             // Create a new media player and set the listeners
-            mMediaPlayer = new MediaPlayer(this,mIsHardWare); // true = prefer hardware decoding
-            mMediaPlayer.setDataSource(mURL);
+            mMediaPlayer = new MediaPlayer(); // true = prefer hardware decoding
+            mMediaPlayer.setDataSource(this, Uri.parse(mURL));
+            //mMediaPlayer.setDataSource(mURL);
             mMediaPlayer.setDisplay(holder);
             mMediaPlayer.prepareAsync();
             mMediaPlayer.setOnBufferingUpdateListener(this);
@@ -261,14 +256,14 @@ public class VitamioPlayerActivity extends Activity
     }
 
     public static void launch(Activity fromActivity,SCVideo video, String url) {
-        Intent mpdIntent = new Intent(fromActivity, VitamioPlayerActivity.class)
+        Intent mpdIntent = new Intent(fromActivity, MediaPlayerActivity.class)
                 .putExtra(VIDEO, video)
                 .putExtra(MEDIA, url);
         fromActivity.startActivity(mpdIntent);
     }
 
     public static void launch(Activity fromActivity,SCVideo video, String url, boolean isHWDecode, long initialPos) {
-        Intent mpdIntent = new Intent(fromActivity, VitamioPlayerActivity.class)
+        Intent mpdIntent = new Intent(fromActivity, MediaPlayerActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION|Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra(INITPOS,initialPos)
                 .putExtra(HWDECODE, isHWDecode)
@@ -318,7 +313,7 @@ public class VitamioPlayerActivity extends Activity
     private void startVideoPlayback() {
         holder.setFixedSize(mVideoWidth, mVideoHeight);
         mMediaPlayer.start();
-        mMediaPlayer.seekTo(mInitialPosition);
+        mMediaPlayer.seekTo((int)mInitialPosition);
     }
 
     @Override
@@ -419,10 +414,10 @@ public class VitamioPlayerActivity extends Activity
                     startPlayer();
                 mLoadingView.setVisibility(View.GONE);
                 break;
-            case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
+            //case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
                 //Display video download speed
                 //Log.d("fire3","download rate:" + extra);
-                break;
+            //    break;
         }
         return true;
     }

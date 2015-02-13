@@ -17,6 +17,19 @@
         <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
         <item name="android:editTextStyle">@android:style/Widget.EditText</item>
     </style>
+    <style name="playerSeekBarStyle" parent="@android:style/Widget.SeekBar">
+        <item name="android:maxHeight">3.0dip</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress_drawable</item>
+        <item name="android:minHeight">3.0dip</item>
+        <item name="android:thumb">@drawable/seekbar_thumb_selector</item>
+    </style>
+
+    <style name="liveSmallPlayerSeekBarStyle" parent="@android:style/Widget.SeekBar">
+        <item name="android:maxHeight">1.0dip</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress_drawable</item>
+        <item name="android:minHeight">1.0dip</item>
+        <item name="android:thumb">@drawable/seekbar_thumb_selector</item>
+    </style>
 
     <style name="SeekBarAppTheme"
         parent="android:Widget.Holo.Light.SeekBar">

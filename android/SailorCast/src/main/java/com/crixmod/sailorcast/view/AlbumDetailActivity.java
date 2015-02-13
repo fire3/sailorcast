@@ -465,6 +465,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         if(url != null) {
             //BaiduPlayerActivity.launch(this,url);
             VitamioPlayerActivity.launch(this,v,url);
+            //MediaPlayerActivity.launch(this,v,url);
             mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
         }
     }

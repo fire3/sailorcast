@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -88,7 +89,7 @@ public class VideoControllerView extends FrameLayout {
     private OnClickListener mNextListener, mPrevListener;
     StringBuilder               mFormatBuilder;
     Formatter                   mFormatter;
-    private ImageButton         mPauseButton;
+    private CheckBox            mPauseButton;
     private ImageButton         mFfwdButton;
     private ImageButton         mRewButton;
     private ImageButton         mNextButton;
@@ -129,7 +130,7 @@ public class VideoControllerView extends FrameLayout {
     public void setMediaPlayer(MediaPlayerControl player) {
         mPlayer = player;
         updatePausePlay();
-        updateFullScreen();
+        //updateFullScreen();
     }
 
     /**
@@ -166,12 +167,13 @@ public class VideoControllerView extends FrameLayout {
     }
 
     private void initControllerView(View v) {
-        mPauseButton = (ImageButton) v.findViewById(R.id.pause);
+        mPauseButton = (CheckBox) v.findViewById(R.id.pause);
         if (mPauseButton != null) {
             mPauseButton.requestFocus();
             mPauseButton.setOnClickListener(mPauseListener);
         }
 
+        /*
         mFullscreenButton = (ImageButton) v.findViewById(R.id.fullscreen);
         if (mFullscreenButton != null) {
             mFullscreenButton.requestFocus();
@@ -204,6 +206,7 @@ public class VideoControllerView extends FrameLayout {
             mPrevButton.setVisibility(View.GONE);
         }
 
+        */
         mProgress = (SeekBar) v.findViewById(R.id.mediacontroller_progress);
         if (mProgress != null) {
             if (mProgress instanceof SeekBar) {
@@ -218,7 +221,7 @@ public class VideoControllerView extends FrameLayout {
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
-        installPrevNextListeners();
+        //installPrevNextListeners();
     }
 
     /**
@@ -242,12 +245,14 @@ public class VideoControllerView extends FrameLayout {
             if (mPauseButton != null && !mPlayer.canPause()) {
                 mPauseButton.setEnabled(false);
             }
+            /*
             if (mRewButton != null && !mPlayer.canSeekBackward()) {
                 mRewButton.setEnabled(false);
             }
             if (mFfwdButton != null && !mPlayer.canSeekForward()) {
                 mFfwdButton.setEnabled(false);
             }
+            */
         } catch (IncompatibleClassChangeError ex) {
             // We were given an old version of the interface, that doesn't have
             // the canPause/canSeekXYZ methods. This is OK, it just means we
@@ -280,7 +285,7 @@ public class VideoControllerView extends FrameLayout {
             mShowing = true;
         }
         updatePausePlay();
-        updateFullScreen();
+        //updateFullScreen();
 
         // cause the progress bar to be updated even if mShowing
         // was already true.  This happens, for example, if we're
@@ -438,9 +443,9 @@ public class VideoControllerView extends FrameLayout {
         }
 
         if (mPlayer.isPlaying()) {
-            mPauseButton.setImageResource(R.drawable.ic_media_pause);
+            mPauseButton.setChecked(true);
         } else {
-            mPauseButton.setImageResource(R.drawable.ic_media_play);
+            mPauseButton.setChecked(false);
         }
     }
 
@@ -539,6 +544,7 @@ public class VideoControllerView extends FrameLayout {
         if (mPauseButton != null) {
             mPauseButton.setEnabled(enabled);
         }
+        /*
         if (mFfwdButton != null) {
             mFfwdButton.setEnabled(enabled);
         }
@@ -551,6 +557,7 @@ public class VideoControllerView extends FrameLayout {
         if (mPrevButton != null) {
             mPrevButton.setEnabled(enabled && mPrevListener != null);
         }
+        */
         if (mProgress != null) {
             mProgress.setEnabled(enabled);
         }
@@ -588,6 +595,7 @@ public class VideoControllerView extends FrameLayout {
         }
     };
 
+    /*
     private void installPrevNextListeners() {
         if (mNextButton != null) {
             mNextButton.setOnClickListener(mNextListener);
@@ -616,6 +624,8 @@ public class VideoControllerView extends FrameLayout {
             }
         }
     }
+
+    */
     
     public interface MediaPlayerControl {
         void    start();

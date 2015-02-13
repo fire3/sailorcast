@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -20,80 +19,219 @@
     android:background="#CC000000"
     android:orientation="vertical">
 
+    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="4dip"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="4dip">
 
-        <ImageButton android:id="@+id/prev"
+        <ImageButton
+            android:id="@+id/prev"
             style="@android:style/MediaButton.Previous"
             android:contentDescription="@string/description" />
-        
-        <ImageButton android:id="@+id/rew"
+
+        <ImageButton
+            android:id="@+id/rew"
             style="@android:style/MediaButton.Rew"
             android:contentDescription="@string/description" />
-        
-        <ImageButton android:id="@+id/pause"
+
+        <ImageButton
+            android:id="@+id/pause"
             style="@android:style/MediaButton.Play"
             android:contentDescription="@string/description" />
-        
-        <ImageButton android:id="@+id/ffwd"
+
+        <ImageButton
+            android:id="@+id/ffwd"
             style="@android:style/MediaButton.Ffwd"
             android:contentDescription="@string/description" />
-        
-        <ImageButton android:id="@+id/next"
+
+        <ImageButton
+            android:id="@+id/next"
             style="@android:style/MediaButton.Next"
             android:contentDescription="@string/description" />
 
     </LinearLayout>
+    -->
+
+    <LinearLayout
+        android:id="@+id/player_bottom_control"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/player_panel_background_color"
+        android:gravity="center"
+        android:orientation="horizontal"
+        >
+
+        <CheckBox
+            android:id="@+id/pause"
+            android:layout_width="60.0dip"
+            android:layout_height="60.0dip"
+            android:button="@drawable/player_playbtn_selector"
+            android:checked="true"
+        />
+
+        <View
+            android:layout_width="1.0px"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="15.0dip"
+            android:background="@color/game_related_title_color" />
+
+        <TextView
+            android:id="@+id/time_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="5.0dip"
+            android:textColor="@color/white" />
+
+        <SeekBar
+            android:id="@+id/mediacontroller_progress"
+            style="@style/playerSeekBarStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.0"
+            android:indeterminate="false"
+            android:max="100"
+            android:paddingLeft="5.0dip"
+            android:paddingRight="5.0dip"
+            android:progress="0"
+            android:thumbOffset="5.0dip" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5.0dip"
+            android:textColor="@color/white" />
+        <!--
+
+        <CheckBox
+            android:id="@id/playervolumebutton"
+            android:layout_width="60.0dip"
+            android:layout_height="60.0dip"
+            android:layout_gravity="center_vertical"
+            android:button="@drawable/player_sound_selector"
+            android:contentDescription="@string/image_description"
+            android:text="@string/volume" />
+            -->
+    </LinearLayout>
+
+    <!--
+    <RelativeLayout
+        android:id="@+id/live_player_bottom_control"
+        android:layout_width="fill_parent"
+        android:layout_height="40.0dip"
+        android:layout_alignParentBottom="true"
+        android:background="@color/player_panel_background_color"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/live_play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/live_small_player_playbtn_selector"
+            android:button="@null"
+            android:checked="true" />
+
+        <View
+            android:id="@+id/small_player_bottom_line"
+            android:layout_width="1.0px"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="10.0dip"
+            android:layout_toRightOf="@id/live_play_button"
+            android:background="@color/game_related_title_color" />
+
+        <SeekBar
+            android:id="@+id/mediacontroller_progress"
+            style="@style/liveSmallPlayerSeekBarStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13.0dip"
+            android:layout_toRightOf="@id/small_player_bottom_line"
+            android:paddingLeft="5.0dip"
+            android:paddingRight="5.0dip"
+            android:thumbOffset="5.0dip" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/mediacontroller_progress"
+            android:layout_toRightOf="@id/mediacontroller_progress"
+            android:textColor="@color/yunpan_bottom_press_color"
+            android:textSize="8.0sp" />
+
+        <TextView
+            android:id="@+id/time_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mediacontroller_progress"
+            android:layout_toLeftOf="@id/time"
+            android:textColor="@color/popupwindow_pressed_bg_color"
+            android:textSize="8.0sp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView android:id="@+id/time_current"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingTop="4dip"
-            android:paddingLeft="4dip"
-            android:layout_gravity="center_horizontal"
+        <CheckBox
+            android:id="@id/live_play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="4dip" />
+            android:background="@drawable/live_small_player_playbtn_selector"
+            android:button="@null"
+            android:checked="true" />
+
+        <TextView
+            android:id="@+id/time_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="4dip"
+            android:paddingRight="4dip"
+            android:paddingTop="4dip"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <SeekBar
             android:id="@+id/mediacontroller_progress"
-            style="@style/SeekBarAppTheme"
+            style="@style/liveSmallPlayerSeekBarStyle"
             android:layout_width="0dip"
             android:layout_weight="1"
             android:layout_height="32dip" />
 
-        <TextView android:id="@+id/time"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:paddingTop="4dip"
-            android:paddingRight="4dip"
-            android:layout_gravity="center_horizontal"
+        <TextView
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="4dip" />
-        
-        <ImageButton android:id="@+id/fullscreen"
-            android:layout_marginTop="-7dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="4dip"
+            android:paddingRight="4dip"
             android:paddingTop="4dip"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/fullscreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginTop="-7dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/description"
             android:paddingBottom="4dip"
             android:paddingLeft="10dip"
             android:paddingRight="4dip"
-            android:visibility="gone"
-            android:layout_gravity="top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/description" />
-        
-    </LinearLayout>
+            android:paddingTop="4dip"
+            android:visibility="gone" />
 
+    </LinearLayout>
+-->
 </LinearLayout>
