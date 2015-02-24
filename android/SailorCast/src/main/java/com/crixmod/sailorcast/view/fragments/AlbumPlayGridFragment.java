@@ -292,8 +292,13 @@ public class AlbumPlayGridFragment extends Fragment implements
                     @Override
                     public void run() {
                         if(mGridView != null) {
-                            mGridView.setHasMoreItems(false);
-                            mGridView.setIsLoading(false);
+                            mGridView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mGridView.setHasMoreItems(false);
+                                    mGridView.setIsLoading(false);
+                                }
+                            });
                         }
                     }
                 });
