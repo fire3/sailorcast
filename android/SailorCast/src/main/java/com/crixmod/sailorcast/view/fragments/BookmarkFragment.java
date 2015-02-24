@@ -250,6 +250,7 @@ public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnR
             else {
                 viewHolder = (ViewHolder) view.getTag();
             }
+            viewHolder.position = i;
             setupViewHolder(view,i,viewHolder,album);
 
             return view;
@@ -295,9 +296,9 @@ public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnR
                 viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        boolean checked = getItem(viewHolder.position).getChecked();
+                        boolean checked = bookmarkAlbum.getChecked();
                         viewHolder.videoChecker.setChecked(!checked);
-                        getItem(viewHolder.position).setChecked(!checked);
+                        bookmarkAlbum.setChecked(!checked);
                     }
                 });
             }
@@ -328,16 +329,6 @@ public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
 
 
-        private CompoundButton.OnCheckedChangeListener CheckBox_OnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                View view = (View)buttonView.getParent();
-                ViewHolder holder = (ViewHolder)view.getTag();
-                BookmarkAlbum item = getItem(holder.position);
-                item.setChecked(isChecked);
-                //Log.d("fire3",String.format("checked changel album %s, checked %s",item.getAlbum().getTitle(), String.valueOf(isChecked)));
-            }};
-
-
     private View getOneColumnVideoRowView(int position, ViewGroup viewGroup, ViewHolder viewHolder) {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             View itemView = inflater.inflate(R.layout.item_gridview_bookmark,viewGroup,false);
@@ -352,7 +343,6 @@ public class BookmarkFragment extends Fragment implements SwipeRefreshLayout.OnR
             else
                 viewHolder.videoChecker.setVisibility(View.GONE);
 
-            viewHolder.videoChecker.setOnCheckedChangeListener(CheckBox_OnCheckedChangeListener);
             itemView.setTag(viewHolder);
             return itemView;
         }

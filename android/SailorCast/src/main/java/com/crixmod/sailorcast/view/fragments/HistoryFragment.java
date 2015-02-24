@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -251,6 +252,7 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
             else {
                 viewHolder = (ViewHolder) view.getTag();
             }
+            viewHolder.position = i;
             setupViewHolder(view,i,viewHolder,album);
 
             return view;
@@ -274,7 +276,6 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
             else if(album.getVerImageUrl()!= null && !album.getVerImageUrl().isEmpty())
                 ImageTools.displayImage(viewHolder.videoImage,album.getVerImageUrl(),point.x,point.y);
-
 
             viewHolder.videoChecker.setChecked(bookmarkHistory.getChecked());
 
@@ -300,9 +301,9 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        boolean checked = getItem(viewHolder.position).getChecked();
+                        boolean checked = bookmarkHistory.getChecked();
                         viewHolder.videoChecker.setChecked(!checked);
-                        getItem(viewHolder.position).setChecked(!checked);
+                        bookmarkHistory.setChecked(!checked);
                     }
                 });
             }
@@ -333,15 +334,6 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
 
 
-        private CompoundButton.OnCheckedChangeListener CheckBox_OnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                View view = (View)buttonView.getParent();
-                ViewHolder holder = (ViewHolder)view.getTag();
-                BookmarkHistory item = getItem(holder.position);
-                item.setChecked(isChecked);
-                //Log.d("fire3",String.format("checked changel album %s, checked %s",item.getAlbum().getTitle(), String.valueOf(isChecked)));
-            }};
-
 
     private View getOneColumnVideoRowView(int position, ViewGroup viewGroup, ViewHolder viewHolder) {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
@@ -359,7 +351,6 @@ public class HistoryFragment extends Fragment implements SwipeRefreshLayout.OnRe
             else
                 viewHolder.videoChecker.setVisibility(View.GONE);
 
-            viewHolder.videoChecker.setOnCheckedChangeListener(CheckBox_OnCheckedChangeListener);
             itemView.setTag(viewHolder);
             return itemView;
         }
