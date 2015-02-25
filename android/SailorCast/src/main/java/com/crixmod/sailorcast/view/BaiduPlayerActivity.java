@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
@@ -39,15 +41,20 @@ import com.crixmod.sailorcast.model.SCVideo;
 
 import java.lang.ref.WeakReference;
 
-public class BaiduPlayerActivity extends Activity implements OnPreparedListener, OnCompletionListener,
+public class BaiduPlayerActivity extends Activity implements OnPreparedListener, OnCompletionListener, GestureDetection.SimpleGestureListener,
         OnErrorListener, OnInfoListener, OnPlayingBufferCacheListener, VideoControllerView.MediaPlayerControl {
 	
 	private final String TAG = "VideoViewPlayingActivity";
 
-	/**
+    GestureDetection detector;
+    AudioManager audioManager;
+
+    /**
 	 * 记录播放位置
 	 */
 	private int mLastPos = 0;
+    int currentPosition;
+    int currentVolume;
     private VideoControllerView controller;
     private boolean isPlaying = false;
 
@@ -126,6 +133,52 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     @Override
     public void toggleFullScreen() {
+
+    }
+
+    @Override
+    public void onSwipe(int direction) {
+
+        // TODO Auto-generated method stub
+        String str = "";
+
+        switch (direction) {
+
+            case GestureDetection.SWIPE_LEFT:
+
+                currentPosition = mVV.getCurrentPosition();
+                currentPosition = mVV.getCurrentPosition() - 10;
+                mVV.seekTo(currentPosition);
+                str = "Swipe Left";
+                break;
+
+            case GestureDetection.SWIPE_RIGHT:
+
+                currentPosition = mVV.getCurrentPosition();
+                currentPosition = mVV.getCurrentPosition() + 10;
+                mVV.seekTo(currentPosition);
+                str = "Swipe Right";
+                break;
+
+            case GestureDetection.SWIPE_DOWN:
+
+                currentVolume = audioManager
+                        .getStreamVolume(AudioManager.STREAM_MUSIC);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        currentVolume - 1, 0);
+                str = "Swipe Down";
+                break;
+            case GestureDetection.SWIPE_UP:
+
+                currentVolume = audioManager
+                        .getStreamVolume(AudioManager.STREAM_MUSIC);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        currentVolume + 1, 0);
+                str = "Swipe Up";
+                break;
+
+        }
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -239,10 +292,19 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		}
 	}
 
-	@Override
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent me) {
+        // Call onTouchEvent of SimpleGestureFilter class
+        this.detector.onTouchEvent(me);
+        return super.dispatchTouchEvent(me);
+    }
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-				
+
+        detector = new GestureDetection(this, this);
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		setContentView(R.layout.activity_baidu_player);
 
         controller = new VideoControllerView(this);
@@ -277,7 +339,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mHandler = new MessageHandler(mVideoTitleView);
         final ImageView mVideoClose = (ImageView) findViewById(R.id.video_close);
 
-        mVideoTitleView.setOnClickListener(new OnClickListener() {
+        mVideoTitle.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 mVideoTitle.setPressed(true);
@@ -285,6 +347,17 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
                 finish();
             }
         });
+
+
+        mVideoClose.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVideoTitle.setPressed(true);
+                mVideoClose.setPressed(true);
+                finish();
+            }
+        });
+
         /*
         close.setOnClickListener(new View.OnClickListener() {
             @Override
