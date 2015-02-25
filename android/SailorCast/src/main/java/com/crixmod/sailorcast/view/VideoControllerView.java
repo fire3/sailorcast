@@ -335,6 +335,16 @@ public class VideoControllerView extends FrameLayout {
         }
     }
 
+    public int getProgress() {
+        setProgress();
+        return mProgress.getProgress();
+    }
+
+    public int getMaxProgress() {
+        return mProgress.getMax();
+    }
+
+
     private int setProgress() {
         if (mPlayer == null || mDragging) {
             return 0;

@@ -131,4 +131,5 @@
     <color name="popupwindow_pressed_bg_color">#ffcccccc</color>
     <color name="title_select_color">#ff459e4a</color>
     <color name="normal_gray_color">#ff999999</color>
+    <color name="text_color_pressed">#ffffffff</color>
 </resources>

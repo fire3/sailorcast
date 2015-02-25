@@ -160,7 +160,7 @@
 
          <activity
             android:name="com.crixmod.sailorcast.view.BaiduPlayerActivity"
-            android:configChanges="keyboardHidden|orientation"
+             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="PlayingActivity"
             android:launchMode="singleTop"

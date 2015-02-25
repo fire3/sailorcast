@@ -3,8 +3,9 @@ package com.crixmod.sailorcast.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -13,6 +14,7 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,14 +23,10 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
@@ -38,16 +36,28 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.utils.BrightControl;
 
 import java.lang.ref.WeakReference;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
-public class BaiduPlayerActivity extends Activity implements OnPreparedListener, OnCompletionListener, GestureDetection.SimpleGestureListener,
-        OnErrorListener, OnInfoListener, OnPlayingBufferCacheListener, VideoControllerView.MediaPlayerControl {
+public class BaiduPlayerActivity extends Activity implements OnPreparedListener, OnCompletionListener,
+        OnErrorListener, OnInfoListener, OnPlayingBufferCacheListener, VideoControllerView.MediaPlayerControl, GestureDetectorController.IGestureListener {
 	
-	private final String TAG = "VideoViewPlayingActivity";
+	private final String TAG = "BaiduPlayerActivity";
 
-    GestureDetection detector;
+    GestureDetectorController  gestureController;
+
     AudioManager audioManager;
+    TextView mDragProgressTextView;
+    TextView mDragVerticalTextView;
+    long mScrollProgress;
+    private int mCurrentLight;
+    private int mCurrentVolumn;
 
     /**
 	 * 记录播放位置
@@ -57,6 +67,9 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     int currentVolume;
     private VideoControllerView controller;
     private boolean isPlaying = false;
+    private boolean isMove;
+    private boolean isHorizontalScroll;
+    private boolean isVerticalScroll;
 
     @Override
     public void start() {
@@ -136,50 +149,104 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     }
 
-    @Override
-    public void onSwipe(int direction) {
+    private void setTextTopDrawables(TextView paramTextView, int paramInt, Context paramContext)
+    {
+        Drawable localDrawable = paramContext.getResources().getDrawable(paramInt);
+        localDrawable.setBounds(0, 0, localDrawable.getMinimumWidth(), localDrawable.getMinimumHeight());
+        paramTextView.setCompoundDrawables(null, localDrawable, null, null);
+    }
 
-        // TODO Auto-generated method stub
-        String str = "";
-
-        switch (direction) {
-
-            case GestureDetection.SWIPE_LEFT:
-
-                currentPosition = mVV.getCurrentPosition();
-                currentPosition = mVV.getCurrentPosition() - 10;
-                mVV.seekTo(currentPosition);
-                str = "Swipe Left";
-                break;
-
-            case GestureDetection.SWIPE_RIGHT:
-
-                currentPosition = mVV.getCurrentPosition();
-                currentPosition = mVV.getCurrentPosition() + 10;
-                mVV.seekTo(currentPosition);
-                str = "Swipe Right";
-                break;
-
-            case GestureDetection.SWIPE_DOWN:
-
-                currentVolume = audioManager
-                        .getStreamVolume(AudioManager.STREAM_MUSIC);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        currentVolume - 1, 0);
-                str = "Swipe Down";
-                break;
-            case GestureDetection.SWIPE_UP:
-
-                currentVolume = audioManager
-                        .getStreamVolume(AudioManager.STREAM_MUSIC);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                        currentVolume + 1, 0);
-                str = "Swipe Up";
-                break;
-
+    private void refreshVolumeImage(int paramInt)
+    {
+        if (paramInt <= 0)
+        {
+            setTextTopDrawables(mDragVerticalTextView, R.drawable.mute, this);
+            return;
         }
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        setTextTopDrawables(mDragVerticalTextView, R.drawable.nonmute, this);
+    }
 
+    private String changeDoubleToPercent(double paramDouble)
+    {
+        NumberFormat localNumberFormat = NumberFormat.getPercentInstance();
+        localNumberFormat.setMaximumFractionDigits(0);
+        return localNumberFormat.format(paramDouble);
+    }
+
+    private void updateVerticalTextView(int paramInt1, int paramInt2)
+    {
+        String str = changeDoubleToPercent((double) paramInt1 / (double) paramInt2);
+        mDragVerticalTextView.setText(str);
+    }
+
+    @Override
+    public void onScrollBegin(GestureDetectorController.ScrollViewType paramScrollViewType) {
+        isMove = true;
+        if (controller.isShowing()) {
+            hideTitle();
+        }
+
+        if(paramScrollViewType == GestureDetectorController.ScrollViewType.HORIZONTAL) {
+            mDragProgressTextView.setVisibility(View.VISIBLE);
+            mScrollProgress = -1;
+            isHorizontalScroll = true;
+        }
+
+        if (paramScrollViewType == GestureDetectorController.ScrollViewType.VERTICAL_LEFT)
+        {
+            setTextTopDrawables(mDragVerticalTextView, R.drawable.light, this);
+            mDragVerticalTextView.setVisibility(View.VISIBLE);
+            updateVerticalTextView(mCurrentLight, 255);
+            isVerticalScroll = true;
+        }
+    }
+
+    @Override
+    public void onScrollHorizontal(float paramFloat1, float paramFloat2) {
+        int width = this.getResources().getDisplayMetrics().widthPixels;
+        int SLIDE_DISTANCE = 600000;
+
+        int i = (int)(paramFloat2 / width * (SLIDE_DISTANCE / 2)) + mVV.getCurrentPosition()*1000;
+        long j = Math.max(0, Math.min(mVV.getDuration()*1000, i));
+        this.mScrollProgress = j;
+
+        updateProgressTextView(j);
+    }
+
+    public static String formatTime(long paramInt)
+    {
+        SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("H:mm:ss", Locale.CHINA);
+        localSimpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        return localSimpleDateFormat.format(new Date(paramInt));
+    }
+
+
+    private void updateProgressTextView(long paramInt)
+    {
+        String str = formatTime(paramInt) + "/" + formatTime(this.mVV.getDuration() * 1000);
+        mDragProgressTextView.setText(str);
+    }
+
+    @Override
+    public void onScrollLeft(float paramFloat1, float paramFloat2) {
+        int height = this.getResources().getDisplayMetrics().heightPixels;
+        int i = (int)(255.0F * paramFloat1 / height);
+        if (Math.abs(i) > 0) {
+            this.mCurrentLight = (i + this.mCurrentLight);
+            this.mCurrentLight = Math.max(0, Math.min(255, this.mCurrentLight));
+            Context localContext = this;
+            int j = this.mCurrentLight;
+            BrightControl.setScreenBrightness(localContext, j);
+            SharedPreferences.Editor localEditor = PreferenceManager.getDefaultSharedPreferences(localContext).edit();
+            localEditor.putInt("shared_preferences_light", j);
+            localEditor.commit();
+            updateVerticalTextView(this.mCurrentLight, 255);
+        }
+    }
+
+    @Override
+    public void onScrollRight(float paramFloat1, float paramFloat2) {
+        Log.d("fire3","onScrollRight");
     }
 
     /**
@@ -293,24 +360,24 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	}
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent me) {
-        // Call onTouchEvent of SimpleGestureFilter class
-        this.detector.onTouchEvent(me);
-        return super.dispatchTouchEvent(me);
-    }
-
-    @Override
 	protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG,"onCreate");
 		super.onCreate(savedInstanceState);
 
-        detector = new GestureDetection(this, this);
+        gestureController = new GestureDetectorController(this,this);
+        gestureController.setGestureListener(this);
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		setContentView(R.layout.activity_baidu_player);
 
         controller = new VideoControllerView(this);
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
-		
+        mCurrentLight = BrightControl.getSharedPreferencesLight(this);
+        if(mCurrentLight == -1) {
+            mCurrentLight = BrightControl.getBrightness(this);
+        }
+
+
 
 		initUI();
 		
@@ -358,24 +425,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
             }
         });
 
-        /*
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mVideoTitleView.setPressed(true);
-                finish();
-            }
-        });
-
-        mVideoTitleView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close.setPressed(true);
-                finish();
-
-            }
-        });
-        */
+        mDragProgressTextView = (TextView) findViewById(R.id.dragProgressTextView);
+        mDragVerticalTextView = (TextView) findViewById(R.id.dragVerticalTextView);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -436,7 +487,10 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	
 	@Override
 	protected void onPause() {
+        Log.v(TAG, "onPause");
 		super.onPause();
+        controller.setEnabled(false);
+        controller.setMediaPlayer(null);
 		/**
 		 * 在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
 		 */
@@ -490,20 +544,40 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            toggleControlsVisibility();
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if(isMove == false)
+                toggleControlsVisibility();
+
+            if(isMove == true) {
+                isMove = false;
+            }
+
+
+            if(isHorizontalScroll == true) {
+                isHorizontalScroll = false;
+                mVV.seekTo(mScrollProgress / 1000);
+                mDragProgressTextView.setVisibility(View.INVISIBLE);
+            }
+
+            if(isVerticalScroll ==  true) {
+                isVerticalScroll = false;
+                mDragVerticalTextView.setVisibility(View.INVISIBLE);
+            }
+
         }
-        return true;
+        return this.gestureController.onTouchEvent(event);
     }
 
 	
 	@Override
 	protected void onStop(){
+        Log.d(TAG,"onStop");
 		super.onStop();
 	}
 	
 	@Override
 	protected void onDestroy(){
+        Log.d(TAG,"onDestroy");
 		super.onDestroy();
 		/**
 		 * 退出后台事件处理线程
@@ -570,7 +644,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	public void onPrepared() {
 		Log.v(TAG, "onPrepared");
 		mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
-
         controller.setEnabled(true);
         controller.setMediaPlayer(this);
 	}

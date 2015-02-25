@@ -19,6 +19,37 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
+        <TextView
+            android:textSize="@dimen/play_time_font_size"
+            android:textStyle="bold"
+            android:textColor="@color/text_color_pressed"
+            android:gravity="center"
+            android:id="@+id/dragProgressTextView"
+            android:visibility="gone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:shadowColor="@color/black"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
+            android:shadowRadius="1.0" />
+
+        <TextView
+            android:textSize="@dimen/play_time_font_size"
+            android:textStyle="bold"
+            android:textColor="@color/text_color_pressed"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:id="@+id/dragVerticalTextView"
+            android:background="@drawable/custom_toast_bg"
+            android:paddingLeft="50.0dip"
+            android:paddingTop="20.0dip"
+            android:paddingRight="50.0dip"
+            android:paddingBottom="20.0dip"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+
         <LinearLayout
             android:id="@+id/loading"
             android:layout_width="wrap_content"
