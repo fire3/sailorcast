@@ -40,7 +40,7 @@
         </LinearLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/video_title_container"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -56,40 +56,35 @@
                 android:id="@+id/video_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_centerVertical="true"
                 android:paddingLeft="10.0dip"
                 android:paddingRight="15.0dip"
                 android:src="@drawable/player_titlebar_selector" />
 
-            <LinearLayout
-                android:layout_width="0.0dip"
+            <TextView
+                android:id="@+id/video_title"
+                android:layout_toRightOf="@id/video_close"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1.0"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/video_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textColor="@drawable/titlebar_text_selector"
-                    android:textSize="20.0sp" />
-            </LinearLayout>
+                android:layout_centerVertical="true"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@drawable/titlebar_text_selector"
+                android:textSize="20.0sp" />
 
             <CheckBox
                 android:id="@+id/open_harddecode_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="@dimen/player_title_margin"
                 android:button="@drawable/open_hd_checkbox_selector"
                 android:checked="false"
                 android:paddingBottom="5.0dip"
                 android:paddingTop="5.0dip"
                 />
-        </LinearLayout>
+        </RelativeLayout>
     </FrameLayout>
 
 </LinearLayout>

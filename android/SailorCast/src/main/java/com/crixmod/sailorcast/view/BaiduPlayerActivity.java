@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -158,7 +159,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private static final String INITPOS = "initpos";
     private LinearLayout mLoadingView;
     private TextView mLoadingPercentView;
-    private LinearLayout mVideoTitleView;
+    private RelativeLayout mVideoTitleView;
     private TextView mVideoTitle;
     private SCVideo mVideo;
     private Handler mHandler;
@@ -168,14 +169,14 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private long mInitialPosition = 0;
 
     private static class MessageHandler extends Handler {
-        private final WeakReference<LinearLayout> mView;
+        private final WeakReference<RelativeLayout> mView;
 
-        MessageHandler(LinearLayout view) {
-            mView = new WeakReference<LinearLayout>(view);
+        MessageHandler(RelativeLayout view) {
+            mView = new WeakReference<RelativeLayout>(view);
         }
         @Override
         public void handleMessage(Message msg) {
-            LinearLayout view = mView.get();
+            RelativeLayout view = mView.get();
             if (view == null) {
                 return;
             }
@@ -267,15 +268,24 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mLoadingView = (LinearLayout) findViewById(R.id.loading);
         mLoadingView.setVisibility(View.INVISIBLE);
         mLoadingPercentView = (TextView) findViewById(R.id.loading_percent);
-        mVideoTitleView = (LinearLayout) findViewById(R.id.video_title_container);
+        mVideoTitleView = (RelativeLayout) findViewById(R.id.video_title_container);
         mHDCheckBox = (CheckBox) findViewById(R.id.open_harddecode_checkbox);
         mHDCheckBox.setChecked(mIsHardDecode);
         mVideoTitleView.setVisibility(View.GONE);
         mVideoTitle = (TextView) findViewById(R.id.video_title);
         mVideoTitle.setText(mVideo.getVideoTitle());
         mHandler = new MessageHandler(mVideoTitleView);
+        final ImageView mVideoClose = (ImageView) findViewById(R.id.video_close);
 
-        final ImageView close = (ImageView) findViewById(R.id.video_close);
+        mVideoTitleView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mVideoTitle.setPressed(true);
+                mVideoClose.setPressed(true);
+                finish();
+            }
+        });
+        /*
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,6 +302,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
             }
         });
+        */
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
