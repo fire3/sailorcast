@@ -52,12 +52,13 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     GestureDetectorController  gestureController;
 
-    AudioManager audioManager;
+    AudioManager mAudioManager;
     TextView mDragProgressTextView;
     TextView mDragVerticalTextView;
     long mScrollProgress;
     private int mCurrentLight;
-    private int mCurrentVolumn;
+    private int mCurrentVolume;
+    private int mMaxVolume;
 
     /**
 	 * 记录播放位置
@@ -108,6 +109,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     public void seekTo(int pos) {
         if(mVV != null)
             mVV.seekTo(pos/1000);
+        showTitle();
 
     }
 
@@ -156,15 +158,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         paramTextView.setCompoundDrawables(null, localDrawable, null, null);
     }
 
-    private void refreshVolumeImage(int paramInt)
-    {
-        if (paramInt <= 0)
-        {
-            setTextTopDrawables(mDragVerticalTextView, R.drawable.mute, this);
-            return;
-        }
-        setTextTopDrawables(mDragVerticalTextView, R.drawable.nonmute, this);
-    }
 
     private String changeDoubleToPercent(double paramDouble)
     {
@@ -197,6 +190,17 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
             setTextTopDrawables(mDragVerticalTextView, R.drawable.light, this);
             mDragVerticalTextView.setVisibility(View.VISIBLE);
             updateVerticalTextView(mCurrentLight, 255);
+            isVerticalScroll = true;
+        }
+
+        if (paramScrollViewType == GestureDetectorController.ScrollViewType.VERTICAL_RIGHT)
+        {
+            if(mCurrentVolume > 0)
+                setTextTopDrawables(mDragVerticalTextView, R.drawable.nonmute, this);
+            else
+                setTextTopDrawables(mDragVerticalTextView, R.drawable.mute, this);
+            mDragVerticalTextView.setVisibility(View.VISIBLE);
+            updateVerticalTextView(mCurrentVolume, mMaxVolume*10);
             isVerticalScroll = true;
         }
     }
@@ -246,7 +250,22 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
     @Override
     public void onScrollRight(float paramFloat1, float paramFloat2) {
-        Log.d("fire3","onScrollRight");
+
+        int height = this.getResources().getDisplayMetrics().heightPixels;
+        int i = (int)((float)mMaxVolume*10 * paramFloat1 / height);
+        if (Math.abs(i) > 0) {
+            mCurrentVolume = (i + mCurrentVolume);
+            mCurrentVolume = Math.max(0, Math.min(mMaxVolume*10, mCurrentVolume));
+            int j = mCurrentVolume/10;
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,j,0);
+
+            updateVerticalTextView(this.mCurrentVolume, mMaxVolume*10);
+
+            if(mCurrentVolume > 0)
+                setTextTopDrawables(mDragVerticalTextView, R.drawable.nonmute, this);
+            else
+                setTextTopDrawables(mDragVerticalTextView, R.drawable.mute, this);
+        }
     }
 
     /**
@@ -366,7 +385,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
         gestureController = new GestureDetectorController(this,this);
         gestureController.setGestureListener(this);
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		setContentView(R.layout.activity_baidu_player);
 
         controller = new VideoControllerView(this);
@@ -491,6 +511,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		super.onPause();
         controller.setEnabled(false);
         controller.setMediaPlayer(null);
+        mAudioManager.abandonAudioFocus(null);
 		/**
 		 * 在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
 		 */
@@ -504,6 +525,9 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	protected void onResume() {
 		super.onResume();
 		Log.v(TAG, "onResume");
+        mAudioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC)*10;
+        mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		if (null != mWakeLock && (!mWakeLock.isHeld())) {
 			mWakeLock.acquire();
 		}
