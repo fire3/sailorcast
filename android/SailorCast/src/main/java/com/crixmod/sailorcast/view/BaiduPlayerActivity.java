@@ -55,6 +55,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     AudioManager mAudioManager;
     TextView mDragProgressTextView;
     TextView mDragVerticalTextView;
+    ImageView mPauseView;
     long mScrollProgress;
     private int mCurrentLight;
     private int mCurrentVolume;
@@ -76,6 +77,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         if(mVV != null) {
             mVV.resume();
             isPlaying = true;
+            if(mPauseView != null)
+                mPauseView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -84,6 +87,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         if(mVV != null) {
             mVV.pause();
             isPlaying = false;
+            if(mPauseView != null)
+                mPauseView.setVisibility(View.VISIBLE);
         }
 
     }
@@ -458,6 +463,16 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mDragProgressTextView = (TextView) findViewById(R.id.dragProgressTextView);
         mDragVerticalTextView = (TextView) findViewById(R.id.dragVerticalTextView);
 
+        mPauseView = (ImageView) findViewById(R.id.pauseImage);
+        mPauseView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
+                    if(mVV != null)
+                        start();
+                }
+            }
+        });
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         final Activity from = this;

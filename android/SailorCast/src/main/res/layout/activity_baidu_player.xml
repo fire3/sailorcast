@@ -116,6 +116,16 @@
                 android:paddingTop="5.0dip"
                 />
         </RelativeLayout>
+
+        <ImageView
+            android:layout_gravity="center"
+            android:id="@+id/pauseImage"
+            android:background="@drawable/player_pause_selector"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+        />
     </FrameLayout>
 
 </LinearLayout>

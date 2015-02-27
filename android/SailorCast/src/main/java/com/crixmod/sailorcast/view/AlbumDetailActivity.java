@@ -473,7 +473,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 BaiduPlayerActivity.launch(from, v, url);
             }
             else {
-                SweetAlertDialog pDialog =  new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+                final SweetAlertDialog pDialog =  new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
                 pDialog.setTitleText("是否播放");
                 pDialog.setContentText("继续播放可能会耗费您的流量");
                 pDialog.setConfirmText("继续播放");
@@ -483,6 +483,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                 pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        sweetAlertDialog.hide();
                         mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
                         BaiduPlayerActivity.launch(from, v, url);
                     }
