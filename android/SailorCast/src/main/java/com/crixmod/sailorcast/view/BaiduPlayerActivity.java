@@ -65,8 +65,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	 * 记录播放位置
 	 */
 	private int mLastPos = 0;
-    int currentPosition;
-    int currentVolume;
     private VideoControllerView controller;
     private boolean isPlaying = false;
     private boolean isMove;
@@ -110,7 +108,6 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     public void seekTo(int pos) {
         if(mVV != null)
             mVV.seekTo(pos/1000);
-        showTitle();
 
     }
 
@@ -150,6 +147,16 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     @Override
     public void toggleFullScreen() {
 
+    }
+
+    @Override
+    public void showTitleView() {
+        showTitle();
+    }
+
+    @Override
+    public void hideTitleView() {
+        hideTitle();
     }
 
     private void setTextTopDrawables(TextView paramTextView, int paramInt, Context paramContext)
@@ -302,12 +309,13 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private RelativeLayout mVideoTitleView;
     private TextView mVideoTitle;
     private SCVideo mVideo;
-    private Handler mHandler;
-    private static final int    FADE_OUT = 1;
+    //private Handler mHandler;
+    //private static final int    FADE_OUT = 1;
     private boolean mIsHardDecode = false;
     private CheckBox mHDCheckBox;
     private long mInitialPosition = 0;
 
+    /*
     private static class MessageHandler extends Handler {
         private final WeakReference<RelativeLayout> mView;
 
@@ -327,6 +335,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
             }
         }
     }
+    */
 
 	class EventHandler extends Handler {
 		public EventHandler(Looper looper) {
@@ -424,7 +433,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mVideoTitleView.setVisibility(View.GONE);
         mVideoTitle = (TextView) findViewById(R.id.video_title);
         mVideoTitle.setText(mVideo.getVideoTitle());
-        mHandler = new MessageHandler(mVideoTitleView);
+        //mHandler = new MessageHandler(mVideoTitleView);
         final ImageView mVideoClose = (ImageView) findViewById(R.id.video_close);
 
         mVideoTitle.setOnClickListener(new OnClickListener() {
@@ -543,12 +552,14 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private  void showTitle() {
         if(mVideoTitleView != null) {
             mVideoTitleView.setVisibility(View.VISIBLE);
+            /*
             int timeout = 3000;
             if(mHandler != null) {
                 Message msg = mHandler.obtainMessage(FADE_OUT);
                 mHandler.removeMessages(FADE_OUT);
                 mHandler.sendMessageDelayed(msg, timeout);
             }
+            */
         }
     }
 
@@ -561,10 +572,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private void toggleControlsVisibility()  {
     if (controller.isShowing()) {
         controller.hide();
-        hideTitle();
     } else {
         controller.show();
-        showTitle();
     }
   }
 

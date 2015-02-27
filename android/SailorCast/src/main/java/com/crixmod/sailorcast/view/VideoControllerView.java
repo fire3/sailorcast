@@ -284,6 +284,9 @@ public class VideoControllerView extends FrameLayout {
             mAnchor.addView(this, tlp);
             mShowing = true;
         }
+
+        if(mPlayer != null)
+            mPlayer.showTitleView();
         updatePausePlay();
         //updateFullScreen();
 
@@ -310,6 +313,9 @@ public class VideoControllerView extends FrameLayout {
         if (mAnchor == null) {
             return;
         }
+
+        if(mPlayer != null)
+            mPlayer.hideTitleView();
 
         try {
             mAnchor.removeView(this);
@@ -661,6 +667,8 @@ public class VideoControllerView extends FrameLayout {
         boolean canSeekForward();
         boolean isFullScreen();
         void    toggleFullScreen();
+        void    showTitleView();
+        void    hideTitleView();
     }
     
     private static class MessageHandler extends Handler {

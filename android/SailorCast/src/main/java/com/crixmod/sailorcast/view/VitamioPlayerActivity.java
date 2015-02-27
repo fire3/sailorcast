@@ -403,6 +403,16 @@ public class VitamioPlayerActivity extends Activity
     }
 
     @Override
+    public void showTitleView() {
+
+    }
+
+    @Override
+    public void hideTitleView() {
+
+    }
+
+    @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
         switch (what) {
             case MediaPlayer.MEDIA_INFO_BUFFERING_START:
