@@ -83,11 +83,19 @@
             android:scrollbars="none"
             >
 
+            <LinearLayout
+                android:id="@+id/video_close_container"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
             <ImageView
                 android:id="@+id/video_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:paddingLeft="10.0dip"
                 android:paddingRight="15.0dip"
                 android:src="@drawable/player_titlebar_selector" />
@@ -98,10 +106,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@drawable/titlebar_text_selector"
                 android:textSize="20.0sp" />
+            </LinearLayout>
 
             <CheckBox
                 android:id="@+id/open_harddecode_checkbox"

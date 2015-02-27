@@ -60,8 +60,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private int mCurrentLight;
     private int mCurrentVolume;
     private int mMaxVolume;
-    boolean fromPause = false;
-
+    boolean manualStop = false;
     /**
 	 * 记录播放位置
 	 */
@@ -440,25 +439,20 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mVideoTitle.setText(mVideo.getVideoTitle());
         //mHandler = new MessageHandler(mVideoTitleView);
         final ImageView mVideoClose = (ImageView) findViewById(R.id.video_close);
+        LinearLayout mClose = (LinearLayout) findViewById(R.id.video_close_container);
 
-        mVideoTitle.setOnClickListener(new OnClickListener() {
+        mClose.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mVideoTitle.setPressed(true);
+                mVideoClose.requestFocus();
                 mVideoClose.setPressed(true);
+                mVideoTitle.requestFocus();
+                mVideoTitle.setPressed(true);
                 finish();
             }
         });
 
 
-        mVideoClose.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mVideoTitle.setPressed(true);
-                mVideoClose.setPressed(true);
-                finish();
-            }
-        });
 
         mDragProgressTextView = (TextView) findViewById(R.id.dragProgressTextView);
         mDragVerticalTextView = (TextView) findViewById(R.id.dragVerticalTextView);
@@ -485,9 +479,10 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
                     controller.hide();
                     controller.setMediaPlayer(null);
                     controller.setEnabled(false);
+                    manualStop = true;
                     mVV.stopPlayback();
                     Log.d("fire3","setDecode: " + mIsHardDecode);
-                    mVV.setDecodeMode(mIsHardDecode? BVideoView.DECODE_HW: BVideoView.DECODE_SW);
+                    mVV.setDecodeMode(mIsHardDecode ? BVideoView.DECODE_HW : BVideoView.DECODE_SW);
                     mEventHandler.sendEmptyMessage(EVENT_PLAY);
                 }
             }
@@ -543,7 +538,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
 			mLastPos = mVV.getCurrentPosition();
 			mVV.stopPlayback();
-            fromPause = true;
+            manualStop = true;
 		}
 	}
 
@@ -560,8 +555,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		/**
 		 * 发起一次播放任务,当然您不一定要在这发起
 		 */
-        fromPause = false;
-		mEventHandler.sendEmptyMessage(EVENT_PLAY);	
+		mEventHandler.sendEmptyMessage(EVENT_PLAY);
 	}
 
     private  void showTitle() {
@@ -687,8 +681,13 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		}
 		mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
 
-        if(fromPause == false)
+        if(manualStop == false) {
+            Log.d(TAG,"finish");
             finish();
+        }
+
+        manualStop = false;
+
 	}
 
 	/**
@@ -698,8 +697,13 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	public void onPrepared() {
 		Log.v(TAG, "onPrepared");
 		mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARED;
-        controller.setEnabled(true);
-        controller.setMediaPlayer(this);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                controller.setEnabled(true);
+                controller.setMediaPlayer(BaiduPlayerActivity.this);
+            }
+        });
 	}
 
 
