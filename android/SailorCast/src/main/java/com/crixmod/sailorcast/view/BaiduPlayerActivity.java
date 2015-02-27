@@ -59,6 +59,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private int mCurrentLight;
     private int mCurrentVolume;
     private int mMaxVolume;
+    boolean fromPause = false;
 
     /**
 	 * 记录播放位置
@@ -518,6 +519,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
 			mLastPos = mVV.getCurrentPosition();
 			mVV.stopPlayback();
+            fromPause = true;
 		}
 	}
 
@@ -534,6 +536,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		/**
 		 * 发起一次播放任务,当然您不一定要在这发起
 		 */
+        fromPause = false;
 		mEventHandler.sendEmptyMessage(EVENT_PLAY);	
 	}
 
@@ -659,6 +662,9 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 			SYNC_Playing.notify();
 		}
 		mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
+
+        if(fromPause == false)
+            finish();
 	}
 
 	/**
