@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +35,8 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.crixmod.sailorcast.R.id.error_message;
 
@@ -462,11 +463,31 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onPlayButtonClick(View button) {
         final String url = (String) button.getTag(R.id.key_video_url);
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
+        boolean isWifi = SailorCast.isNetworkWifi();
+        final Activity from = this;
         if(url != null) {
             //BaiduPlayerActivity.launch(this,url);
             //VitamioPlayerActivity.launch(this,v,url);
-            BaiduPlayerActivity.launch(this,v,url);
-            mHistoryDb.addHistory(mAlbum,mCurrentVideo,0);
+            if(isWifi) {
+                mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
+                BaiduPlayerActivity.launch(from, v, url);
+            }
+            else {
+                SweetAlertDialog pDialog =  new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+                pDialog.setTitleText("是否播放");
+                pDialog.setContentText("继续播放可能会耗费您的流量");
+                pDialog.setConfirmText("继续播放");
+                pDialog.setCancelable(true);
+                pDialog.setCancelText("取消");
+                pDialog.show();
+                pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
+                        BaiduPlayerActivity.launch(from, v, url);
+                    }
+                });
+            }
         }
     }
 

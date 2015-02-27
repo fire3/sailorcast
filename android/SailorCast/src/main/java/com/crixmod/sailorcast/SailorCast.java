@@ -144,7 +144,7 @@ public class SailorCast extends Application {
             return false;
     }
 
-    public static boolean isNetworkFWifi() {
+    public static boolean isNetworkWifi() {
         ConnectivityManager conMan = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         if(conMan.getNetworkInfo(1) != null) {
             final NetworkInfo.State wifi = conMan.getNetworkInfo(1).getState();
