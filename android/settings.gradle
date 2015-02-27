@@ -1,3 +1,2 @@
 include ':decapi', ':SailorCast'
 include ':social_sdk_library_project'
-include ':vitamio'
