@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
+        android:largeHeap="true"
         android:name=".SailorCast"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
