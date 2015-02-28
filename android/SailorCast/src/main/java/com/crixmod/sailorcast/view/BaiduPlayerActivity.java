@@ -528,6 +528,8 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	@Override
 	protected void onPause() {
         Log.v(TAG, "onPause");
+        if(mPauseView != null)
+            mPauseView.setVisibility(View.INVISIBLE);
 		super.onPause();
         controller.setEnabled(false);
         controller.setMediaPlayer(null);
@@ -540,6 +542,9 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 			mVV.stopPlayback();
             manualStop = true;
 		}
+        if (null != mWakeLock && (mWakeLock.isHeld())) {
+            mWakeLock.release();
+        }
 	}
 
 	@Override
