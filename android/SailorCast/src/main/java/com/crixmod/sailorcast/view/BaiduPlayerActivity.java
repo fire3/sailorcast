@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
@@ -483,6 +484,10 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
                     mVV.stopPlayback();
                     Log.d("fire3","setDecode: " + mIsHardDecode);
                     mVV.setDecodeMode(mIsHardDecode ? BVideoView.DECODE_HW : BVideoView.DECODE_SW);
+                    if(mIsHardDecode == true)
+                        Toast.makeText(from,R.string.hard_decode_info,Toast.LENGTH_SHORT).show();
+                    if(mIsHardDecode == false)
+                        Toast.makeText(from,R.string.soft_decode_info,Toast.LENGTH_SHORT).show();
                     mEventHandler.sendEmptyMessage(EVENT_PLAY);
                 }
             }

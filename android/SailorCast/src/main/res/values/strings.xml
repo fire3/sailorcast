@@ -76,4 +76,6 @@
     <string name="feedback_welcom">您好，欢迎您反馈使用的感受和建议！</string>
 
     <string name="description">Media Controls</string>
+    <string name="hard_decode_info">正在开启硬件解码模式，如遇到播放问题请切换回软件解码模式</string>
+    <string name="soft_decode_info">切换至软件解码模式</string>
 </resources>
