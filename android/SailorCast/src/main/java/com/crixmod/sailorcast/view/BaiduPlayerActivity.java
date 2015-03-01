@@ -189,7 +189,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     public void onScrollBegin(GestureDetectorController.ScrollViewType paramScrollViewType) {
         isMove = true;
         if (controller.isShowing()) {
-            hideTitle();
+            controller.hide();
         }
 
         if(paramScrollViewType == GestureDetectorController.ScrollViewType.HORIZONTAL) {
