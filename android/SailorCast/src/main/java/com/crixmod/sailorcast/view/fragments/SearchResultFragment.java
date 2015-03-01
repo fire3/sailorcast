@@ -28,6 +28,8 @@ import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumDetailActivity;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SearchResultFragment extends Fragment
 implements OnGetAlbumsListener
 {
@@ -41,6 +43,8 @@ implements OnGetAlbumsListener
     private String mFailReason;
     private GridView mGrid;
     private TextView mEmpty;
+
+    AtomicInteger mFailCount;
 
     /**
      * Use this factory method to create a new instance of
@@ -74,6 +78,7 @@ implements OnGetAlbumsListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFailCount = new AtomicInteger(0);
         if (getArguments() != null) {
             mKeyword = getArguments().getString(ARG_KEYWORD);
             mSiteID = getArguments().getInt(ARG_SITEID, -1);
@@ -137,16 +142,19 @@ implements OnGetAlbumsListener
 
     @Override
     public void onGetAlbumsFailed(final SCFailLog err) {
-        if(getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mFailReason = getResources().getString(R.string.fail_reason_no_results);
-                    mEmpty.setText(mFailReason);
-                    if(err.getType() == SCFailLog.TYPE_FATAL_ERR)
-                        MobclickAgent.reportError(getActivity(),err.toJson());
-                }
-            });
+        int newCount = mFailCount.incrementAndGet();
+        if(newCount == SCSite.count()) {
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mFailReason = getResources().getString(R.string.fail_reason_no_results);
+                        mEmpty.setText(mFailReason);
+                        if (err.getType() == SCFailLog.TYPE_FATAL_ERR)
+                            MobclickAgent.reportError(getActivity(), err.toJson());
+                    }
+                });
+            }
         }
     }
 
@@ -229,6 +237,12 @@ implements OnGetAlbumsListener
                 params.width = point.x;
                 params.height = point.y;
                 ImageTools.displayImage(viewHolder.videoImage,album.getHorImageUrl(),point.x,point.y);
+            } else {
+                Point point = ImageTools.getGridVerPosterSize(mContext, 3);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.videoImage.getLayoutParams();
+                params.width = point.x;
+                params.height = point.y;
+                viewHolder.videoImage.setImageDrawable(getResources().getDrawable(R.drawable.loading));
             }
 
             viewHolder.resultContainer.setOnClickListener(new View.OnClickListener() {
