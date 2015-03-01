@@ -27,6 +27,7 @@ public class SearchResultsActivity extends BaseToolbarActivity {
     private static final String EXTRA_KEYWORD = "SearchResultsActivity:keyword";
 
     private FrameLayout mFragContainer;
+    private String mKeyword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class SearchResultsActivity extends BaseToolbarActivity {
             mFragContainer = (FrameLayout) findViewById(R.id.fragment_container);
             if (mFragContainer != null) {
                 Fragment fragment = SearchResultFragment.newInstance(mKeyword);
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
             }
         }
     }
@@ -96,14 +97,14 @@ public class SearchResultsActivity extends BaseToolbarActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            doMySearch(query);
+            mKeyword = query;
         } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             // Handle a suggestions click (because the suggestions all use ACTION_VIEW)
             //Uri data = intent.getData();
             String dataString = intent.getDataString();
-            doMySearch(dataString);
+            mKeyword = dataString;
         }
-
+        doMySearch(mKeyword);
     }
         @Override
     protected void onDestroy() {

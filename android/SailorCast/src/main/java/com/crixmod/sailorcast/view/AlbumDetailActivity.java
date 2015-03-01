@@ -87,7 +87,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SiteApi.cancel();
     }
 
     private void findViews() {

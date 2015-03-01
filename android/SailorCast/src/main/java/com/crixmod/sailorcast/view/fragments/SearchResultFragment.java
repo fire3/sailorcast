@@ -94,22 +94,24 @@ implements OnGetAlbumsListener
 
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState) {
-
         View view =  inflater.inflate(R.layout.fragment_search_result, container, false);
-        mGrid = (GridView) view.findViewById(R.id.result_grid);
-        mEmpty = (TextView) view.findViewById(android.R.id.empty);
-        mGrid.setEmptyView(mEmpty);
-        mEmpty.setText(mFailReason);
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        mGrid = (GridView) view.findViewById(R.id.result_grid);
+        mEmpty = (TextView) view.findViewById(android.R.id.empty);
+        mEmpty.setText(mFailReason);
         super.onViewCreated(view, savedInstanceState);
-        mGrid.setAdapter(mAdapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mGrid.setAdapter(mAdapter);
+        mGrid.setEmptyView(mEmpty);
+    }
 
     @Override
     public void onGetAlbumsSuccess(SCAlbums albums) {
