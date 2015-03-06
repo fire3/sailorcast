@@ -186,3 +186,7 @@
 -keep public class io.vov.vitamio.Vitamio { *; }
 -keep public class io.vov.vitamio.MediaMetadataRetriever { *; }
 #-libraryjars libs/SocialSDK_QQZone_2.jar
+
+-keep class cn.pedant.SweetAlert.Rotate3dAnimation {
+    public <init>(...);
+ }
