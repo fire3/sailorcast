@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="app_name">水手放映室</string>
     <string name="title_activity_album_list">AlbumListActivity</string>
@@ -62,11 +60,8 @@
     <string name="album_no_videos">对不起，没有找到可供播放的影片...</string>
     <string name="action_order_forward">顺序显示</string>
     <string name="action_order_backward">倒序显示</string>
-
-
     <string name="err_wrong_data">数据解析错误</string>
     <string name="err_http_fail">网络请求失败</string>
-
     <string name="share_thanks">感谢您对本软件的支持！</string>
     <string name="share_title">《水手放映室》——电视盒的另一半</string>
     <string name="share_content">《水手放映室》——最方便的DLNA网络视频投射应用，您家中电视盒的完美伴侣。</string>
@@ -74,8 +69,12 @@
     <string name="channel_share">感谢支持</string>
     <string name="channel_feedback">意见反馈</string>
     <string name="feedback_welcom">您好，欢迎您反馈使用的感受和建议！</string>
-
     <string name="description">Media Controls</string>
     <string name="hard_decode_info">正在开启硬件解码模式，如遇到播放问题请切换回软件解码模式</string>
     <string name="soft_decode_info">切换至软件解码模式</string>
+    <string name="title_activity_live_stream">LiveStreamActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="channel_live">直播</string>
+
 </resources>

@@ -13,18 +13,18 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:largeHeap="true"
         android:name=".SailorCast"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:theme="@style/SailorCast"
         tools:replace="android:icon" >
         <activity
-            android:screenOrientation="portrait"
             android:name=".view.SearchResultsActivity"
             android:label="@string/title_activity_search_results"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -37,18 +37,17 @@
         <service android:name=".model.cling.UpnpService" />
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".view.AlbumListActivity"
-            android:label="@string/title_activity_album_list" >
+            android:label="@string/title_activity_album_list"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.crixmod.sailorcast.view.LauncherActivity" />
         </activity>
-
         <activity
-            android:screenOrientation="portrait"
             android:name=".view.AlbumDetailActivity"
-            android:label="@string/title_activity_album_detail" >
+            android:label="@string/title_activity_album_detail"
+            android:screenOrientation="portrait" >
         </activity>
 
         <provider
@@ -56,24 +55,22 @@
             android:authorities="com.crixmod.sailorcast.search_content_provider" />
 
         <activity
-            android:screenOrientation="portrait"
             android:name=".view.BookmarkActivity"
-            android:label="@string/title_activity_bookmark" >
+            android:label="@string/title_activity_bookmark"
+            android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:screenOrientation="portrait"
             android:name=".view.HistoryActivity"
-            android:label="@string/title_activity_history" >
+            android:label="@string/title_activity_history"
+            android:screenOrientation="portrait" >
         </activity>
-
         <activity
-            android:screenOrientation="portrait"
             android:name=".view.LauncherActivity"
-            android:label="@string/app_name" >
-
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -82,21 +79,26 @@
                 android:value=".view.SearchResultsActivity" />
         </activity>
 
-        <meta-data android:value="54cc9582fd98c581270005cd" android:name="UMENG_APPKEY"></meta-data>
-        <meta-data android:value="crixmod" android:name="UMENG_CHANNEL"/>
-        <!--<meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/> -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="54cc9582fd98c581270005cd" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="crixmod" />
+        <!-- <meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/> -->
 
         <service
             android:name="com.umeng.update.net.DownloadingService"
             android:process=":DownloadingService" >
         </service>
+
         <activity
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
         <!-- ###################注册SDK使用的Activity###################### -->
-        <!--分享编辑页-->
+        <!-- 分享编辑页 -->
         <activity
             android:name="com.umeng.socialize.view.ShareActivity"
             android:configChanges="orientation|keyboard"
@@ -116,25 +118,24 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- 100424468，如果你使用的公用账号，则不需要修改；否则修改成你在QQ开放平台申请的 APP ID-->
+                <!-- 100424468，如果你使用的公用账号，则不需要修改；否则修改成你在QQ开放平台申请的 APP ID -->
                 <data android:scheme="1104217487" />
             </intent-filter>
         </activity>
-        <activity android:name="com.tencent.connect.common.AssistActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:screenOrientation="portrait">
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
-
         <activity
             android:name=".wxapi.WXEntryActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!-- Umeng feedback -->
-        <activity
-            android:name="com.umeng.fb.ConversationActivity"/>
+        <activity android:name="com.umeng.fb.ConversationActivity" />
 
         <!--
         <activity android:name="io.vov.vitamio.activity.InitActivity"
@@ -143,10 +144,11 @@
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-        vitamio -->
+        vitamio
+        -->
         <activity
-            android:name="com.crixmod.sailorcast.view.BaiduPlayerActivity"
-             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".view.BaiduPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="PlayingActivity"
             android:launchMode="singleTop"
@@ -154,12 +156,15 @@
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-
-
+        <activity
+            android:name=".view.LiveStreamActivity"
+            android:label="@string/title_activity_live_stream" >
+        </activity>
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.view.AlbumListActivity;
 import com.crixmod.sailorcast.view.BookmarkActivity;
 import com.crixmod.sailorcast.view.HistoryActivity;
+import com.crixmod.sailorcast.view.LiveStreamActivity;
 import com.umeng.fb.FeedbackAgent;
 
 /**
@@ -117,6 +118,8 @@ public class LauncherFragment extends Fragment {
                     break;
                 case    SCChannel.VARIETY:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_variety));
+                case    SCChannel.LIVE:
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_show));
                     break;
                 case    SCChannel.LOCAL_BOOKMARK:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark));
@@ -135,13 +138,23 @@ public class LauncherFragment extends Fragment {
             textView.setText(channel.toString());
 
 
-            if( !channel.isLocalChannel() ) {
+            if( !channel.isLocalChannel()) {
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         AlbumListActivity.launch(getActivity(), channel.getChannelID());
                     }
                 });
+            }
+
+            if(channel.getChannelID() == SCChannel.LIVE) {
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LiveStreamActivity.launch(getActivity());
+                    }
+                });
+
             }
 
             if(channel.getChannelID() == SCChannel.LOCAL_BOOKMARK) {

@@ -1,5 +1,7 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.util.Log;
+
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
@@ -8,6 +10,8 @@ import com.crixmod.sailorcast.model.SCChannel;
 import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCFailLog;
+import com.crixmod.sailorcast.model.SCLiveStream;
+import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
@@ -91,6 +95,10 @@ public class LetvApi extends BaseSiteApi{
     private final static String ALBUM_LIST_BY_FILTER_URL_FORMAT = "http://static.meizi.app.m.letv.com/android/" +
             "mod/mob/ctl/listalbum/act/index/src/1/cg/%s%s/ph/420003,420004/pn/%s/ps/%s/pcode/010110263/version/5.6.2.mindex.html";
 
+    private final static String LIVE_CUSTOM_CHANNEL_LIST_API = "http://api.live.letv.com/v1/channel/letv/100/1003"; //轮播数据接口
+    private final static String LIVE_CHANNEL_INFO_API = "http://api.live.letv.com/v1/playbill/current2/1003?channelIds=%s";
+    private final static String LIVE_CHANNEL_DETAIL_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?pcode=010110263&ce=%s&act=channelInfo&dev_id=%s&version=5.6.2&ctl=live&mod=mob";
+
     public LetvApi() {
         doUpdateTmOffset();
     }
@@ -116,7 +124,7 @@ public class LetvApi extends BaseSiteApi{
             return;
         }
 
-        HttpUtils.asyncGet(url,new Callback() {
+        HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -134,6 +142,17 @@ public class LetvApi extends BaseSiteApi{
                 }
             }
         });
+    }
+
+    public static String generateLiveEncryptKey(String streamID, String currentServerTime)
+    {
+        StringBuilder localStringBuilder = new StringBuilder();
+        localStringBuilder.append(streamID);
+        localStringBuilder.append(",");
+        localStringBuilder.append(currentServerTime);
+        localStringBuilder.append(",");
+        localStringBuilder.append("a2915e518ba60169f77");
+        return MD5.toMd5(localStringBuilder.toString());
     }
 
     private String generateVideoFileKey(SCVideo video, String currentServerTime)
@@ -722,7 +741,6 @@ public class LetvApi extends BaseSiteApi{
                             for (int j = 0; j < filterArray.length(); j++) {
 
                                 String key = filterArray.getJSONObject(j).optString("key");
-
                                 JSONArray valArray = filterArray.getJSONObject(j).optJSONArray("val");
                                 ArrayList<SCChannelFilterItem> items = new ArrayList<SCChannelFilterItem>();
                                 if(!key.equals("or")) {
@@ -759,6 +777,60 @@ public class LetvApi extends BaseSiteApi{
                     }
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+
+    //获取轮播频道数据
+    public void doGetCustomLiveStreams(final OnGetLiveStreamsListener listener) {
+        final String url = LIVE_CUSTOM_CHANNEL_LIST_API;
+        HttpUtils.asyncGet(url ,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONArray rowsJson = retJson.optJSONArray("rows");
+                    SCLiveStreams streams = new SCLiveStreams();
+
+                    if(rowsJson!=null && rowsJson.length() > 0) {
+                        String channelIDs =  "";
+                        for (int i = 0; i < rowsJson.length(); i++) {
+                            JSONObject rowJson = rowsJson.getJSONObject(i);
+                            String channelName = rowJson.optString("channelName");
+                            String channelEname = rowJson.optString("channelEname");
+                            int channelID = rowJson.optInt("channelId",0);
+
+                            SCLiveStream stream = new SCLiveStream();
+                            if(channelID != 0)
+                                stream.setChannelID(channelID+"");
+                            stream.setChannelName(channelName);
+                            stream.setChannelEName(channelEname);
+
+                            streams.add(stream);
+
+                            channelIDs = channelIDs +  channelID + ",";
+                        }
+
+
+                        String infoUrl = String.format(LIVE_CHANNEL_INFO_API,channelIDs);
+                        Log.d("fire3",infoUrl);
+
+
+                        if(listener != null)
+                            listener.onGetLiveStreamsSuccess(streams);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
     }

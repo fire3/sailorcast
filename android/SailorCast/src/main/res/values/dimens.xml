@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-<!--         native reader dimens -->
+    <!-- native reader dimens -->
     <dimen name="margin_small">4dp</dimen>
     <dimen name="margin_medium">8dp</dimen>
     <dimen name="margin_large">12dp</dimen>
@@ -12,7 +11,6 @@
     <dimen name="text_sz_medium">14sp</dimen>
     <dimen name="text_sz_large">16sp</dimen>
     <dimen name="text_sz_extra_large">20sp</dimen>
-
     <dimen name="font_size_tiny">12sp</dimen>
     <dimen name="font_size_small">13sp</dimen>
     <dimen name="font_size_normal">15sp</dimen>
@@ -21,13 +19,13 @@
     <!-- bottom toolbar -->
     <dimen name="bottom_ic_image_size">32dp</dimen>
 
-
     <!-- Paging GridView -->
     <dimen name="loading_view_progress_size">50dp</dimen>
     <dimen name="loading_view_margin_layout">10dp</dimen>
     <dimen name="loading_view_margin_right">5dp</dimen>
-
     <dimen name="player_title_margin">15.0dip</dimen>
-
     <dimen name="play_time_font_size">32.0sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
 </resources>
