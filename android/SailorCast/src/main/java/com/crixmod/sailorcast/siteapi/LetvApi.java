@@ -1,5 +1,6 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.crixmod.sailorcast.R;
@@ -97,7 +98,7 @@ public class LetvApi extends BaseSiteApi{
 
     private final static String LIVE_CUSTOM_CHANNEL_LIST_API = "http://api.live.letv.com/v1/channel/letv/100/1003"; //轮播数据接口
     private final static String LIVE_CHANNEL_INFO_API = "http://api.live.letv.com/v1/playbill/current2/1003?channelIds=%s";
-    private final static String LIVE_CHANNEL_DETAIL_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?pcode=010110263&ce=%s&act=channelInfo&dev_id=%s&version=5.6.2&ctl=live&mod=mob";
+    private final static String LIVE_CHANNEL_DETAIL_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?pcode=010110263&ce=%s&act=channelInfo&version=5.6.2&ctl=live&mod=mob";
 
     public LetvApi() {
         doUpdateTmOffset();
@@ -800,7 +801,6 @@ public class LetvApi extends BaseSiteApi{
                     SCLiveStreams streams = new SCLiveStreams();
 
                     if(rowsJson!=null && rowsJson.length() > 0) {
-                        String channelIDs =  "";
                         for (int i = 0; i < rowsJson.length(); i++) {
                             JSONObject rowJson = rowsJson.getJSONObject(i);
                             String channelName = rowJson.optString("channelName");
@@ -815,12 +815,7 @@ public class LetvApi extends BaseSiteApi{
 
                             streams.add(stream);
 
-                            channelIDs = channelIDs +  channelID + ",";
                         }
-
-
-                        String infoUrl = String.format(LIVE_CHANNEL_INFO_API,channelIDs);
-                        Log.d("fire3",infoUrl);
 
 
                         if(listener != null)
@@ -835,4 +830,146 @@ public class LetvApi extends BaseSiteApi{
         });
     }
 
+    public void doGetLiveStreamDesc(final SCLiveStream stream,  final OnGetLiveStreamDescListener listener) {
+
+        String url = String.format(LIVE_CHANNEL_INFO_API,stream.getChannelID());
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject rowJson = retJson.optJSONArray("rows").getJSONObject(0);
+                    if(rowJson!=null) {
+                        JSONObject curJson = rowJson.optJSONObject("cur");
+                        String curTitle = curJson.optString("title");
+                        String pic = curJson.optString("viewPic");
+                        stream.setCurrentPlayTitle(curTitle);
+                        stream.setHorPic(StringEscapeUtils.unescapeJava(pic));
+                        JSONObject nextJson = rowJson.optJSONObject("next");
+
+                        String nextTitle = nextJson.optString("title");
+                        String nextTime = nextJson.optString("playTime");
+                        stream.setNexPlayTitle(nextTitle);
+                        stream.setNextPlayStartTime(nextTime);
+
+                        listener.onGetLiveStreamDescSuccess(stream);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+
+
+    public String replaceTm(String paramString1, String paramString2)
+    {
+        if (TextUtils.isEmpty(paramString2)) {
+            return null;
+        }
+        int i = paramString2.indexOf("tm=");
+        if (i == -1) {
+            return paramString2 + "&tm=" + paramString1;
+        }
+        if (paramString2.indexOf("&", i) == -1) {}
+        for (int j = paramString2.length();; j = paramString2.indexOf("&", i)) {
+            return paramString2.replace(paramString2.substring(i, j), "tm=" + paramString1);
+        }
+    }
+
+
+    private void parseLiveStreamRealPlayUrl(final SCLiveStream stream, final OnGetLiveStreamPlayUrlListener listener,final JSONObject streamJson,  int HDtype) {
+        //HDtype == 0 : Super  1 : High  2 : Normal
+        if(streamJson == null)
+            return;
+
+        String liveSuperURL = streamJson.optString("liveUrl");
+        String streamID = streamJson.optString("streamId");
+        stream.setStreamSuperID(streamID);
+        String tm = streamJson.optString("tm");
+        String str4 = liveSuperURL + "&key=" + generateLiveEncryptKey(stream.getStreamSuperID(), tm);
+        StringBuilder localStringBuilder = new StringBuilder(str4);
+        localStringBuilder.append("&");
+        localStringBuilder.append("expect");
+        localStringBuilder.append("=");
+        localStringBuilder.append("3");
+        localStringBuilder.append("&");
+        localStringBuilder.append("format");
+        localStringBuilder.append("=");
+        localStringBuilder.append("1");
+
+        String url = localStringBuilder.toString();
+
+        HttpUtils.asyncGet(url,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    String location = retJson.optString("location");
+                    stream.setStreamSuperURL(StringEscapeUtils.unescapeJava(location));
+                    listener.onGetLiveStreamPlayUrlSuper(stream,stream.getStreamSuperURL());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+
+    }
+
+
+    public void doGetLiveStreamPlayUrl(final SCLiveStream stream,  final OnGetLiveStreamPlayUrlListener listener) {
+
+        String url = String.format(LIVE_CHANNEL_DETAIL_API,stream.getChannelEName());
+
+        HttpUtils.asyncGet(url,new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+
+                    JSONObject bodyJson = retJson.optJSONObject("body");
+                    JSONObject live720pJson = bodyJson.optJSONObject("live_url_720p");
+                    if(live720pJson != null) {
+                        parseLiveStreamRealPlayUrl(stream,listener,live720pJson,0);
+                    }
+                    JSONObject live1300Json = bodyJson.optJSONObject("live_url_1300");
+                    if(live1300Json != null) {
+                        parseLiveStreamRealPlayUrl(stream, listener, live1300Json, 1);
+                    }
+
+                    JSONObject live1000Json = bodyJson.optJSONObject("live_url_1000");
+                    if(live1000Json != null) {
+                        parseLiveStreamRealPlayUrl(stream, listener, live1000Json, 2);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+    }
 }

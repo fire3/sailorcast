@@ -13,12 +13,13 @@ import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.siteapi.LetvApi;
+import com.crixmod.sailorcast.siteapi.OnGetLiveStreamDescListener;
+import com.crixmod.sailorcast.siteapi.OnGetLiveStreamPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.OnGetLiveStreamsListener;
 
 public class LiveStreamActivity extends ActionBarActivity
 
-    implements OnGetLiveStreamsListener
-{
+    implements OnGetLiveStreamsListener, OnGetLiveStreamDescListener, OnGetLiveStreamPlayUrlListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +62,46 @@ public class LiveStreamActivity extends ActionBarActivity
 
     @Override
     public void onGetLiveStreamsSuccess(SCLiveStreams streams) {
-        for(SCLiveStream stream: streams) {
-            Log.d("fire3", stream.toString());
-        }
+        new LetvApi().doGetLiveStreamDesc(streams.get(0),this);
+        //for(SCLiveStream stream: streams) {
+        //    new LetvApi().doGetLiveStreamDesc(stream,this);
+        //}
 
     }
 
     @Override
     public void onGetLiveStreamsFailed(SCFailLog failReason) {
+
+    }
+
+    @Override
+    public void onGetLiveStreamDescSuccess(SCLiveStream stream) {
+        new LetvApi().doGetLiveStreamPlayUrl(stream,this);
+    }
+
+    @Override
+    public void onGetLiveStreamDescFailed(SCFailLog failReason) {
+
+    }
+
+    @Override
+    public void onGetLiveStreamPlayUrlNormal(SCLiveStream v, String urlNormal) {
+        Log.d("fire3",urlNormal);
+    }
+
+    @Override
+    public void onGetLiveStreamPlayUrlHigh(SCLiveStream v, String urlHigh) {
+
+        Log.d("fire3",urlHigh);
+    }
+
+    @Override
+    public void onGetLiveStreamPlayUrlSuper(SCLiveStream v, String urlSuper) {
+        Log.d("fire3",urlSuper);
+    }
+
+    @Override
+    public void onGetLiveStreamPlayUrlFailed(SCFailLog reason) {
 
     }
 }
