@@ -789,7 +789,9 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(url ,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                SCFailLog log = makeHttpFailLog(url,"doGetCustomLiveStreams",e);
+                if(listener != null)
+                    listener.onGetLiveStreamsFailed(log);
             }
 
             @Override
@@ -823,6 +825,9 @@ public class LetvApi extends BaseSiteApi{
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    SCFailLog log = makeHttpFailLog(url,"doGetCustomLiveStreams",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamsFailed(log);
                 }
 
 
@@ -832,11 +837,14 @@ public class LetvApi extends BaseSiteApi{
 
     public void doGetLiveStreamDesc(final SCLiveStream stream,  final OnGetLiveStreamDescListener listener) {
 
-        String url = String.format(LIVE_CHANNEL_INFO_API,stream.getChannelID());
+        final String url = String.format(LIVE_CHANNEL_INFO_API,stream.getChannelID());
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
+                SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamDesc",e);
+                if(listener != null)
+                    listener.onGetLiveStreamDescFailed(log);
             }
 
             @Override
@@ -858,10 +866,15 @@ public class LetvApi extends BaseSiteApi{
                         stream.setNexPlayTitle(nextTitle);
                         stream.setNextPlayStartTime(nextTime);
 
-                        listener.onGetLiveStreamDescSuccess(stream);
+                        if(listener != null)
+                            listener.onGetLiveStreamDescSuccess(stream);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+
+                    SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamDesc",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamDescFailed(log);
                 }
             }
         });
@@ -885,7 +898,7 @@ public class LetvApi extends BaseSiteApi{
     }
 
 
-    private void parseLiveStreamRealPlayUrl(final SCLiveStream stream, final OnGetLiveStreamPlayUrlListener listener,final JSONObject streamJson,  int HDtype) {
+    private void parseLiveStreamRealPlayUrl(final SCLiveStream stream, final OnGetLiveStreamPlayUrlListener listener,final JSONObject streamJson,  final int HDtype) {
         //HDtype == 0 : Super  1 : High  2 : Normal
         if(streamJson == null)
             return;
@@ -905,12 +918,15 @@ public class LetvApi extends BaseSiteApi{
         localStringBuilder.append("=");
         localStringBuilder.append("1");
 
-        String url = localStringBuilder.toString();
+        final String url = localStringBuilder.toString();
 
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
+                SCFailLog log = makeHttpFailLog(url,"parseLiveStreamRealPlayUrl",e);
+                if(listener != null)
+                    listener.onGetLiveStreamPlayUrlFailed(log);
             }
 
             @Override
@@ -919,9 +935,23 @@ public class LetvApi extends BaseSiteApi{
                 try {
                     JSONObject retJson = new JSONObject(ret);
                     String location = retJson.optString("location");
-                    stream.setStreamSuperURL(StringEscapeUtils.unescapeJava(location));
-                    listener.onGetLiveStreamPlayUrlSuper(stream,stream.getStreamSuperURL());
+                    if(HDtype == 0) {
+                        stream.setStreamSuperURL(StringEscapeUtils.unescapeJava(location));
+                        if(listener != null)
+                            listener.onGetLiveStreamPlayUrlSuper(stream, stream.getStreamSuperURL());
+                    } else if(HDtype == 1) {
+                        stream.setStreamHighURL(StringEscapeUtils.unescapeJava(location));
+                        if(listener != null)
+                            listener.onGetLiveStreamPlayUrlHigh(stream, stream.getStreamHighURL());
+                    } else if(HDtype == 2) {
+                        stream.setStreamNorURL(StringEscapeUtils.unescapeJava(location));
+                        if(listener != null)
+                            listener.onGetLiveStreamPlayUrlNormal(stream, stream.getStreamNorURL());
+                    }
                 } catch (Exception e) {
+                    SCFailLog log = makeHttpFailLog(url,"getRealLink",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamPlayUrlFailed(log);
                     e.printStackTrace();
                 }
 
@@ -935,12 +965,14 @@ public class LetvApi extends BaseSiteApi{
 
     public void doGetLiveStreamPlayUrl(final SCLiveStream stream,  final OnGetLiveStreamPlayUrlListener listener) {
 
-        String url = String.format(LIVE_CHANNEL_DETAIL_API,stream.getChannelEName());
+        final String url = String.format(LIVE_CHANNEL_DETAIL_API,stream.getChannelEName());
 
         HttpUtils.asyncGet(url,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamPlayUrl",e);
+                if(listener != null)
+                    listener.onGetLiveStreamPlayUrlFailed(log);
             }
 
             @Override
@@ -965,6 +997,9 @@ public class LetvApi extends BaseSiteApi{
                     }
 
                 } catch (Exception e) {
+                    SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamPlayUrl",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamPlayUrlFailed(log);
                     e.printStackTrace();
                 }
 
