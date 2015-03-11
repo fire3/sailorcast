@@ -127,7 +127,7 @@ public class LetvApi extends BaseSiteApi{
 
     private String getCurrentLiveServerTime() {
         if(tmLiveOffset != Long.MAX_VALUE)
-            return ""+ (System.currentTimeMillis()/1000 - tmOffset);
+            return ""+ (System.currentTimeMillis()/1000 - tmLiveOffset);
         else
             return null;
     }
@@ -901,23 +901,6 @@ public class LetvApi extends BaseSiteApi{
     }
 
 
-
-    public String replaceTm(String paramString1, String paramString2)
-    {
-        if (TextUtils.isEmpty(paramString2)) {
-            return null;
-        }
-        int i = paramString2.indexOf("tm=");
-        if (i == -1) {
-            return paramString2 + "&tm=" + paramString1;
-        }
-        if (paramString2.indexOf("&", i) == -1) {}
-        for (int j = paramString2.length();; j = paramString2.indexOf("&", i)) {
-            return paramString2.replace(paramString2.substring(i, j), "tm=" + paramString1);
-        }
-    }
-
-
     private void parseLiveStreamRealPlayUrl(final SCLiveStream stream, final OnGetLiveStreamPlayUrlListener listener,final JSONObject streamJson,  final int HDtype) {
         //HDtype == 0 : Super  1 : High  2 : Normal
         if(streamJson == null)
@@ -927,13 +910,11 @@ public class LetvApi extends BaseSiteApi{
         String streamID = streamJson.optString("streamId");
         stream.setStreamSuperID(streamID);
         String tm = streamJson.optString("tm");
+        Log.d("fire3","tm = %s" + tm);
         int tmInt = streamJson.optInt("tm");
         doUpdateLiveTmOffset(tmInt);
 
-        String str1 = getCurrentLiveServerTime();
-        String str2 = liveSuperURL;
-        String str3 = replaceTm(str1, str2);
-        String str4 = str3 + "&key=" + generateLiveEncryptKey(stream.getStreamSuperID(), str1);
+        String str4 = liveSuperURL + "&key=" + generateLiveEncryptKey(stream.getStreamSuperID(), tm);
         StringBuilder localStringBuilder = new StringBuilder(str4);
         localStringBuilder.append("&");
         localStringBuilder.append("expect");
