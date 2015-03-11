@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/halfAdapterItem"
+    android:layout_width="fill_parent"
+    android:layout_height="86.0dip"
+    android:background="@drawable/half_channel_item_bg">
+
+    <ImageView
+        android:id="@+id/programImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/poster_defualt_pic_lunbo"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/itemTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/programImg"
+        android:layout_marginLeft="13.0dip"
+        android:layout_toRightOf="@id/programImg"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="1.电影频道"
+        android:textSize="15.0dip" />
+
+    <TextView
+        android:id="@+id/itemDescPlayNameTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/itemTitle"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/programImg"
+        android:drawablePadding="8.0dip"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text=""
+        android:textSize="12.0dip" />
+
+    <TextView
+        android:id="@+id/itemDescNextPlayTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/itemTitle"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/programImg"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text=""
+        android:textSize="12.0dip" />
+</RelativeLayout>

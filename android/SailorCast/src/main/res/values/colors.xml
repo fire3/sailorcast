@@ -132,4 +132,7 @@
     <color name="title_select_color">#ff459e4a</color>
     <color name="normal_gray_color">#ff999999</color>
     <color name="text_color_pressed">#ffffffff</color>
+
+    <color name="half_channel_adapter_item_select_color">#ffc1ebff</color>
+
 </resources>
