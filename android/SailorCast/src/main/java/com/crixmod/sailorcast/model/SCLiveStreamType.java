@@ -17,6 +17,10 @@ public class SCLiveStreamType {
         this.typeId = typeId;
     }
 
+    public static int getTypeCount() {
+        return 3;
+    }
+
     public int getTypeId() {
         return typeId;
     }
