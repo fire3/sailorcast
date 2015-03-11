@@ -31,6 +31,10 @@ public class LiveStreamListAdapter extends BaseAdapter {
         TextView nextPlayTitle;
     }
 
+    public void addLiveStream(SCLiveStream stream) {
+        mStreams.add(stream);
+    }
+
     public LiveStreamListAdapter(Context mContext) {
         this.mContext = mContext;
     }
@@ -69,7 +73,10 @@ public class LiveStreamListAdapter extends BaseAdapter {
     private void setupViewHolder(View view, int i, ViewHolder viewHolder, SCLiveStream stream) {
         viewHolder.streamTitle.setText(stream.getChannelName());
         viewHolder.currentPlayTitle.setText(stream.getCurrentPlayTitle());
-        viewHolder.nextPlayTitle.setText(stream.getNextPlayStartTime() + " " + stream.getNexPlayTitle());
+        viewHolder.currentPlayTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiaobofang_normal,0,0,0);
+        String nextTime = stream.getNextPlayStartTime();
+        String nTime = nextTime.substring(stream.getNextPlayStartTime().lastIndexOf(" "));
+        viewHolder.nextPlayTitle.setText(nTime + " " + stream.getNexPlayTitle());
         viewHolder.streamContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,6 +3,7 @@ package com.crixmod.sailorcast.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -30,7 +31,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
-public class LiveStreamActivity extends BaseToolbarActivity
+public class LiveStreamActivity extends BaseToolbarActivity implements LiveStreamListFragment.OnFragmentInteractionListener
 {
 
     ViewPager mViewPager;
@@ -97,17 +98,20 @@ public class LiveStreamActivity extends BaseToolbarActivity
         activity.startActivity(mpdIntent);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-        private class SitePagerAdapter extends FragmentPagerAdapter {
+    }
+
+
+    private class SitePagerAdapter extends FragmentPagerAdapter {
 
         private Context mContext;
-        private int mChannelID;
         private HashMap<Integer,LiveStreamListFragment> mPageReferenceMap;
 
-        public SitePagerAdapter(FragmentManager fm, Context context, int mChannelID) {
+        public SitePagerAdapter(FragmentManager fm, Context context) {
             super(fm);
             this.mContext = context;
-            this.mChannelID = mChannelID;
             mPageReferenceMap = new HashMap<>();
         }
 
@@ -144,7 +148,7 @@ public class LiveStreamActivity extends BaseToolbarActivity
         @Override
         public CharSequence getPageTitle(int position) {
             //return SiteApi.getSiteName(positionToSiteID(position), mContext);
-            return "";
+            return SCLiveStreamType.getTypeName(position);
         }
     }
 }

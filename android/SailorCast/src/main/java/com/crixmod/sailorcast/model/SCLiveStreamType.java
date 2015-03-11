@@ -24,5 +24,15 @@ public class SCLiveStreamType {
     public int getTypeId() {
         return typeId;
     }
+
+    public static String getTypeName(int typeId) {
+        if(typeId == TYPE_CAST)
+            return TYPE_CAST_NAME;
+        if(typeId == TYPE_CCTV)
+            return TYPE_CCTV_NAME;
+        if(typeId == TYPE_PROVINCE_TV)
+            return TYPE_PROVINCE_TV_NAME;
+        return null;
+    }
 }
 
