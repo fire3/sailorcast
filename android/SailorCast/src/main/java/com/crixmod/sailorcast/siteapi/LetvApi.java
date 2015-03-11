@@ -62,6 +62,7 @@ public class LetvApi extends BaseSiteApi{
     //arg: mmsid currentServerTime key vid
 
     private static long tmOffset = Long.MAX_VALUE;
+    private static long tmLiveOffset = Long.MAX_VALUE;
 
     private final static String  VIDEO_REAL_LINK_APPENDIX = "&format=1&expect=1&termid=2&pay=0&ostype=android&hwtype=iphone";
 
@@ -111,6 +112,12 @@ public class LetvApi extends BaseSiteApi{
         }
     }
 
+    private synchronized void updateLiveTmOffset(int serverTime) {
+        if(tmLiveOffset == Long.MAX_VALUE) {
+            tmLiveOffset = (System.currentTimeMillis() / 1000) - serverTime;
+        }
+    }
+
     private String getCurrentServerTime() {
         if(tmOffset != Long.MAX_VALUE)
             return ""+ (System.currentTimeMillis()/1000 - tmOffset);
@@ -118,6 +125,19 @@ public class LetvApi extends BaseSiteApi{
             return null;
     }
 
+    private String getCurrentLiveServerTime() {
+        if(tmLiveOffset != Long.MAX_VALUE)
+            return ""+ (System.currentTimeMillis()/1000 - tmOffset);
+        else
+            return null;
+    }
+
+    private synchronized void doUpdateLiveTmOffset(int tm) {
+        if(tmLiveOffset != Long.MAX_VALUE) {
+            return;
+        }
+        updateLiveTmOffset(tm);
+    }
     private synchronized void doUpdateTmOffset() {
         String url = SERVER_TIME_URL;
 
@@ -907,7 +927,13 @@ public class LetvApi extends BaseSiteApi{
         String streamID = streamJson.optString("streamId");
         stream.setStreamSuperID(streamID);
         String tm = streamJson.optString("tm");
-        String str4 = liveSuperURL + "&key=" + generateLiveEncryptKey(stream.getStreamSuperID(), tm);
+        int tmInt = streamJson.optInt("tm");
+        doUpdateLiveTmOffset(tmInt);
+
+        String str1 = getCurrentLiveServerTime();
+        String str2 = liveSuperURL;
+        String str3 = replaceTm(str1, str2);
+        String str4 = str3 + "&key=" + generateLiveEncryptKey(stream.getStreamSuperID(), str1);
         StringBuilder localStringBuilder = new StringBuilder(str4);
         localStringBuilder.append("&");
         localStringBuilder.append("expect");
