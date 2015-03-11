@@ -1,5 +1,7 @@
 package com.crixmod.sailorcast.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by fire3 on 15-3-9.
  */
@@ -17,6 +19,20 @@ public class SCLiveStream {
     private String mCurrentPlayTitle;
     private String mNexPlayTitle;
     private String mNextPlayStartTime;
+    private ArrayList<WeekDay> mWeekDays = new ArrayList<>();
+
+    public class WeekDay {
+        public String weekDayName;
+        public String weekDayId;
+    }
+
+    public void addWeekDay(String weekDayName, String weekDayId) {
+        WeekDay weekDay = new WeekDay();
+        weekDay.weekDayId = weekDayId;
+        weekDay.weekDayName = weekDayName;
+        mWeekDays.add(weekDay);
+    }
+
 
     public String getChannelID() {
         return mChannelID;

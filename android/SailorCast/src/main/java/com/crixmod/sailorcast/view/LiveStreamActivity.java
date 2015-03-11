@@ -92,7 +92,7 @@ public class LiveStreamActivity extends ActionBarActivity
     @Override
     public void onGetLiveStreamPlayUrlHigh(SCLiveStream v, String urlHigh) {
 
-        Log.d("fire3",urlHigh);
+        Log.d("fire3", urlHigh);
     }
 
     @Override

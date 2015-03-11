@@ -1,6 +1,5 @@
 package com.crixmod.sailorcast.siteapi;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.crixmod.sailorcast.R;
@@ -12,6 +11,8 @@ import com.crixmod.sailorcast.model.SCChannelFilter;
 import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCLiveStream;
+import com.crixmod.sailorcast.model.SCLiveStreamProgram;
+import com.crixmod.sailorcast.model.SCLiveStreamPrograms;
 import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
@@ -100,6 +101,7 @@ public class LetvApi extends BaseSiteApi{
     private final static String LIVE_CUSTOM_CHANNEL_LIST_API = "http://api.live.letv.com/v1/channel/letv/100/1003"; //轮播数据接口
     private final static String LIVE_CHANNEL_INFO_API = "http://api.live.letv.com/v1/playbill/current2/1003?channelIds=%s";
     private final static String LIVE_CHANNEL_DETAIL_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?pcode=010110263&ce=%s&act=channelInfo&version=5.6.2&ctl=live&mod=mob";
+    private final static String LIVE_CHANNEL_DETAIL_BYDAY_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?d=%s&ctl=live&mod=mob&pcode=010110263&ce=%s&act=channelInfo&version=5.6.2";
 
     public LetvApi() {
         doUpdateTmOffset();
@@ -855,9 +857,10 @@ public class LetvApi extends BaseSiteApi{
         });
     }
 
-    public void doGetLiveStreamDesc(final SCLiveStream stream,  final OnGetLiveStreamDescListener listener) {
+    private void getLiveStreamPic(final SCLiveStream stream, final OnGetLiveStreamDescListener listener) {
 
         final String url = String.format(LIVE_CHANNEL_INFO_API,stream.getChannelID());
+
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -898,6 +901,116 @@ public class LetvApi extends BaseSiteApi{
                 }
             }
         });
+
+    }
+
+    public void doGetLiveStreamProgramsByWeekDay(final SCLiveStream stream, SCLiveStream.WeekDay weekday, final OnGetLiveStreamProgramsListener listener) {
+
+        final String url = String.format(LIVE_CHANNEL_DETAIL_BYDAY_API,weekday.weekDayId,stream.getChannelEName());
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamProgramsByWeekDay",e);
+                if(listener != null)
+                    listener.onGetLiveStreamProgramsFailed(log);
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject bodyJson = retJson.optJSONObject("body");
+
+                    JSONArray programListJson = bodyJson.optJSONArray("programList");
+                    if(programListJson != null && programListJson.length() > 0) {
+                        SCLiveStreamPrograms programs = new SCLiveStreamPrograms();
+                        for (int i = 0; i < programListJson.length(); i++) {
+                            JSONObject programJson = programListJson.getJSONObject(i);
+                            String title = programJson.optString("title");
+                            String playTime = programJson.optString("playtime");
+                            String endTime = programJson.optString("endtime");
+                            SCLiveStreamProgram p = new SCLiveStreamProgram(title,playTime,endTime);
+                            programs.add(p);
+                        }
+
+                        if(listener != null)
+                            listener.onGetLiveStreamProgramsSuccess(stream,programs);
+                    }
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamProgramsByWeekDay",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamProgramsFailed(log);
+                }
+
+            }
+        });
+    }
+
+    public void doGetLiveStreamDesc(final SCLiveStream stream,  final OnGetLiveStreamDescListener listener) {
+
+        final String infoUrl = String.format(LIVE_CHANNEL_DETAIL_API, stream.getChannelEName());
+
+        HttpUtils.asyncGet(infoUrl, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamDesc",e);
+                if(listener != null)
+                    listener.onGetLiveStreamDescFailed(log);
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject bodyJson = retJson.optJSONObject("body");
+                    JSONObject programInfoJson = bodyJson.optJSONObject("programInfo");
+                    JSONArray dateListJson = programInfoJson.optJSONArray("dateList");
+                    if(dateListJson != null && dateListJson.length() > 0) {
+                        for (int i = 0; i < dateListJson.length(); i++) {
+                            JSONObject dateJson = dateListJson.getJSONObject(i);
+                            String weekDayID = dateJson.optString("d");
+                            String weekDayName = dateJson.optString("weekday");
+                            stream.addWeekDay(weekDayName,weekDayID);
+                        }
+                    }
+
+                    JSONArray programListJson = bodyJson.optJSONArray("programList");
+                    if(programListJson != null && programListJson.length() >= 2) {
+                        for (int i = 0; i < 2; i++) {
+                            JSONObject programJson = programListJson.getJSONObject(i);
+                            String title = programJson.optString("title");
+                            String playTime = programJson.optString("playtime");
+                            if(i == 0)
+                                stream.setCurrentPlayTitle(title);
+                            else {
+                                stream.setNexPlayTitle(title);
+                                stream.setNextPlayStartTime(playTime);
+                            }
+                        }
+                    }
+
+                    if(stream.getChannelID() != null)
+                        getLiveStreamPic(stream,listener);
+                    else
+                        listener.onGetLiveStreamDescSuccess(stream);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamDesc",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamDescFailed(log);
+                }
+
+            }
+        });
+
     }
 
 
