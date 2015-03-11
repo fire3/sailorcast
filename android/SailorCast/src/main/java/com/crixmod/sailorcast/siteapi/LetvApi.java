@@ -13,6 +13,7 @@ import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCLiveStreamProgram;
 import com.crixmod.sailorcast.model.SCLiveStreamPrograms;
+import com.crixmod.sailorcast.model.SCLiveStreamType;
 import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
@@ -804,9 +805,15 @@ public class LetvApi extends BaseSiteApi{
         });
     }
 
+    public void doGetLiveStreamsByType(final OnGetLiveStreamsListener listener, SCLiveStreamType type) {
+
+        if(type.getTypeId() == SCLiveStreamType.TYPE_CAST) {
+            doGetCastLiveStreams(listener);
+        }
+    }
 
     //获取轮播频道数据
-    public void doGetCustomLiveStreams(final OnGetLiveStreamsListener listener) {
+    private void doGetCastLiveStreams(final OnGetLiveStreamsListener listener) {
         final String url = LIVE_CUSTOM_CHANNEL_LIST_API;
         HttpUtils.asyncGet(url ,new Callback() {
             @Override

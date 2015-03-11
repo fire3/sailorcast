@@ -21,10 +21,12 @@ public class SCLiveStream {
     private String mNextPlayStartTime;
     private ArrayList<WeekDay> mWeekDays = new ArrayList<>();
 
+
     public class WeekDay {
         public String weekDayName;
         public String weekDayId;
     }
+
 
     public void addWeekDay(String weekDayName, String weekDayId) {
         WeekDay weekDay = new WeekDay();

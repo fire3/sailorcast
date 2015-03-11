@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCLiveStream;
+import com.crixmod.sailorcast.model.SCLiveStreamType;
 import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.siteapi.LetvApi;
 import com.crixmod.sailorcast.siteapi.OnGetLiveStreamDescListener;
@@ -26,7 +27,7 @@ public class LiveStreamActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_stream);
 
-        new LetvApi().doGetCustomLiveStreams(this);
+        new LetvApi().doGetLiveStreamsByType(this, new SCLiveStreamType(SCLiveStreamType.TYPE_CAST));
     }
 
 
