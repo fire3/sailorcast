@@ -18,6 +18,7 @@ import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.SCVideos;
+import com.crixmod.sailorcast.model.SCWeekDay;
 import com.crixmod.sailorcast.utils.HttpUtils;
 import com.crixmod.sailorcast.utils.MD5;
 import com.squareup.okhttp.Callback;
@@ -911,7 +912,7 @@ public class LetvApi extends BaseSiteApi{
 
     }
 
-    public void doGetLiveStreamProgramsByWeekDay(final SCLiveStream stream, SCLiveStream.WeekDay weekday, final OnGetLiveStreamProgramsListener listener) {
+    public void doGetLiveStreamProgramsByWeekDay(final SCLiveStream stream, SCWeekDay weekday, final OnGetLiveStreamProgramsListener listener) {
 
         final String url = String.format(LIVE_CHANNEL_DETAIL_BYDAY_API,weekday.weekDayId,stream.getChannelEName());
         HttpUtils.asyncGet(url, new Callback() {

@@ -22,6 +22,7 @@ package com.crixmod.sailorcast.controller.cling;
 import android.util.Log;
 
 import com.crixmod.sailorcast.SailorCast;
+import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.model.cling.CDevice;
 import com.crixmod.sailorcast.model.cling.RendererState;
@@ -359,10 +360,20 @@ public class RendererCommand implements Runnable, IRendererCommand {
                         "object.item.videoItem");
         return trackMetadata;
     }
-    public void lauchSCVideo(final SCVideo video, final String m3u8Url) {
+
+    private TrackMetadata fillSCLiveStreamMetadata(final SCLiveStream stream) {
+        final TrackMetadata trackMetadata =
+                new TrackMetadata(stream.getChannelID(), stream.getChannelName(),
+                        "", "", "", stream.getHorPic(),
+                        "object.item.videoItem");
+        return trackMetadata;
+    }
+
+
+    public void launchSCLiveStream(final SCLiveStream stream, final String m3u8Url) {
         if (getAVTransportService() == null)
             return;
-        final TrackMetadata trackMetadata = fillSCVideoMetadata(video);
+        final TrackMetadata trackMetadata = fillSCLiveStreamMetadata(stream);
      	// Stop playback before setting URI
 		controlPoint.execute(new Stop(getAVTransportService()) {
 			@Override
@@ -389,23 +400,12 @@ public class RendererCommand implements Runnable, IRendererCommand {
 
     }
 
-    @Override
-    public void lauchSCVideoHigh(final SCVideo video) {
+
+    public void launchSCVideo(final SCVideo video, final String m3u8Url) {
         if (getAVTransportService() == null)
-			return;
-
-
-		String type = "videoItem";
-
-		// TODO genre && artURI
-		final TrackMetadata trackMetadata =
-                new TrackMetadata(video.getVideoID(), video.getVideoTitle(),
-				"", "", "", "",
-				"object.item." + type);
-
-		Log.i(TAG, "TrackMetadata : "+trackMetadata.toString());
-
-		// Stop playback before setting URI
+            return;
+        final TrackMetadata trackMetadata = fillSCVideoMetadata(video);
+     	// Stop playback before setting URI
 		controlPoint.execute(new Stop(getAVTransportService()) {
 			@Override
 			public void success(ActionInvocation invocation)
@@ -423,9 +423,10 @@ public class RendererCommand implements Runnable, IRendererCommand {
 
 			public void callback()
 			{
-				setURI(video.getM3U8High(), trackMetadata);
+				setURI(m3u8Url, trackMetadata);
 			}
 		});
+
 
 
     }

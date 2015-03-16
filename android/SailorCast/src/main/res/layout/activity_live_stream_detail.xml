@@ -1,0 +1,58 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.crixmod.sailorcast.view.AlbumActivity">
+
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="4"
+        tools:context="com.crixmod.sailorcast.view.AlbumActivity">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_weight="3"
+            android:layout_height="0dp">
+
+            <com.crixmod.sailorcast.uiutils.SlidingTabLayout
+                android:id="@+id/sliding_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </com.crixmod.sailorcast.uiutils.SlidingTabLayout>
+
+            <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:paddingBottom="@dimen/margin_medium"
+            android:orientation="vertical"
+            android:layout_height="0dp">
+
+            <include layout="@layout/album_play_button_dlna"/>
+            <include layout="@layout/album_play_button_phone"/>
+            <TextView
+                android:layout_marginBottom="@dimen/margin_large"
+                android:gravity="center"
+                android:id="@+id/error_message"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -37,4 +37,13 @@ public class SCLiveStreamProgram {
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public String toString() {
+        return "SCLiveStreamProgram{" +
+                "title='" + title + '\'' +
+                ", playTime='" + playTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                '}';
+    }
 }

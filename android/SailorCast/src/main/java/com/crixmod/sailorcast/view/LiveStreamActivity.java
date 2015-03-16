@@ -118,7 +118,7 @@ public class LiveStreamActivity extends BaseToolbarActivity implements LiveStrea
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Object obj = super.instantiateItem(container, position);
-            if(obj instanceof AlbumListFragment) {
+            if(obj instanceof LiveStreamListFragment) {
                 mPageReferenceMap.put(position, (LiveStreamListFragment) obj);
             }
             return obj;

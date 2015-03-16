@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/programImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:background="@drawable/poster_defualt_pic_lunbo"
         android:scaleType="centerCrop" />

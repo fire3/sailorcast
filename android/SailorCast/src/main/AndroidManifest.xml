@@ -165,6 +165,10 @@
             android:name=".view.LiveStreamActivity"
             android:label="@string/title_activity_live_stream" >
         </activity>
+        <activity
+            android:name=".view.LiveStreamDetailActivity"
+            android:label="@string/title_activity_live_stream_detail" >
+        </activity>
     </application>
 
 </manifest>

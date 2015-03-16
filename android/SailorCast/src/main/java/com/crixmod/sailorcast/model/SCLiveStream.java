@@ -1,5 +1,7 @@
 package com.crixmod.sailorcast.model;
 
+import com.crixmod.sailorcast.SailorCast;
+
 import java.util.ArrayList;
 
 /**
@@ -19,20 +21,15 @@ public class SCLiveStream {
     private String mCurrentPlayTitle;
     private String mNexPlayTitle;
     private String mNextPlayStartTime;
-    private ArrayList<WeekDay> mWeekDays = new ArrayList<>();
+    private SCWeekDays mSCWeekDays = new SCWeekDays();
 
-
-    public class WeekDay {
-        public String weekDayName;
-        public String weekDayId;
+    public SCWeekDays getWeekDays() {
+        return mSCWeekDays;
     }
 
-
     public void addWeekDay(String weekDayName, String weekDayId) {
-        WeekDay weekDay = new WeekDay();
-        weekDay.weekDayId = weekDayId;
-        weekDay.weekDayName = weekDayName;
-        mWeekDays.add(weekDay);
+        SCWeekDay SCWeekDay = new SCWeekDay(weekDayName,weekDayId);
+        mSCWeekDays.add(SCWeekDay);
     }
 
 
@@ -156,5 +153,16 @@ public class SCLiveStream {
                 ", mNexPlayTitle='" + mNexPlayTitle + '\'' +
                 ", mNextPlayStartTime='" + mNextPlayStartTime + '\'' +
                 '}';
+    }
+
+
+    public String toJson() {
+        String ret = SailorCast.getGson().toJson(this);
+        return ret;
+    }
+
+    public static SCLiveStream fromJson(String json) {
+        SCLiveStream stream  = SailorCast.getGson().fromJson(json,SCLiveStream.class);
+        return stream;
     }
 }

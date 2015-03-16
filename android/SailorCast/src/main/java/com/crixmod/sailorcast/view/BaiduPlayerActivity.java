@@ -36,6 +36,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 import com.crixmod.sailorcast.R;
+import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCVideo;
 import com.crixmod.sailorcast.utils.BrightControl;
 
@@ -306,6 +307,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private String mURL;
     private Bundle extras;
     private static final String MEDIA = "media";
+    private static final String STREAM = "stream";
     private static final String VIDEO = "video";
     private static final String HWDECODE = "hwdecode";
     private static final String INITPOS = "initpos";
@@ -314,6 +316,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
     private RelativeLayout mVideoTitleView;
     private TextView mVideoTitle;
     private SCVideo mVideo;
+    private SCLiveStream mStream;
     //private Handler mHandler;
     //private static final int    FADE_OUT = 1;
     private boolean mIsHardDecode = false;
@@ -427,6 +430,13 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         extras = getIntent().getExtras();
         mURL = extras.getString(MEDIA);
         mVideo = extras.getParcelable(VIDEO);
+        String mStreamString = extras.getString(STREAM);
+
+        if(mStreamString != null && !mStreamString.isEmpty())
+            mStream = SCLiveStream.fromJson(mStreamString);
+
+
+
         mIsHardDecode = extras.getBoolean(HWDECODE, false);
         mInitialPosition = extras.getLong(INITPOS, 0);
         mLoadingView = (LinearLayout) findViewById(R.id.loading);
@@ -437,7 +447,10 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
         mHDCheckBox.setChecked(mIsHardDecode);
         mVideoTitleView.setVisibility(View.GONE);
         mVideoTitle = (TextView) findViewById(R.id.video_title);
-        mVideoTitle.setText(mVideo.getVideoTitle());
+        if(mVideo != null)
+            mVideoTitle.setText(mVideo.getVideoTitle());
+        if(mStream != null)
+            mVideoTitle.setText(mStream.getChannelName());
         //mHandler = new MessageHandler(mVideoTitleView);
         final ImageView mVideoClose = (ImageView) findViewById(R.id.video_close);
         LinearLayout mClose = (LinearLayout) findViewById(R.id.video_close_container);
@@ -717,6 +730,13 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 	}
 
 
+
+    public static void launch(Activity fromActivity,SCLiveStream stream, String url) {
+        Intent mpdIntent = new Intent(fromActivity, BaiduPlayerActivity.class)
+                .putExtra(STREAM, stream.toJson())
+                .putExtra(MEDIA, url);
+        fromActivity.startActivity(mpdIntent);
+    }
 
     public static void launch(Activity fromActivity,SCVideo video, String url) {
         Intent mpdIntent = new Intent(fromActivity, BaiduPlayerActivity.class)

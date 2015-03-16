@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/halfAdapterItem"
+    android:layout_width="fill_parent"
+    android:padding="@dimen/margin_medium"
+    android:layout_height="wrap_content"
+    android:background="@drawable/half_channel_item_bg">
+    <TextView
+        android:id="@+id/itemTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13.0dip"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/grey_medium"
+        android:text="1.电影频道"
+        android:textSize="14.0dip" />
+</RelativeLayout>

@@ -484,6 +484,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.hide();
                         mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
+                        pDialog.hide();
                         BaiduPlayerActivity.launch(from, v, url);
                     }
                 });
@@ -523,7 +524,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 	{
         mHistoryDb.addHistory(mAlbum,video,0);
 		IRendererCommand rendererCommand = SailorCast.factory.createRendererCommand(SailorCast.factory.createRendererState());
-		rendererCommand.lauchSCVideo(video,url);
+		rendererCommand.launchSCVideo(video, url);
 	}
 
 }

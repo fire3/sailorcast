@@ -15,6 +15,7 @@ import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.utils.ImageTools;
+import com.crixmod.sailorcast.view.LiveStreamDetailActivity;
 
 /**
  * Created by fire3 on 15-3-11.
@@ -70,17 +71,25 @@ public class LiveStreamListAdapter extends BaseAdapter {
 
     }
 
-    private void setupViewHolder(View view, int i, ViewHolder viewHolder, SCLiveStream stream) {
+    private void setupViewHolder(View view, int i, ViewHolder viewHolder, final SCLiveStream stream) {
         viewHolder.streamTitle.setText(stream.getChannelName());
         viewHolder.currentPlayTitle.setText(stream.getCurrentPlayTitle());
         viewHolder.currentPlayTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiaobofang_normal,0,0,0);
         String nextTime = stream.getNextPlayStartTime();
         String nTime = nextTime.substring(stream.getNextPlayStartTime().lastIndexOf(" "));
         viewHolder.nextPlayTitle.setText(nTime + " " + stream.getNexPlayTitle());
+
+        viewHolder.streamImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LiveStreamDetailActivity.launch((Activity)mContext, stream);
+            }
+        });
+
         viewHolder.streamContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                LiveStreamDetailActivity.launch((Activity) mContext,stream);
             }
         });
 

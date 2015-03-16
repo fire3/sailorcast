@@ -70,6 +70,7 @@ public class HttpUtils {
     public static void asyncGet(Request request, Callback callback) {
         Log.d("fire3", "request Url: " + request.urlString());
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
+
     }
 
     public static void asyncGet(Request request, final Activity activity, final Callback callback) {

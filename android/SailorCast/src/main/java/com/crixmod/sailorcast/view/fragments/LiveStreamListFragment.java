@@ -73,7 +73,6 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
                 public void handleMessage(Message msg) {
                     if(msg.what == 0) {
                         SCLiveStream stream = (SCLiveStream) msg.obj;
-                        Log.d("fire3", "Stream recv: " + stream.toString());
                         mAdapter.addLiveStream(stream);
                         mAdapter.notifyDataSetChanged();
                     }
