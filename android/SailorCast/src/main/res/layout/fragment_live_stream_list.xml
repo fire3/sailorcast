@@ -3,10 +3,15 @@
     android:layout_height="match_parent"
     tools:context="com.crixmod.sailorcast.view.fragments.LiveStreamListFragment">
 
-<ListView
-    android:id="@+id/live_stream_listview"
+<com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView
+    android:id="@+id/result_grid"
+    android:numColumns="1"
+    android:padding="2dp"
+    android:verticalSpacing="2dp"
+    android:horizontalSpacing="2dp"
+    android:stretchMode="columnWidth"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-</ListView>
+</com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView>
 
 </FrameLayout>

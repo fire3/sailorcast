@@ -22,6 +22,7 @@ import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.siteapi.LetvApi;
 import com.crixmod.sailorcast.siteapi.OnGetLiveStreamDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetLiveStreamsListener;
+import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.adapters.LiveStreamListAdapter;
 
 /**
@@ -40,7 +41,12 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
     private OnFragmentInteractionListener mListener;
     private LiveStreamListAdapter mAdapter;
     private Handler mHandler;
-    private ListView mListView;
+    private int mPageNo = 0;
+    private int mPageTotal;
+    private int mPageSize = 10;
+    private SCLiveStreams mStreams;
+
+    private PagingGridView mGridView;
 
     /**
      * Use this factory method to create a new instance of
@@ -91,8 +97,36 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mListView = (ListView) view.findViewById(R.id.live_stream_listview);
-        mListView.setAdapter(mAdapter);
+        mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
+        mGridView.setAdapter(mAdapter);
+        mGridView.setHasMoreItems(true);
+        mGridView.setPagingableListener(new PagingGridView.Pagingable() {
+            @Override
+            public void onLoadMoreItems() {
+                loadMorItems();
+            }
+        });
+    }
+
+    private synchronized  void loadMorItems() {
+        if(mStreams == null)
+            return;
+        int start = mPageNo * mPageSize;
+        int end = start + mPageSize;
+        if(start >= mStreams.size()) {
+            mGridView.setHasMoreItems(false);
+            return;
+        }
+        if(end >= mStreams.size()) {
+            end = mStreams.size() - 1;
+            mGridView.setHasMoreItems(false);
+        }
+        for (int i = start; i < end; i++) {
+            SCLiveStream stream = mStreams.get(i);
+            new LetvApi().doGetLiveStreamDesc(stream, this);
+        }
+
+        mPageNo ++;
     }
 
     @Override
@@ -113,10 +147,17 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
     }
 
     @Override
-    public void onGetLiveStreamsSuccess(SCLiveStreams streams) {
-        for(SCLiveStream stream : streams) {
-            new LetvApi().doGetLiveStreamDesc(stream,this);
-        }
+    public void onGetLiveStreamsSuccess(final SCLiveStreams streams) {
+//        for(SCLiveStream stream : streams) {
+//            new LetvApi().doGetLiveStreamDesc(stream,this);
+//        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mStreams = streams;
+                loadMorItems();
+            }
+        });
     }
 
     @Override
