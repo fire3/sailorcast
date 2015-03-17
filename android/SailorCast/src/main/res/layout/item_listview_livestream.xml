@@ -14,13 +14,19 @@
         android:src="@drawable/poster_defualt_pic_lunbo"
         android:scaleType="fitCenter" />
 
+    <LinearLayout
+        android:paddingLeft="@dimen/margin_medium"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_toRightOf="@id/programImg"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
     <TextView
+        android:layout_margin="@dimen/margin_small"
         android:id="@+id/itemTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/programImg"
-        android:layout_marginLeft="13.0dip"
-        android:layout_toRightOf="@id/programImg"
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/grey_dark"
@@ -28,29 +34,24 @@
         android:textSize="15.0dip" />
 
     <TextView
+        android:layout_margin="@dimen/margin_small"
         android:id="@+id/itemDescPlayNameTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/itemTitle"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/programImg"
         android:drawablePadding="8.0dip"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text=""
         android:textColor="@color/grey_medium_dark"
         android:textSize="12.0dip" />
 
     <TextView
+        android:layout_margin="@dimen/margin_small"
         android:id="@+id/itemDescNextPlayTitle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/itemTitle"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@id/programImg"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text=""
         android:textColor="@color/grey_medium"
         android:textSize="10.0dip" />
+    </LinearLayout>
 </RelativeLayout>

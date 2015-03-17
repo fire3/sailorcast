@@ -83,8 +83,16 @@ public class LiveStreamListAdapter extends PagingBaseAdapter {
 
     private void setupViewHolder(View view, int i, ViewHolder viewHolder, final SCLiveStream stream) {
         viewHolder.streamTitle.setText(stream.getChannelName());
-        viewHolder.currentPlayTitle.setText(stream.getCurrentPlayTitle());
-        viewHolder.currentPlayTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiaobofang_normal,0,0,0);
+        if(stream.getCurrentPlayTitle() != null) {
+            viewHolder.currentPlayTitle.setText(stream.getCurrentPlayTitle());
+            viewHolder.currentPlayTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiaobofang_normal, 0, 0, 0);
+        }
+
+        if(viewHolder.currentPlayTitle.getText() != null)
+            viewHolder.currentPlayTitle.setVisibility(View.VISIBLE);
+        else
+            viewHolder.currentPlayTitle.setVisibility(View.GONE);
+
         try {
             String nextTime = stream.getNextPlayStartTime();
             if(nextTime != null) {
@@ -93,6 +101,12 @@ public class LiveStreamListAdapter extends PagingBaseAdapter {
             } else {
                 viewHolder.nextPlayTitle.setText(stream.getNexPlayTitle());
             }
+
+            if(viewHolder.nextPlayTitle.getText() != null)
+                viewHolder.nextPlayTitle.setVisibility(View.VISIBLE);
+            else
+                viewHolder.nextPlayTitle.setVisibility(View.GONE);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -186,6 +186,8 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
 
             if(i == 0 && mWeekDay.weekDayName.equals("今天"))
                 viewHolder.programTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiaobofang_normal,0,0,0);
+            else
+                viewHolder.programTitle.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         }
 
         private View getItemView(ViewGroup viewGroup, ViewHolder viewHolder) {

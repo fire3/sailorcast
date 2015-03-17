@@ -816,6 +816,66 @@ public class LetvApi extends BaseSiteApi{
         if(type.getTypeId() == SCLiveStreamType.TYPE_PROVINCE_TV) {
             doGetProvinceLiveStreams(listener);
         }
+
+
+        if(type.getTypeId() == SCLiveStreamType.TYPE_CCTV) {
+            doGetCCTVLiveStreams(listener);
+        }
+    }
+    //获取CCTV数据
+
+    private void doGetCCTVLiveStreams(final OnGetLiveStreamsListener listener) {
+
+        ArrayList<String> enames = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+        enames.add("cctv1HD");
+        names.add("CCTV 1 综合频道");
+        enames.add("cctv2");
+        names.add("CCTV 2 财经频道");
+        enames.add("cctv3");
+        names.add("CCTV 3 综艺频道");
+        enames.add("cctv4");
+        names.add("CCTV 4 国际频道");
+        enames.add("cctv5");
+        names.add("CCTV 5 体育频道");
+        enames.add("cctv6");
+        names.add("CCTV 6 电影频道");
+        enames.add("cctv7");
+        names.add("CCTV 7");
+        enames.add("cctv8HD");
+        names.add("CCTV 8");
+        enames.add("cctv9");
+        names.add("CCTV 9");
+        enames.add("cctv10");
+        names.add("CCTV 10");
+        enames.add("cctv11");
+        names.add("CCTV 11");
+        enames.add("cctv12");
+        names.add("CCTV 12");
+        enames.add("cctvnew");
+        names.add("CCTV 新闻");
+        enames.add("cctvshaoer");
+        names.add("CCTV 少儿");
+        enames.add("cctvmusic");
+        names.add("CCTV 音乐");
+        enames.add("guofangjunshi");
+        names.add("CCTV 国防军事");
+        enames.add("dyjc");
+        names.add("CCTV 第一剧场");
+        enames.add("fyyy");
+        names.add("CCTV 风云音乐");
+
+        SCLiveStreams streams = new SCLiveStreams();
+        for (int i = 0; i < names.size(); i++) {
+            SCLiveStream stream = new SCLiveStream();
+            stream.setChannelEName(enames.get(i));
+            stream.setChannelName(names.get(i));
+            streams.add(stream);
+        }
+
+        if(listener != null)
+            listener.onGetLiveStreamsSuccess(streams);
+
     }
     //获取卫视频道数据
     private void doGetProvinceLiveStreams(final OnGetLiveStreamsListener listener) {
@@ -1031,11 +1091,20 @@ public class LetvApi extends BaseSiteApi{
         if(streams.size() == 0)
             return;
 
+
         String ids = "";
         for (int i = 0; i < streams.size(); i++) {
-            ids = ids + ","+streams.get(i).getChannelID();
+            if(streams.get(i).getChannelID() != null)
+                ids = ids + ","+streams.get(i).getChannelID();
+            else {
+                if(listener !=null) {
+                    listener.onGetLiveStreamsDescSuccess(streams);
+                    return;
+                }
+            }
         }
         ids = ids.substring(1);
+
 
         final String infoUrl = String.format(LIVE_CHANNEL_INFO_API, ids);
 

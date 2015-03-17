@@ -70,8 +70,8 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mLiveStreamTypeID = getArguments().getInt(ARG_LIVE_STREAM_TYPE);
-            new LetvApi().doGetLiveStreamsByType(this, new SCLiveStreamType(mLiveStreamTypeID));
             mAdapter = new LiveStreamListAdapter(getActivity());
+            new LetvApi().doGetLiveStreamsByType(this, new SCLiveStreamType(mLiveStreamTypeID));
 
             /*
             mHandler = new Handler(Looper.getMainLooper()) {
@@ -105,8 +105,7 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
         mListView = (PagingListView) view.findViewById(R.id.result_grid);
         mListView.setAdapter(mAdapter);
         mListView.setHasMoreItems(true);
-        mListView.setIsLoading(true);
-        mListView.setSaveEnabled(true);
+        Log.d("fire3","onViewCreated");
         mListView.setPagingableListener(new PagingListView.Pagingable() {
             @Override
             public void onLoadMoreItems() {
