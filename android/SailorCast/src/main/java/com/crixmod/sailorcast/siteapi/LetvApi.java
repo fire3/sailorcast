@@ -104,6 +104,7 @@ public class LetvApi extends BaseSiteApi{
     private final static String LIVE_CHANNEL_INFO_API = "http://api.live.letv.com/v1/playbill/current2/1003?channelIds=%s";
     private final static String LIVE_CHANNEL_DETAIL_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?pcode=010110263&ce=%s&act=channelInfo&version=5.6.2&ctl=live&mod=mob";
     private final static String LIVE_CHANNEL_DETAIL_BYDAY_API = "http://dynamic.live.app.m.letv.com/android/dynamic.php?d=%s&ctl=live&mod=mob&pcode=010110263&ce=%s&act=channelInfo&version=5.6.2";
+    private final static String LIVE_WEISHI_CHANNEL_LIST_API = "http://static.live.app.m.letv.com/android/mod/mob/ctl/live/act/channel/ct/tv/pcode/010110263/version/5.6.2.mindex.html";
 
     public LetvApi() {
         doUpdateTmOffset();
@@ -811,6 +812,72 @@ public class LetvApi extends BaseSiteApi{
         if(type.getTypeId() == SCLiveStreamType.TYPE_CAST) {
             doGetCastLiveStreams(listener);
         }
+
+        if(type.getTypeId() == SCLiveStreamType.TYPE_PROVINCE_TV) {
+            doGetProvinceLiveStreams(listener);
+        }
+    }
+    //获取卫视频道数据
+    private void doGetProvinceLiveStreams(final OnGetLiveStreamsListener listener) {
+        final String url = LIVE_WEISHI_CHANNEL_LIST_API;
+
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                SCFailLog log = makeHttpFailLog(url,"doGetProvinceLiveStreams",e);
+                if(listener != null)
+                    listener.onGetLiveStreamsFailed(log);
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONObject bodyJson = retJson.optJSONObject("body");
+                    if(bodyJson == null) {
+                        SCFailLog log = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_NO_RESULT);
+                        if(listener != null)
+                            listener.onGetLiveStreamsFailed(log);
+                        return;
+                    }
+
+                    JSONArray dataListJson = bodyJson.optJSONArray("data");
+                    SCLiveStreams streams = new SCLiveStreams();
+
+                    if(dataListJson !=null && dataListJson.length() > 0) {
+                        for (int i = 0; i < dataListJson.length(); i++) {
+                            JSONObject dataJson = dataListJson.getJSONObject(i);
+                            String channelName = dataJson.optString("name");
+                            String icon = dataJson.optString("icon");
+                            String channelEname = dataJson.optString("channel_ename");
+                            int channelID = dataJson.optInt("channelId",0);
+
+                            SCLiveStream stream = new SCLiveStream();
+                            if(channelID != 0)
+                                stream.setChannelID(channelID+"");
+                            stream.setChannelName(channelName);
+                            stream.setChannelEName(channelEname);
+                            stream.setHorPic(icon);
+
+                            streams.add(stream);
+
+                        }
+
+
+                        if(listener != null)
+                            listener.onGetLiveStreamsSuccess(streams);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    SCFailLog log = makeHttpFailLog(url,"doGetCustomLiveStreams",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamsFailed(log);
+                }
+
+            }
+        });
     }
 
     //获取轮播频道数据
@@ -819,7 +886,7 @@ public class LetvApi extends BaseSiteApi{
         HttpUtils.asyncGet(url ,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                SCFailLog log = makeHttpFailLog(url,"doGetCustomLiveStreams",e);
+                SCFailLog log = makeHttpFailLog(url,"doGetCastLiveStreams",e);
                 if(listener != null)
                     listener.onGetLiveStreamsFailed(log);
             }
@@ -1005,8 +1072,10 @@ public class LetvApi extends BaseSiteApi{
                             if(curJson != null) {
                                 String curTitle = curJson.optString("title");
                                 String pic = curJson.optString("viewPic");
+
                                 stream.setCurrentPlayTitle(curTitle);
-                                stream.setHorPic(StringEscapeUtils.unescapeJava(pic));
+                                if(!pic.isEmpty())
+                                    stream.setHorPic(StringEscapeUtils.unescapeJava(pic));
                             }
 
                             JSONObject nextJson = rowJson.optJSONObject("next");
@@ -1122,6 +1191,7 @@ public class LetvApi extends BaseSiteApi{
         localStringBuilder.append("1");
 
         final String url = localStringBuilder.toString();
+        Log.d("fire3","parseLiveStreamRealPlayUrl : " + streamJson.toString());
 
         HttpUtils.asyncGet(url,new Callback() {
             @Override
@@ -1186,16 +1256,19 @@ public class LetvApi extends BaseSiteApi{
 
                     JSONObject bodyJson = retJson.optJSONObject("body");
                     JSONObject live720pJson = bodyJson.optJSONObject("live_url_720p");
-                    if(live720pJson != null) {
+                    if(live720pJson != null && live720pJson.has("liveUrl")) {
+                        Log.d("fire3", live720pJson.toString());
                         parseLiveStreamRealPlayUrl(stream,listener,live720pJson,0);
                     }
                     JSONObject live1300Json = bodyJson.optJSONObject("live_url_1300");
-                    if(live1300Json != null) {
+                    if(live1300Json != null && live1300Json.has("liveUrl")) {
+                        Log.d("fire3", live1300Json.toString());
                         parseLiveStreamRealPlayUrl(stream, listener, live1300Json, 1);
                     }
 
                     JSONObject live1000Json = bodyJson.optJSONObject("live_url_1000");
-                    if(live1000Json != null) {
+                    if(live1000Json != null && live1000Json.has("liveUrl")) {
+                        Log.d("fire3", live1000Json.toString());
                         parseLiveStreamRealPlayUrl(stream, listener, live1000Json, 2);
                     }
 

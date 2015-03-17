@@ -85,7 +85,6 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
                         SCLiveStreamPrograms programs = (SCLiveStreamPrograms) msg.obj;
                         mAdapter.addPrograms(programs);
                         mAdapter.notifyDataSetChanged();
-                        Log.d("fire3",programs.toString());
                     }
                 }
             };
@@ -107,7 +106,6 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
         if(mListView != null) {
             if(mAdapter != null) {
                 mListView.setAdapter(mAdapter);
-                Log.d("fire3","set Adapter!!!!!!!!!!");
             }
         }
     }
