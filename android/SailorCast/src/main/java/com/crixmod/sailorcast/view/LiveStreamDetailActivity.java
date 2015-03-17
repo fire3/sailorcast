@@ -4,13 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +23,8 @@ import com.crixmod.sailorcast.model.upnp.CallableRendererFilter;
 import com.crixmod.sailorcast.model.upnp.IRendererCommand;
 import com.crixmod.sailorcast.model.upnp.IUpnpDevice;
 import com.crixmod.sailorcast.siteapi.LetvApi;
-import com.crixmod.sailorcast.siteapi.OnGetLiveStreamDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetLiveStreamPlayUrlListener;
+import com.crixmod.sailorcast.siteapi.OnGetLiveStreamWeekDaysListener;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.view.fragments.LiveStreamProgramFragment;
@@ -39,7 +36,7 @@ import java.util.concurrent.Callable;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnGetLiveStreamPlayUrlListener {
+public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnGetLiveStreamPlayUrlListener, OnGetLiveStreamWeekDaysListener {
 
     private SCLiveStream mStream;
     ViewPager mViewPager;
@@ -88,13 +85,9 @@ public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnG
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         setTitle(mStream.getChannelName());
-        final Context context = this;
-
-        mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), context,mStream);
-        mViewPager.setAdapter(mPagerAdapter);
-        mSlidingTabLayout.setViewPager(mViewPager);
         findViews();
         new LetvApi().doGetLiveStreamPlayUrl(mStream, this);
+        new LetvApi().doGetLiveStreamWeekDays(mStream, this);
     }
 
     @Override
@@ -208,7 +201,7 @@ public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnG
     @Override
     public void onGetLiveStreamPlayUrlFailed(SCFailLog reason) {
         hideAllPlayButton();
-        MobclickAgent.reportError(this,reason.toJson());
+        MobclickAgent.reportError(this, reason.toJson());
     }
 
 
@@ -280,6 +273,24 @@ public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnG
 		rendererCommand.launchSCLiveStream(stream, url);
 	}
 
+    @Override
+    public void onGetLiveStreamWeekDaysSuccess(SCLiveStream stream) {
+
+        final Context context = this;
+        runOnUiThread( new Runnable() {
+            @Override
+            public void run() {
+                mPagerAdapter = new PagerAdapter(getSupportFragmentManager(), context,mStream);
+                mViewPager.setAdapter(mPagerAdapter);
+                mSlidingTabLayout.setViewPager(mViewPager);
+            }
+        });
+    }
+
+    @Override
+    public void onGetLiveStreamWeekDaysFailed(SCFailLog failReason) {
+
+    }
 
 
     private class PagerAdapter extends FragmentPagerAdapter {

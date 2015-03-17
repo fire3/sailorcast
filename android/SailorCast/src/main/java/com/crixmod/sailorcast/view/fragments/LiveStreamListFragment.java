@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCFailLog;
@@ -20,8 +19,9 @@ import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCLiveStreamType;
 import com.crixmod.sailorcast.model.SCLiveStreams;
 import com.crixmod.sailorcast.siteapi.LetvApi;
-import com.crixmod.sailorcast.siteapi.OnGetLiveStreamDescListener;
+import com.crixmod.sailorcast.siteapi.OnGetLiveStreamsDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetLiveStreamsListener;
+import com.crixmod.sailorcast.uiutils.paginglistview.PagingListView;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.adapters.LiveStreamListAdapter;
 
@@ -33,7 +33,7 @@ import com.crixmod.sailorcast.view.adapters.LiveStreamListAdapter;
  * Use the {@link LiveStreamListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LiveStreamListFragment extends Fragment implements OnGetLiveStreamsListener, OnGetLiveStreamDescListener {
+public class LiveStreamListFragment extends Fragment implements OnGetLiveStreamsListener, OnGetLiveStreamsDescListener {
     private static final String ARG_LIVE_STREAM_TYPE = "liveStreamType";
 
     private int mLiveStreamTypeID;
@@ -42,11 +42,10 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
     private LiveStreamListAdapter mAdapter;
     private Handler mHandler;
     private int mPageNo = 0;
-    private int mPageTotal;
-    private int mPageSize = 10;
+    private int mPageSize = 8;
     private SCLiveStreams mStreams;
 
-    private PagingGridView mGridView;
+    private PagingListView mListView;
 
     /**
      * Use this factory method to create a new instance of
@@ -74,16 +73,22 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
             new LetvApi().doGetLiveStreamsByType(this, new SCLiveStreamType(mLiveStreamTypeID));
             mAdapter = new LiveStreamListAdapter(getActivity());
 
+            /*
             mHandler = new Handler(Looper.getMainLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
                     if(msg.what == 0) {
-                        SCLiveStream stream = (SCLiveStream) msg.obj;
-                        mAdapter.addLiveStream(stream);
+                        SCLiveStreams streams = (SCLiveStreams) msg.obj;
+                        if(mStreams.size() > mAdapter.getCount())
+                            mListView.setHasMoreItems(true);
+                        mAdapter.addLiveStreams(streams);
+
+                        mListView.setIsLoading(false);
                         mAdapter.notifyDataSetChanged();
                     }
                 }
             };
+            */
         }
     }
 
@@ -97,35 +102,43 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mGridView = (PagingGridView) view.findViewById(R.id.result_grid);
-        mGridView.setAdapter(mAdapter);
-        mGridView.setHasMoreItems(true);
-        mGridView.setPagingableListener(new PagingGridView.Pagingable() {
+        mListView = (PagingListView) view.findViewById(R.id.result_grid);
+        mListView.setAdapter(mAdapter);
+        mListView.setHasMoreItems(true);
+        mListView.setIsLoading(true);
+        mListView.setSaveEnabled(true);
+        mListView.setPagingableListener(new PagingListView.Pagingable() {
             @Override
             public void onLoadMoreItems() {
+                Log.d("fire3", "loading More Items");
                 loadMorItems();
             }
         });
     }
 
     private synchronized  void loadMorItems() {
+        Log.d("fire3","loadMoreItems: " + mPageNo);
         if(mStreams == null)
             return;
         int start = mPageNo * mPageSize;
         int end = start + mPageSize;
         if(start >= mStreams.size()) {
-            mGridView.setHasMoreItems(false);
+            Log.d("fire3","no more items");
+            mListView.setHasMoreItems(false);
             return;
         }
         if(end >= mStreams.size()) {
             end = mStreams.size() - 1;
-            mGridView.setHasMoreItems(false);
+            mListView.setHasMoreItems(false);
+            Log.d("fire3","no more items");
         }
+        SCLiveStreams streams = new SCLiveStreams();
+
         for (int i = start; i < end; i++) {
             SCLiveStream stream = mStreams.get(i);
-            new LetvApi().doGetLiveStreamDesc(stream, this);
+            streams.add(stream);
         }
-
+        new LetvApi().doGetLiveStreamsDesc(streams,this);
         mPageNo ++;
     }
 
@@ -148,13 +161,11 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
 
     @Override
     public void onGetLiveStreamsSuccess(final SCLiveStreams streams) {
-//        for(SCLiveStream stream : streams) {
-//            new LetvApi().doGetLiveStreamDesc(stream,this);
-//        }
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mStreams = streams;
+                Log.d("fire3","trigger streams loadMoreItems");
                 loadMorItems();
             }
         });
@@ -166,14 +177,31 @@ public class LiveStreamListFragment extends Fragment implements OnGetLiveStreams
     }
 
     @Override
-    public void onGetLiveStreamDescSuccess(SCLiveStream stream) {
-        if(mHandler != null) {
-            mHandler.obtainMessage(0,stream).sendToTarget();
+    public void onGetLiveStreamsDescSuccess(final SCLiveStreams streams) {
+//        if(mHandler != null) {
+//            mHandler.obtainMessage(0,streams).sendToTarget();
+//        }
+
+
+        try {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                     if(mStreams.size() > mAdapter.getCount())
+//                            mListView.setHasMoreItems(true);
+                        mAdapter.addLiveStreams(streams);
+                        mListView.setIsLoading(false);
+                        mAdapter.notifyDataSetChanged();
+
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void onGetLiveStreamDescFailed(SCFailLog failReason) {
+    public void onGetLiveStreamsDescFailed(SCFailLog failReason) {
 
     }
 

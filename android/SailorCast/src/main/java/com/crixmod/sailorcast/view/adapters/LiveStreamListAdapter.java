@@ -14,15 +14,19 @@ import android.widget.TextView;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCLiveStreams;
+import com.crixmod.sailorcast.uiutils.paginglistview.PagingBaseAdapter;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.LiveStreamDetailActivity;
+
+import java.util.List;
 
 /**
  * Created by fire3 on 15-3-11.
  */
-public class LiveStreamListAdapter extends BaseAdapter {
+public class LiveStreamListAdapter extends PagingBaseAdapter {
     SCLiveStreams mStreams = new SCLiveStreams();
     Context mContext;
+
 
     private class ViewHolder {
         RelativeLayout streamContainer;
@@ -35,6 +39,12 @@ public class LiveStreamListAdapter extends BaseAdapter {
     public void addLiveStream(SCLiveStream stream) {
         mStreams.add(stream);
     }
+
+    public void addLiveStreams(SCLiveStreams streams) {
+        for (SCLiveStream stream: streams )
+            mStreams.add(stream);
+    }
+
 
     public LiveStreamListAdapter(Context mContext) {
         this.mContext = mContext;
@@ -75,9 +85,17 @@ public class LiveStreamListAdapter extends BaseAdapter {
         viewHolder.streamTitle.setText(stream.getChannelName());
         viewHolder.currentPlayTitle.setText(stream.getCurrentPlayTitle());
         viewHolder.currentPlayTitle.setCompoundDrawablesWithIntrinsicBounds(R.drawable.xiaobofang_normal,0,0,0);
-        String nextTime = stream.getNextPlayStartTime();
-        String nTime = nextTime.substring(stream.getNextPlayStartTime().lastIndexOf(" "));
-        viewHolder.nextPlayTitle.setText(nTime + " " + stream.getNexPlayTitle());
+        try {
+            String nextTime = stream.getNextPlayStartTime();
+            if(nextTime != null) {
+                String nTime = nextTime.substring(stream.getNextPlayStartTime().lastIndexOf(" "));
+                viewHolder.nextPlayTitle.setText(nTime + " " + stream.getNexPlayTitle());
+            } else {
+                viewHolder.nextPlayTitle.setText(stream.getNexPlayTitle());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         viewHolder.streamImage.setOnClickListener(new View.OnClickListener() {
             @Override

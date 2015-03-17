@@ -7,25 +7,15 @@ import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import com.crixmod.sailorcast.R;
-import com.crixmod.sailorcast.model.SCFailLog;
-import com.crixmod.sailorcast.model.SCLiveStream;
 import com.crixmod.sailorcast.model.SCLiveStreamType;
-import com.crixmod.sailorcast.model.SCLiveStreams;
-import com.crixmod.sailorcast.siteapi.LetvApi;
-import com.crixmod.sailorcast.siteapi.OnGetLiveStreamDescListener;
-import com.crixmod.sailorcast.siteapi.OnGetLiveStreamPlayUrlListener;
-import com.crixmod.sailorcast.siteapi.OnGetLiveStreamsListener;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
-import com.crixmod.sailorcast.view.fragments.AlbumListFragment;
 import com.crixmod.sailorcast.view.fragments.LiveStreamListFragment;
 import com.umeng.analytics.MobclickAgent;
 

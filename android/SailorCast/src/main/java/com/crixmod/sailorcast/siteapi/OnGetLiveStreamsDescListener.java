@@ -7,7 +7,7 @@ import com.crixmod.sailorcast.model.SCLiveStreams;
 /**
  * Created by fire3 on 15-3-9.
  */
-public interface OnGetLiveStreamDescListener {
-    public void onGetLiveStreamDescSuccess(SCLiveStream stream);
-    public void onGetLiveStreamDescFailed(SCFailLog failReason);
+public interface OnGetLiveStreamsDescListener {
+    public void onGetLiveStreamsDescSuccess(SCLiveStreams streams);
+    public void onGetLiveStreamsDescFailed(SCFailLog failReason);
 }

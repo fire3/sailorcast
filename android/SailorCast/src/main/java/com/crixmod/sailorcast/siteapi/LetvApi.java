@@ -865,7 +865,7 @@ public class LetvApi extends BaseSiteApi{
         });
     }
 
-    private void getLiveStreamPic(final SCLiveStream stream, final OnGetLiveStreamDescListener listener) {
+    private void getLiveStreamPic(final SCLiveStream stream, final OnGetLiveStreamWeekDaysListener listener) {
 
         final String url = String.format(LIVE_CHANNEL_INFO_API,stream.getChannelID());
 
@@ -873,9 +873,9 @@ public class LetvApi extends BaseSiteApi{
             @Override
             public void onFailure(Request request, IOException e) {
 
-                SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamDesc",e);
+                SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamWeekDays",e);
                 if(listener != null)
-                    listener.onGetLiveStreamDescFailed(log);
+                    listener.onGetLiveStreamWeekDaysFailed(log);
             }
 
             @Override
@@ -898,14 +898,14 @@ public class LetvApi extends BaseSiteApi{
                         stream.setNextPlayStartTime(nextTime);
 
                         if(listener != null)
-                            listener.onGetLiveStreamDescSuccess(stream);
+                            listener.onGetLiveStreamWeekDaysSuccess(stream);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
 
-                    SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamDesc",e);
+                    SCFailLog log = makeHttpFailLog(url,"doGetLiveStreamWeekDays",e);
                     if(listener != null)
-                        listener.onGetLiveStreamDescFailed(log);
+                        listener.onGetLiveStreamWeekDaysFailed(log);
                 }
             }
         });
@@ -959,16 +959,89 @@ public class LetvApi extends BaseSiteApi{
         });
     }
 
-    public void doGetLiveStreamDesc(final SCLiveStream stream,  final OnGetLiveStreamDescListener listener) {
+    public void doGetLiveStreamsDesc(final SCLiveStreams streams, final OnGetLiveStreamsDescListener listener) {
+
+        if(streams.size() == 0)
+            return;
+
+        String ids = "";
+        for (int i = 0; i < streams.size(); i++) {
+            ids = ids + ","+streams.get(i).getChannelID();
+        }
+        ids = ids.substring(1);
+
+        final String infoUrl = String.format(LIVE_CHANNEL_INFO_API, ids);
+
+        HttpUtils.asyncGet(infoUrl, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+                String ret = response.body().string();
+                try {
+                    JSONObject retJson = new JSONObject(ret);
+                    JSONArray rowsJson = retJson.optJSONArray("rows");
+                    for (int i = 0; i < rowsJson.length(); i++) {
+                        SCLiveStream stream = null;
+                        JSONObject rowJson = retJson.optJSONArray("rows").getJSONObject(i);
+                        String channelID = rowJson.optInt("channelId") + "";
+
+                        for (int j = 0; j < streams.size(); j++) {
+                            stream = streams.get(j);
+                            if(stream.getChannelID().equals(channelID))
+                                break;
+                        }
+
+                        if(stream == null)
+                            continue;
+
+                        if (rowJson != null) {
+
+                            JSONObject curJson = rowJson.optJSONObject("cur");
+                            if(curJson != null) {
+                                String curTitle = curJson.optString("title");
+                                String pic = curJson.optString("viewPic");
+                                stream.setCurrentPlayTitle(curTitle);
+                                stream.setHorPic(StringEscapeUtils.unescapeJava(pic));
+                            }
+
+                            JSONObject nextJson = rowJson.optJSONObject("next");
+                            if(nextJson != null) {
+                                String nextTitle = nextJson.optString("title");
+                                String nextTime = nextJson.optString("playTime");
+                                stream.setNexPlayTitle(nextTitle);
+                                stream.setNextPlayStartTime(nextTime);
+                            }
+                        }
+                    }
+
+                    if (listener != null)
+                        listener.onGetLiveStreamsDescSuccess(streams);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamsDesc",e);
+                    if(listener != null)
+                        listener.onGetLiveStreamsDescFailed(log);
+                }
+            }
+        });
+    }
+
+    public void doGetLiveStreamWeekDays(final SCLiveStream stream, final OnGetLiveStreamWeekDaysListener listener) {
 
         final String infoUrl = String.format(LIVE_CHANNEL_DETAIL_API, stream.getChannelEName());
 
         HttpUtils.asyncGet(infoUrl, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamDesc",e);
+                SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamWeekDays",e);
                 if(listener != null)
-                    listener.onGetLiveStreamDescFailed(log);
+                    listener.onGetLiveStreamWeekDaysFailed(log);
             }
 
             @Override
@@ -988,6 +1061,7 @@ public class LetvApi extends BaseSiteApi{
                         }
                     }
 
+                    /*
                     JSONArray programListJson = bodyJson.optJSONArray("programList");
                     if(programListJson != null && programListJson.length() >= 2) {
                         for (int i = 0; i < 2; i++) {
@@ -1006,14 +1080,16 @@ public class LetvApi extends BaseSiteApi{
                     if(stream.getChannelID() != null)
                         getLiveStreamPic(stream,listener);
                     else
-                        listener.onGetLiveStreamDescSuccess(stream);
+                    */
+                    if(listener != null)
+                        listener.onGetLiveStreamWeekDaysSuccess(stream);
 
                 } catch (Exception e) {
                     e.printStackTrace();
 
-                    SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamDesc",e);
+                    SCFailLog log = makeHttpFailLog(infoUrl,"doGetLiveStreamWeekDays",e);
                     if(listener != null)
-                        listener.onGetLiveStreamDescFailed(log);
+                        listener.onGetLiveStreamWeekDaysFailed(log);
                 }
 
             }
@@ -1031,7 +1107,6 @@ public class LetvApi extends BaseSiteApi{
         String streamID = streamJson.optString("streamId");
         stream.setStreamSuperID(streamID);
         String tm = streamJson.optString("tm");
-        Log.d("fire3","tm = %s" + tm);
         int tmInt = streamJson.optInt("tm");
         doUpdateLiveTmOffset(tmInt);
 
