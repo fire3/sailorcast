@@ -373,6 +373,7 @@ public class IqiyiApi extends BaseSiteApi {
                 String ret = response.body().string();
                 try {
                     JSONObject retJson = new JSONObject(ret);
+
                     JSONObject tvJson = retJson.optJSONObject("tv").optJSONObject("0");
                     SCVideos videos = new SCVideos();
 
@@ -424,6 +425,8 @@ public class IqiyiApi extends BaseSiteApi {
                 .addHeader("t", head.get("t"))
                 .addHeader("sign",head.get("sign"))
                 .build();
+
+
         HttpUtils.asyncGet(request,new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -442,6 +445,16 @@ public class IqiyiApi extends BaseSiteApi {
                     album.setDesc(retJson.optString("desc"));
                     album.setDirector(retJson.optString("_da"));
                     album.setMainActor(retJson.optString("_ma"));
+
+
+                    // 电影频道的很多数据在上一个步骤取回来 getVideosTotal 为0，这里补充处理一下，猜测利用 _tvct 数据作为
+                    // album 中videos Total count。
+                    // 另外，电影频道需要使用nebula接口获取video信息，不能使用pc方法。
+                    int tvct = retJson.optInt("_tvct");
+                    if(album.getVideosTotal() == 0 &&  tvct > 0)
+                        album.setVideosTotal(tvct);
+
+
                     if(listener != null) {
                         listener.onGetAlbumDescSuccess(album);
                     }
