@@ -966,13 +966,16 @@ public class LetvApi extends BaseSiteApi{
                             String channelEname = rowJson.optString("channelEname");
                             int channelID = rowJson.optInt("channelId",0);
 
-                            SCLiveStream stream = new SCLiveStream();
-                            if(channelID != 0)
-                                stream.setChannelID(channelID+"");
-                            stream.setChannelName(channelName);
-                            stream.setChannelEName(channelEname);
+                            if(channelID > 200) {
+                                //Letv的数据源里面突然增加了卫视频道的数据，据分析卫视频道数据普遍ID小于200，这里先用这里判断一下。
+                                SCLiveStream stream = new SCLiveStream();
+                                if (channelID != 0)
+                                    stream.setChannelID(channelID + "");
+                                stream.setChannelName(channelName);
+                                stream.setChannelEName(channelEname);
 
-                            streams.add(stream);
+                                streams.add(stream);
+                            }
 
                         }
 
@@ -1071,6 +1074,9 @@ public class LetvApi extends BaseSiteApi{
 
                         if(listener != null)
                             listener.onGetLiveStreamProgramsSuccess(stream,programs);
+                    } else {
+                        SCFailLog log = new SCFailLog(SCSite.LETV,SCFailLog.TYPE_NO_RESULT);
+                        listener.onGetLiveStreamProgramsFailed(log);
                     }
 
 

@@ -42,6 +42,7 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
     private ProgramsAdapter mAdapter;
     private Handler mHandler;
     private ListView mListView;
+    private TextView mEmptyView;
 
     /**
      * Use this factory method to create a new instance of
@@ -85,6 +86,12 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
                         SCLiveStreamPrograms programs = (SCLiveStreamPrograms) msg.obj;
                         mAdapter.addPrograms(programs);
                         mAdapter.notifyDataSetChanged();
+                        mEmptyView.setVisibility(View.INVISIBLE);
+                    }
+
+                    if(msg.what == 1) {
+                        mListView.setEmptyView(mEmptyView);
+                        mEmptyView.setVisibility(View.VISIBLE);
                     }
                 }
             };
@@ -102,10 +109,13 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.live_stream_programs_listview);
+        mEmptyView = (TextView) view.findViewById(android.R.id.empty);
 
         if(mListView != null) {
             if(mAdapter != null) {
                 mListView.setAdapter(mAdapter);
+                if(mAdapter.getCount() > 0)
+                    mEmptyView.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -120,6 +130,9 @@ public class LiveStreamProgramFragment extends Fragment implements OnGetLiveStre
     @Override
     public void onGetLiveStreamProgramsFailed(SCFailLog reason) {
 
+        if(mHandler != null) {
+            mHandler.obtainMessage(1,null).sendToTarget();
+        }
     }
 
 
