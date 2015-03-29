@@ -118,8 +118,9 @@ public class LauncherFragment extends Fragment {
                     break;
                 case    SCChannel.VARIETY:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_variety));
+                    break;
                 case    SCChannel.LIVE:
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_show));
+                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_live));
                     break;
                 case    SCChannel.LOCAL_BOOKMARK:
                     imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_bookmark));
