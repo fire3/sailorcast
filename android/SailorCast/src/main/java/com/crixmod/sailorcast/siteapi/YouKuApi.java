@@ -759,7 +759,7 @@ public class YouKuApi extends BaseSiteApi {
         );
     }
 
-    private  void doGetChannelAlbumsByUrl(final String url, final OnGetAlbumsListener listener) {
+    private  void doGetChannelAlbumsByUrl(final String url, final SCChannel channel, final OnGetAlbumsListener listener) {
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -771,7 +771,7 @@ public class YouKuApi extends BaseSiteApi {
             @Override
             public void onResponse(Response response) throws IOException {
                 String ret = response.body().string();
-                SCAlbums albums =  parseAlbumListResult(ret);
+                SCAlbums albums =  parseAlbumListResult(channel,ret);
                 if(albums != null && albums.size() > 0) {
                     if(listener != null)
                         listener.onGetAlbumsSuccess(albums);
@@ -789,11 +789,11 @@ public class YouKuApi extends BaseSiteApi {
     @Override
     public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
         String url = getChannelAlbumsListUrl(channel,pageNo,pageSize);
-        doGetChannelAlbumsByUrl(url,listener);
+        doGetChannelAlbumsByUrl(url,channel,listener);
 
     }
 
-    private SCAlbums parseAlbumListResult(String ret) {
+    private SCAlbums parseAlbumListResult(SCChannel channel, String ret) {
         try {
             JSONObject retJson = new JSONObject(ret);
             JSONArray results = retJson.optJSONArray("results");
@@ -814,9 +814,19 @@ public class YouKuApi extends BaseSiteApi {
 
                     tmp = result.optString("img");
                     if (tmp != null && !tmp.isEmpty()) {
+                        /*
                         if (type == 1)
                             album.setHorImageUrl(tmp);
                         if (type == 2)
+                            album.setVerImageUrl(tmp);
+                        */
+                        //根据type判断图片类型失灵了
+                        //目测电影、综艺为横幅图片
+                        if (channel.getChannelID() == SCChannel.MOVIE)
+                            album.setHorImageUrl(tmp);
+                        else if(channel.getChannelID() == SCChannel.VARIETY)
+                            album.setHorImageUrl(tmp);
+                        else
                             album.setVerImageUrl(tmp);
                     }
 
@@ -848,7 +858,7 @@ public class YouKuApi extends BaseSiteApi {
     @Override
     public void doGetChannelAlbumsByFilter(SCChannel channel, int pageNo, int pageSize, SCChannelFilter filter, OnGetAlbumsListener listener) {
         String url = getChannelAlbumsListUrlByFilter(channel,filter,pageNo,pageSize);
-        doGetChannelAlbumsByUrl(url,listener);
+        doGetChannelAlbumsByUrl(url,channel,listener);
     }
 
     @Override
