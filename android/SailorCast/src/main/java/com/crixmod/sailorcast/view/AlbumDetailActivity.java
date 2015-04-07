@@ -2,6 +2,7 @@ package com.crixmod.sailorcast.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -455,6 +456,15 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 	}
 
 
+    private void startThirdPartyVideoPlayer(String url) {
+
+        Intent intentVideo = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse(url);
+        String type="video/*";
+        intentVideo.setDataAndType(uri, type);
+        startActivity(intentVideo);
+    }
+
     /**
      * 该函数触发播放动作
      * @param button
@@ -470,6 +480,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             if(isWifi) {
                 mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
                 BaiduPlayerActivity.launch(from, v, url);
+                //startThirdPartyVideoPlayer(url);
+
             }
             else {
                 final SweetAlertDialog pDialog =  new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
@@ -486,6 +498,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                         mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
                         pDialog.hide();
                         BaiduPlayerActivity.launch(from, v, url);
+                        //startThirdPartyVideoPlayer(url);
                     }
                 });
             }
