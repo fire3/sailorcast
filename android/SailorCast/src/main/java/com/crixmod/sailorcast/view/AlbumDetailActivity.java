@@ -66,7 +66,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     private boolean mIsFav;
     private AlbumPlayGridFragment mFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -332,17 +331,23 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     public void onGetAlbumDescSuccess(final SCAlbum album) {
         mAlbum = album;
         runOnUiThread(new Runnable() {
+
             @Override
             public void run() {
+
                 fillAlbumDescView(album);
                 invalidateOptionsMenu();
-
-                mFragment = AlbumPlayGridFragment.newInstance(mAlbum,mIsShowTitle,mIsBackward,mInitialVideoNoInAlbum);
-                mFragment.setShowTitle(mIsShowTitle);
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_container, mFragment);
-                ft.commit();
-                getFragmentManager().executePendingTransactions();
+                try {
+                    mFragment = AlbumPlayGridFragment.newInstance(mAlbum, mIsShowTitle, mIsBackward, mInitialVideoNoInAlbum);
+                    mFragment.setShowTitle(mIsShowTitle);
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragment_container, mFragment);
+                    ft.commit();
+                    getFragmentManager().executePendingTransactions();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    finish();
+                }
 
                 if(mAlbum.getVideosTotal() == 1) {
                     hideAlbumCloseButton();
@@ -455,6 +460,10 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         MobclickAgent.onPause(this);
 	}
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     private void startThirdPartyVideoPlayer(String url) {
 
