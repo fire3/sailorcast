@@ -150,7 +150,11 @@ public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnG
             @Override
             public void run() {
                 mDlnaNorButton.setVisibility(View.VISIBLE);
-                mPlayNorButton.setVisibility(View.VISIBLE);
+                if(SailorCast.buildChannel().equals("crixmod"))
+                    mPlayNorButton.setVisibility(View.VISIBLE);
+                else
+                    mPlayNorButton.setVisibility(View.GONE);
+
 
                 mPlayNorButton.setTag(R.id.key_video_url, urlNormal);
                 mPlayNorButton.setTag(R.id.key_video, v);
@@ -169,7 +173,10 @@ public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnG
             @Override
             public void run() {
                 mDlnaHighButton.setVisibility(View.VISIBLE);
-                mPlayHighButton.setVisibility(View.VISIBLE);
+                if(SailorCast.buildChannel().equals("crixmod"))
+                    mPlayHighButton.setVisibility(View.VISIBLE);
+                else
+                    mPlayHighButton.setVisibility(View.GONE);
 
                 mPlayHighButton.setTag(R.id.key_video_url,urlHigh);
                 mPlayHighButton.setTag(R.id.key_video,v);
@@ -186,7 +193,10 @@ public class LiveStreamDetailActivity extends BaseToolbarActivity implements OnG
             @Override
             public void run() {
                 mDlnaSuperButton.setVisibility(View.VISIBLE);
-                mPlaySuperButton.setVisibility(View.VISIBLE);
+                if(SailorCast.buildChannel().equals("crixmod"))
+                    mPlaySuperButton.setVisibility(View.VISIBLE);
+                else
+                    mPlayHighButton.setVisibility(View.GONE);
 
                 mPlaySuperButton.setTag(R.id.key_video_url, urlSuper);
                 mPlaySuperButton.setTag(R.id.key_video, v);

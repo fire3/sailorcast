@@ -2,6 +2,7 @@ package com.crixmod.sailorcast;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
@@ -156,5 +157,22 @@ public class SailorCast extends Application {
             return false;
     }
 
+
+    /**
+     * 读取application 节点  meta-data 信息
+     */
+    public static String buildChannel() {
+        try {
+            ApplicationInfo appInfo = mContext.getPackageManager()
+                    .getApplicationInfo(mContext.getPackageName(),
+                            PackageManager.GET_META_DATA);
+            String mTag = appInfo.metaData.getString("UMENG_CHANNEL");
+            return mTag;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
