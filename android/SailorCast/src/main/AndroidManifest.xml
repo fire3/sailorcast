@@ -84,7 +84,7 @@
             android:value="54cc9582fd98c581270005cd" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="wandoujia" />
+            android:value="flyme" />
         <!-- <meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/> -->
 
         <service
