@@ -389,10 +389,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             @Override
             public void run() {
                 mDlnaNorButton.setVisibility(View.VISIBLE);
-                if(SailorCast.buildChannel().equals("crixmod"))
-                    mPlayNorButton.setVisibility(View.VISIBLE);
-                else
-                    mPlayNorButton.setVisibility(View.GONE);
+                mPlayNorButton.setVisibility(View.VISIBLE);
 
 
                 mPlayNorButton.setTag(R.id.key_video_url, urlNormal);
@@ -411,11 +408,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             @Override
             public void run() {
                 mDlnaHighButton.setVisibility(View.VISIBLE);
-                if(SailorCast.buildChannel().equals("crixmod"))
-                    mPlayHighButton.setVisibility(View.VISIBLE);
-
-                else
-                    mPlayHighButton.setVisibility(View.GONE);
+                mPlayHighButton.setVisibility(View.VISIBLE);
 
 
                 mPlayHighButton.setTag(R.id.key_video_url,urlHigh);
@@ -434,10 +427,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
             @Override
             public void run() {
                 mDlnaSuperButton.setVisibility(View.VISIBLE);
-                if(SailorCast.buildChannel().equals("crixmod"))
-                    mPlaySuperButton.setVisibility(View.VISIBLE);
-                else
-                    mPlaySuperButton.setVisibility(View.GONE);
+                mPlaySuperButton.setVisibility(View.VISIBLE);
 
 
                 mPlaySuperButton.setTag(R.id.key_video_url, urlSuper);
