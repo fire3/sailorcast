@@ -17,15 +17,14 @@
 
 选择好剧集后，无需等待，可直接DLNA投射或者本地播放。
 
+下载试用： http://www.wandoujia.com/apps/com.crixmod.sailorcast
+
 截图
 --------------
 
 ![home-screen](http://img.wdjimg.com/mms/screenshot/b/02/ed2ecff72358f5a7e27fd4c95b8b902b_320_546.jpeg "首屏截图")
-
 ![channel-album-list](http://img.wdjimg.com/mms/screenshot/9/d3/248a4dfae06c20b176faff63ab66cd39_320_544.jpeg "剧集列表")
-
 ![album-detail](http://img.wdjimg.com/mms/screenshot/f/10/503cdadee079857bda5440e18c26d10f_320_546.jpeg "剧集详情")
-
 ![album-cast](http://img.wdjimg.com/mms/screenshot/0/9b/201f8b0647faeb532de5679c3b4109b0_320_545.jpeg "剧集投射")
 
 编译
@@ -50,19 +49,30 @@ storeFile file('../../sailorcast.jks')
 storePassword '123456'
 ```
 
-其它说明
---------------
+后续计划
+------------
 
-参考项目：
+* 增加下载到本地功能
+* 完善播放位置记录
+
+当然，最期待的是来自大家的意见和帮助：）
+
+
+参考项目
+--------------
 
 * [you-get](https://github.com/soimort/you-get) ：提供了大量视频链接解析算法。
 * [readtimeapp](https://github.com/eggrollfarm/www.readtimeapp.com) : [水手放映室](http://www.sailorcast.com)的官方网站参考了它的网站代码。
+
 
 关于水手放映室
 -------------
 
 [sailorcast - 水手放映室](http://www.sailorcast.com) 是本人接触android编程后第一个业余时间的练手作品，为了熟悉一下android开发技术，同时又能给自己带来一些方便。
-软件能用就好，再加上自己也是“非业内专业人士"，利用业余时间开发，许多代码为了赶工就来不及精雕细琢。人总是懒惰的，等这个东西能转起来以后，就懒得再去整理代码了。就个人而言，经过这一轮的开发，起码熟悉了构建一个相对完整的android应用前前后后需要掌握的一些关键知识。虽然本人不是从事android开发工作，作为兴趣爱好，也算是一门技能，慢慢培养吧：）
+
+软件能用就好，再加上自己也是“非业内专业人士"，利用业余时间开发，许多代码为了赶工就来不及精雕细琢。人总是懒惰的，等这个东西能转起来以后，就懒得再去整理代码了。
+
+就个人而言，经过这一轮的开发，起码熟悉了构建一个相对完整的android应用前前后后需要掌握的一些关键知识。虽然本人不是从事android开发工作，作为兴趣爱好，也算是一门技能，慢慢培养吧：）
 
 
 关于我
