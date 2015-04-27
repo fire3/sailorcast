@@ -146,6 +146,13 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
         vitamio
         -->
+         <activity
+            android:name=".view.DLNAControlActivity"
+            android:configChanges="screenSize|keyboard|keyboardHidden|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        </activity>
         <activity
             android:name=".view.BaiduPlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

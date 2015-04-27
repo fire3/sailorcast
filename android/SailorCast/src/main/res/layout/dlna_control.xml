@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#666666"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dip" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="80dip"
+            android:layout_height="40dip"
+            android:text="back" >
+        </Button>
+
+        <TextView
+            android:id="@+id/device_name"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:gravity="center"
+            android:textSize="18sp" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/controlbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#666666"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:src="@android:drawable/divider_horizontal_dark" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="2dip"
+            android:paddingTop="2dip" >
+
+            <SeekBar
+                android:id="@+id/mediacontroller_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="8dip"
+                android:layout_weight="1"
+                android:maxHeight="3dip"
+                android:minHeight="3dip"
+                android:thumbOffset="0dip" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="47dip"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/pause"
+                android:layout_width="45dip"
+                android:layout_height="45dip"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="5dip"
+                android:layout_marginLeft="5dip"
+                android:background="#00000000"
+                android:src="@drawable/play_btn" />
+
+            <TextView
+                android:id="@+id/time_current"
+                android:layout_width="65dip"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dip"
+                android:layout_toRightOf="@id/pause"
+                android:gravity="right"
+                android:paddingRight="4dip"
+                android:paddingTop="4dip"
+                android:text="00:00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/time_break"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@id/time_current"
+                android:gravity="center"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:paddingTop="4dip"
+                android:text="/"
+                android:textColor="#9B9B9B"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="65dip"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_toRightOf="@id/time_break"
+                android:gravity="left"
+                android:paddingLeft="4dip"
+                android:paddingRight="4dip"
+                android:paddingTop="4dip"
+                android:text="00:00:00"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/volume_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="80dip"
+                android:layout_height="25dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dip"
+                android:background="#00000000"
+                android:maxHeight="10dip"
+                android:minHeight="10dip"
+                android:thumbOffset="0dip" >
+            </SeekBar>
+
+            <ImageButton
+                android:id="@+id/volume"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="3dip"
+                android:layout_toLeftOf="@id/volume_progress"
+                android:background="#00000000"
+                android:src="@drawable/volume_btn" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>
