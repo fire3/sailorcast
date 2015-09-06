@@ -481,8 +481,8 @@ public class IqiyiApi extends BaseSiteApi {
     private String getVideoVMSURL(SCVideo video) {
         String uid = genUUID();
         Random r = new Random();
-        String tm =String.format("%d",((r.nextInt(1000-100))+100));
-        String enc = md5("ts56gh"+tm+video.getVideoID());
+        String tm =String.format("%d",((r.nextInt(4000-2000))+2000));
+        String enc = md5("3cba91f1453145438ac5e4f5983bc086"+tm+video.getVideoID());
         String tn = String.valueOf(r.nextDouble());
         String authkey = md5(""+tm+video.getVideoID());
         String tvid = video.getVideoID();
@@ -490,7 +490,7 @@ public class IqiyiApi extends BaseSiteApi {
         String vmsreq="http://cache.video.qiyi.com/vms?key=fvip&src=1702633101b340d8917a69cf8a4b8c7" +
                 "&tvId="+tvid+"&vid="+vid+"&vinfo=1&tm="+tm+
                 "&enc="+enc+
-                "&qyid="+uid+"&tn="+tn +"&um=0" +
+                "&qyid="+uid+"&tn="+tn +"&um=1" +
                 "&authkey="+authkey;
 
         return vmsreq;

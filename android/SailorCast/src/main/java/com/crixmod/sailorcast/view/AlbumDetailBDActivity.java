@@ -1,22 +1,30 @@
 package com.crixmod.sailorcast.view;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.cyberplayer.dlna.DLNADeviceType;
+import com.baidu.cyberplayer.dlna.DLNAProviderFactory;
+import com.baidu.cyberplayer.dlna.IDLNAServiceProvider;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.database.BookmarkDbHelper;
@@ -24,9 +32,7 @@ import com.crixmod.sailorcast.database.HistoryDbHelper;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCVideo;
-import com.crixmod.sailorcast.model.upnp.CallableRendererFilter;
 import com.crixmod.sailorcast.model.upnp.IRendererCommand;
-import com.crixmod.sailorcast.model.upnp.IUpnpDevice;
 import com.crixmod.sailorcast.siteapi.OnGetAlbumDescListener;
 import com.crixmod.sailorcast.siteapi.OnGetVideoPlayUrlListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
@@ -35,17 +41,18 @@ import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.Collection;
-import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.crixmod.sailorcast.R.id.error_message;
 
-public class AlbumDetailActivity extends BaseToolbarActivity implements
+public class AlbumDetailBDActivity extends BaseToolbarActivity implements
         OnGetAlbumDescListener, AlbumPlayGridFragment.OnAlbumPlayGridListener
-    , OnGetVideoPlayUrlListener
-{
+    , OnGetVideoPlayUrlListener, IDLNAServiceProvider.IEnableDLNACallBack, IDLNAServiceProvider.IDisableDLNACallBack {
 
     private SCAlbum mAlbum;
     private SCVideo mCurrentVideo;
@@ -67,6 +74,16 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     private boolean mIsFav;
     private AlbumPlayGridFragment mFragment;
 
+    private final int UPDATE_INFO = 0;
+	private final int GET_RENDER_SUC = 103;
+	private final int GET_RENDER_FAIL = 104;
+	private final int ENABLE_SUC = 105;
+	private final int ENABLE_FAIL = 106;
+    private Map<String,String> dlnarenderList;
+	List<String> renderList = null;
+    private AlertDialog selectDialog;
+    private String mDlnaUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +96,20 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         mHistoryDb = new HistoryDbHelper(this);
         mIsFav =  mBookmarkDb.getAlbumById(mAlbum.getAlbumId(),mAlbum.getSite().getSiteID()) != null;
         SiteApi.doGetAlbumDesc(mAlbum, this);
+
+
+
+        DLNAControlActivity.serviceProvider = DLNAProviderFactory.getProviderInstance(this);
+		if (DLNAControlActivity.serviceProvider == null)
+			finish();
+
+        String AK = "r8A8URv8tItyRpW64GEakxcf";
+        String SK = "ekzuetBpzaofmh7z";
+		//使用您在百度开发者中心上申请的AK,SK
+		DLNAControlActivity.serviceProvider.initialize(AK, SK);
+//		DLNAControlActivity.serviceProvider.addActionCallBack(mActionListener);
+		DLNAControlActivity.serviceProvider.enableDLNA(this);
+
     }
 
 
@@ -88,6 +119,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (DLNAControlActivity.serviceProvider != null)
+            DLNAControlActivity.serviceProvider.disableDLNA(this);
     }
 
     private void findViews() {
@@ -217,7 +250,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     public static void launch(Activity activity, SCAlbum album) {
-        Intent mpdIntent = new Intent(activity, AlbumDetailActivity.class)
+        Intent mpdIntent = new Intent(activity, AlbumDetailBDActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra("album",album);
 
@@ -226,7 +259,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
 
     public static void launch(Activity activity, SCAlbum album, int videoNo) {
-        Intent mpdIntent = new Intent(activity, AlbumDetailActivity.class)
+        Intent mpdIntent = new Intent(activity, AlbumDetailBDActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra("videoNo",videoNo)
                 .putExtra("album",album);
@@ -235,7 +268,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     }
 
     public static void launch(Activity activity, SCAlbum album, int videoNo, boolean mIsShowTitle) {
-        Intent mpdIntent = new Intent(activity, AlbumDetailActivity.class)
+        Intent mpdIntent = new Intent(activity, AlbumDetailBDActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 .putExtra("videoNo",videoNo)
                 .putExtra("showTitle",mIsShowTitle)
@@ -380,7 +413,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         else
             v.setSeqInAlbum(mAlbum.getVideosTotal() - positionInGrid);
         hideAllPlayButton();
-        Log.i("fire3","onAlbumPlayVideoSelected" + v.toJson());
         SiteApi.doGetVideoPlayUrl(v, this);
 
     }
@@ -452,7 +484,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        SailorCast.upnpServiceController.resume(this);
+        //SailorCast.upnpServiceController.resume(this);
         MobclickAgent.onResume(this);
     }
 
@@ -460,8 +492,8 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 	public void onPause()
 	{
 		super.onPause();
-        SailorCast.upnpServiceController.pause();
-        SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
+        //SailorCast.upnpServiceController.pause();
+        //SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
         MobclickAgent.onPause(this);
 	}
 
@@ -527,6 +559,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         final String url = (String) button.getTag(R.id.key_video_url);
         final SCVideo v = (SCVideo) button.getTag(R.id.key_video);
 
+        /*
 		final Collection<IUpnpDevice> upnpDevices = SailorCast.upnpServiceController.getServiceListener()
 				.getFilteredDeviceList(new CallableRendererFilter());
         if(upnpDevices.size() > 0) {
@@ -544,6 +577,13 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
         } else {
             Toast.makeText(this,getResources().getString(R.string.noRenderer),Toast.LENGTH_SHORT).show();
         }
+        */
+        mDlnaUrl = url;
+        if(url != null) {
+            getRenderList();
+        }
+        else
+            Toast.makeText(this, "请先选择视频!", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -553,5 +593,112 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 		IRendererCommand rendererCommand = SailorCast.factory.createRendererCommand(SailorCast.factory.createRendererState());
 		rendererCommand.launchSCVideo(video, url);
 	}
+
+    @Override
+    public void onEnableDLNA(boolean b, int i, String s) {
+        if (b)
+            uiHandler.sendEmptyMessage(ENABLE_SUC);
+        else {
+            uiHandler.sendEmptyMessage(ENABLE_FAIL);
+        }
+    }
+
+    @Override
+    public void onDisableDLNA(boolean b, int i, String s) {
+
+    }
+    // 获取渲染出的render设备列表
+    public Map<String,String> dlnaGetRenderList(){
+        Map<String,String> dlnaRenderList = null;
+        if(DLNAControlActivity.serviceProvider != null){
+            dlnaRenderList = DLNAControlActivity.serviceProvider.getDeviceMap(DLNADeviceType.MEDIA_RENDERER);
+        }
+        return dlnaRenderList;
+    }
+
+    private void getRenderList() {
+	    dlnarenderList = dlnaGetRenderList();
+		if (dlnarenderList == null) {
+			uiHandler.sendEmptyMessage(GET_RENDER_FAIL);
+			return;
+		}
+		uiHandler.sendEmptyMessage(GET_RENDER_SUC);
+		if ((dlnarenderList != null)&&(dlnarenderList.size()>0)) {
+
+		}
+		renderList = new ArrayList<String>();
+	    Iterator<String> it = dlnarenderList.keySet().iterator();
+
+	    final String[] renderItems = new String[dlnarenderList.size()];//(String[]) mDlnaRenderList.toArray(new String[mDlnaRenderList.size()]);
+	    int i = 0;
+	    while(it.hasNext()){
+	        String key = it.next();
+	        renderItems[i] = dlnarenderList.get(key);
+	        renderList.add(renderItems[i]);
+	        i++;
+	    }
+	}
+
+
+	private void showRenderList() {
+		ListView listView = new ListView(AlbumDetailBDActivity.this);
+		listView.setAdapter(new ArrayAdapter<String>(AlbumDetailBDActivity.this,
+				android.R.layout.simple_list_item_1, renderList));
+		listView.setBackgroundColor(Color.WHITE);
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				selectDialog.dismiss();
+				String selectDevice = renderList.get(arg2);
+				String playUrl = mDlnaUrl;
+
+				Intent intent = new Intent(AlbumDetailBDActivity.this,
+						DLNAControlActivity.class);
+				intent.putExtra("device", selectDevice);
+				intent.putExtra("url", playUrl);
+				AlbumDetailBDActivity.this.startActivity(intent);
+			}
+		});
+		selectDialog = new AlertDialog.Builder(AlbumDetailBDActivity.this)
+				.setView(listView).setCancelable(true).create();
+		selectDialog.show();
+	}
+
+
+	private Handler uiHandler = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+
+			case ENABLE_SUC:
+//				Toast.makeText(AlbumActivity.this, "enable_suc",
+//						Toast.LENGTH_LONG).show();
+                mDlnaNorButton.setEnabled(true);
+                mDlnaSuperButton.setEnabled(true);
+                mDlnaHighButton.setEnabled(true);
+				break;
+			case ENABLE_FAIL:
+				Toast.makeText(AlbumDetailBDActivity.this, "DLNA功能打开失败",
+						Toast.LENGTH_SHORT).show();
+
+                mDlnaNorButton.setEnabled(false);
+                mDlnaSuperButton.setEnabled(false);
+                mDlnaHighButton.setEnabled(false);
+				break;
+			case GET_RENDER_SUC:
+				showRenderList();
+				break;
+			case GET_RENDER_FAIL:
+
+				Toast.makeText(AlbumDetailBDActivity.this, "没有发现DLNA投射设备",
+						Toast.LENGTH_SHORT).show();
+				break;
+
+			default:
+				break;
+			}
+		}
+	};
 
 }
