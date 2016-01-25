@@ -482,7 +482,7 @@ public class IqiyiApi extends BaseSiteApi {
         String uid = genUUID();
         Random r = new Random();
         String tm =String.format("%d",((r.nextInt(4000-2000))+2000));
-        String enc = md5("3cba91f1453145438ac5e4f5983bc086"+tm+video.getVideoID());
+        String enc = md5("6ab6d0280511493ba85594779759d4ed"+tm+video.getVideoID());
         String tn = String.valueOf(r.nextDouble());
         String authkey = md5(""+tm+video.getVideoID());
         String tvid = video.getVideoID();
