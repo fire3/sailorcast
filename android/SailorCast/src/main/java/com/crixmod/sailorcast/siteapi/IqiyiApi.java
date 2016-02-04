@@ -2,6 +2,12 @@ package com.crixmod.sailorcast.siteapi;
 
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
 import com.crixmod.sailorcast.model.SCChannel;
@@ -20,9 +26,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -31,6 +45,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Random;
 import java.util.UUID;
+
 
 /**
  * Created by fire3 on 15-2-3.
@@ -193,8 +208,8 @@ public class IqiyiApi extends BaseSiteApi {
             @Override
             public void onFailure(Request request, IOException e) {
 
-                if(listener != null) {
-                    SCFailLog err = makeHttpFailLog(url,"doSearch",e);
+                if (listener != null) {
+                    SCFailLog err = makeHttpFailLog(url, "doSearch", e);
                     listener.onGetAlbumsFailed(err);
                 }
             }
@@ -209,16 +224,16 @@ public class IqiyiApi extends BaseSiteApi {
                             optJSONObject("result").
                             optJSONObject("albums").
                             optJSONArray("album");
-                    if(albumsArray != null && albumsArray.length() > 0) {
+                    if (albumsArray != null && albumsArray.length() > 0) {
                         SCAlbums albums = new SCAlbums();
                         for (int i = 0; i < albumsArray.length(); i++) {
                             JSONObject albumJson = albumsArray.getJSONObject(i);
                             int category_id = albumJson.optInt("category_id");
-                            if(category_id < 7) {
+                            if (category_id < 7) {
                                 // 排除一些无聊的频道
                                 int purchase_type = albumJson.optInt("purchase_type");
                                 // 排除 purchase_type = 1 的vip视频
-                                if(purchase_type == 0) {
+                                if (purchase_type == 0) {
                                     SCAlbum album = new SCAlbum(SCSite.IQIYI);
                                     String albumName = albumJson.optString("title");
                                     album.setTitle(albumName);
@@ -241,7 +256,7 @@ public class IqiyiApi extends BaseSiteApi {
                             }
 
                         }
-                        if(listener != null)
+                        if (listener != null)
                             listener.onGetAlbumsSuccess(albums);
                     } else {
                         if (listener != null) {
@@ -251,7 +266,7 @@ public class IqiyiApi extends BaseSiteApi {
                         }
                     }
                 } catch (Exception e) {
-                    if(listener != null) {
+                    if (listener != null) {
                         SCFailLog err = makeFatalFailLog(url, "doSearch", e);
                         err.setReason(ret);
                         listener.onGetAlbumsFailed(err);
@@ -268,12 +283,12 @@ public class IqiyiApi extends BaseSiteApi {
     }
 
     private Hashtable<String, String> getNebulaHeader() {
-        Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY,PLAY_SECRET_KEY_ONE,PLAY_SECRET_KEY_TWO);
+        Hashtable<String,String> head = getSignedHeader(IQIYI_MKEY, PLAY_SECRET_KEY_ONE, PLAY_SECRET_KEY_TWO);
         return head;
     }
 
     private void doGetAlbumVideosPcMethod(final SCAlbum album, int pageNo, int pageSize, final OnGetVideosListener listener) {
-         final String url = String.format(ALBUM_VIDEOS_FORMAT,album.getAlbumId(),pageNo,pageSize,album.getAlbumId(),pageNo,pageSize);
+         final String url = String.format(ALBUM_VIDEOS_FORMAT, album.getAlbumId(), pageNo, pageSize, album.getAlbumId(), pageNo, pageSize);
 
         HttpUtils.asyncGet(url, new Callback() {
             @Override
@@ -417,7 +432,7 @@ public class IqiyiApi extends BaseSiteApi {
     @Override
     public void doGetAlbumDesc(final SCAlbum album, final OnGetAlbumDescListener listener) {
 
-        final String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT,genUUID(),album.getAlbumId());
+        final String url = String.format(ALBUM_VIDEOS_NEBULA_FORMAT, genUUID(), album.getAlbumId());
         Hashtable<String, String> head = getNebulaHeader();
 
         Request request = new Request.Builder().url(url)
@@ -614,12 +629,12 @@ public class IqiyiApi extends BaseSiteApi {
                 .addHeader("sign",head.get("sign"))
                 .build();
 
-        HttpUtils.asyncGet(request,new Callback() {
+        HttpUtils.asyncGet(request, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
                 SCFailLog err = makeHttpFailLog(url, "getChannelAlbumsByUrl", e);
-                if(listener != null) {
+                if (listener != null) {
                     listener.onGetAlbumsFailed(err);
                 }
             }
@@ -636,9 +651,9 @@ public class IqiyiApi extends BaseSiteApi {
                         String id = albumIdList.optString(i);
                         JSONObject albumJson = albumArray.optJSONObject(id);
                         //有时会出现"_a"这个对象，剧集信息会放在这个里面，比如动漫栏目
-                        if(albumJson.has("_a"))
+                        if (albumJson.has("_a"))
                             albumJson = albumJson.optJSONObject("_a");
-                        if(albumJson != null) {
+                        if (albumJson != null) {
                             SCAlbum album = new SCAlbum(SCSite.IQIYI);
 
                             String albumID = id;
@@ -676,20 +691,20 @@ public class IqiyiApi extends BaseSiteApi {
                             albums.add(album);
                         }
                     }
-                    if(albums.size() > 0) {
-                        if(listener != null) {
+                    if (albums.size() > 0) {
+                        if (listener != null) {
                             listener.onGetAlbumsSuccess(albums);
                         }
                     } else if (albums.size() == 0) {
-                        SCFailLog err = makeNoResultFailLog(url,"getChannelAlbumsByUrl");
-                        if(listener != null) {
+                        SCFailLog err = makeNoResultFailLog(url, "getChannelAlbumsByUrl");
+                        if (listener != null) {
                             listener.onGetAlbumsFailed(err);
                         }
                     }
                 } catch (Exception e) {
 
                     SCFailLog err = makeFatalFailLog(url, "getChannelAlbumsByUrl", e);
-                    if(listener != null) {
+                    if (listener != null) {
                         listener.onGetAlbumsFailed(err);
                     }
                     e.printStackTrace();
@@ -700,11 +715,11 @@ public class IqiyiApi extends BaseSiteApi {
     }
     @Override
     public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
-        String url = getDefaultChannelUrl(channel,pageNo,pageSize);
+        String url = getDefaultChannelUrl(channel, pageNo, pageSize);
         if(url == null) {
             return;
         }
-        getChannelAlbumsByUrl(url,listener);
+        getChannelAlbumsByUrl(url, listener);
     }
 
 
@@ -764,10 +779,100 @@ public class IqiyiApi extends BaseSiteApi {
         return 0;
     }
 
+    private void doParseChannelFilter(final SCChannel channel, String ret, final OnGetChannelFilterListener listener) {
+        try {
+            JSONArray retJson =  new JSONArray(ret);
+            for (int i = 0; i < retJson.length(); i++) {
+                JSONArray catList = retJson.getJSONObject(i).optJSONArray("cateList");
+                for (int j = 0; j < catList.length(); j++) {
+                    JSONObject cateJson =  catList.getJSONObject(j);
+                    String cat = cateJson.optString("catId");
+                    int catId =  Integer.parseInt(cat);
+                    int cid = channelToCateID(channel);
+                    if(catId == cid) {
+                        JSONArray subList = cateJson.optJSONArray("subList");
+                        SCChannelFilter filter = new SCChannelFilter();
+
+                        for (int k = 0; k < subList.length(); k++) {
+
+                            ArrayList<SCChannelFilterItem> items = new ArrayList<SCChannelFilterItem>();
+
+                            String subID = subList.getJSONObject(k).getString("subId");
+                            String subName = subList.getJSONObject(k).getString("subName");
+
+                            JSONArray leafList = subList.getJSONObject(k).getJSONArray("leafList");
+                            for (int l = 0; l < leafList.length() ; l++) {
+                                if(subID.equals("7") && subName.equals("是否付费")) {
+                                    String leafName = leafList.getJSONObject(l).optString("leafName");
+                                    String leafKey = leafList.getJSONObject(l).optString("leafId");
+                                    if(leafName.equals("免费")) {
+                                        SCChannelFilterItem item = new SCChannelFilterItem(leafKey, leafName);
+                                        item.setSearchKey(""+k);
+                                        item.setParentKey(""+k);
+                                        items.add(item);
+                                    }
+                                } else {
+                                    String leafName = leafList.getJSONObject(l).optString("leafName");
+                                    String leafKey = leafList.getJSONObject(l).optString("leafId");
+                                    SCChannelFilterItem item = new SCChannelFilterItem(leafKey, leafName);
+                                    item.setSearchKey(""+k);
+                                    item.setParentKey(""+k);
+                                    items.add(item);
+                                }
+
+                            }
+
+                            filter.addFilter(""+k,items);
+                        }
+
+                        if(listener != null) {
+                            listener.onGetChannelFilterSuccess(filter);
+                        }
+
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            SCFailLog err = makeFatalFailLog("doGetChannelFilter", "doGetChannelFilter", e);
+            if(listener != null) {
+                listener.onGetChannelFilterFailed(err);
+            }
+        }
+    }
+
+    public String readTextFile(InputStream inputStream) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        byte buf[] = new byte[1024];
+        int len;
+        try {
+            while ((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+
+        }
+        return outputStream.toString();
+    }
     @Override
     public void doGetChannelFilter(final SCChannel channel, final OnGetChannelFilterListener listener) {
         final String url = CHANNEL_FILTER_URL;
+        InputStream ins = SailorCast.getContext().getResources().openRawResource(
+                SailorCast.getContext().getResources().getIdentifier("iqiyi",
+                        "raw", SailorCast.getContext().getPackageName()));
 
+        String ret = readTextFile(ins);
+        doParseChannelFilter(channel,ret,listener);
+
+        /*
+        http://iface2.iqiyi.com/st/nav/1.2.json has a bad HTTP header:   charset=utf-8
+        and will cause okhttp internal bug.
+         */
+
+        /*
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -781,68 +886,10 @@ public class IqiyiApi extends BaseSiteApi {
             @Override
             public void onResponse(Response response) throws IOException {
                 String ret = response.body().string();
-                try {
-                    JSONArray retJson =  new JSONArray(ret);
-                    for (int i = 0; i < retJson.length(); i++) {
-                        JSONArray catList = retJson.getJSONObject(i).optJSONArray("cateList");
-                        for (int j = 0; j < catList.length(); j++) {
-                            JSONObject cateJson =  catList.getJSONObject(j);
-                            String cat = cateJson.optString("catId");
-                            int catId =  Integer.parseInt(cat);
-                            int cid = channelToCateID(channel);
-                            if(catId == cid) {
-                                JSONArray subList = cateJson.optJSONArray("subList");
-                                SCChannelFilter filter = new SCChannelFilter();
-
-                                for (int k = 0; k < subList.length(); k++) {
-
-                                    ArrayList<SCChannelFilterItem> items = new ArrayList<SCChannelFilterItem>();
-
-                                    String subID = subList.getJSONObject(k).getString("subId");
-                                    String subName = subList.getJSONObject(k).getString("subName");
-
-                                    JSONArray leafList = subList.getJSONObject(k).getJSONArray("leafList");
-                                    for (int l = 0; l < leafList.length() ; l++) {
-                                        if(subID.equals("7") && subName.equals("是否付费")) {
-                                            String leafName = leafList.getJSONObject(l).optString("leafName");
-                                            String leafKey = leafList.getJSONObject(l).optString("leafId");
-                                            if(leafName.equals("免费")) {
-                                                SCChannelFilterItem item = new SCChannelFilterItem(leafKey, leafName);
-                                                item.setSearchKey(""+k);
-                                                item.setParentKey(""+k);
-                                                items.add(item);
-                                            }
-                                        } else {
-                                            String leafName = leafList.getJSONObject(l).optString("leafName");
-                                            String leafKey = leafList.getJSONObject(l).optString("leafId");
-                                            SCChannelFilterItem item = new SCChannelFilterItem(leafKey, leafName);
-                                            item.setSearchKey(""+k);
-                                            item.setParentKey(""+k);
-                                            items.add(item);
-                                        }
-
-                                    }
-
-                                    filter.addFilter(""+k,items);
-                                }
-
-                                if(listener != null) {
-                                    listener.onGetChannelFilterSuccess(filter);
-                                }
-
-                            }
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    SCFailLog err = makeFatalFailLog(url, "doGetChannelFilter", e);
-                    if(listener != null) {
-                        listener.onGetChannelFilterFailed(err);
-                    }
-                }
+                doParseChannelFilter(channel, ret,listener);
             }
         });
-
+        */
     }
 
 }

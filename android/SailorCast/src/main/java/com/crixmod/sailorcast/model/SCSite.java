@@ -8,10 +8,10 @@ import com.crixmod.sailorcast.SailorCast;
  */
 public class SCSite {
     public static int UNKNOWN = -1;
-    public static int SOHU = 0;
-    public static int YOUKU = 1;
-    public static int LETV = 2;
-    public static int IQIYI = 3;
+    public static int SOHU = 3;
+    public static int YOUKU = 0;
+    public static int LETV = 1;
+    public static int IQIYI = 2;
     private String mSiteName;
 
     private int mSiteID;
@@ -44,6 +44,6 @@ public class SCSite {
 
     //增加网站时需要增加该count
     public static int count() {
-        return 4;
+        return 3;
     }
 }

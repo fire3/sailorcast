@@ -48,7 +48,7 @@ public class HttpUtils {
 
     public static String syncGet(String url) {
         Request request = buildRequest(url);
-        Log.d("fire3", "request Url: " + request.urlString());
+        Log.d("fire3", "sync request Url: " + request.urlString());
         try {
             Response response =  SailorCast.getHttpClient().newCall(request).execute();
             if (response.code() == 200) {
@@ -63,19 +63,19 @@ public class HttpUtils {
 
     public static void asyncGet(String url, Callback callback) {
         Request request = buildRequest(url);
-        Log.d("fire3", "request Url: " + request.urlString());
+        Log.d("fire3", "async request Url: " + request.urlString());
         asyncGet(request, callback);
     }
 
     public static void asyncGet(Request request, Callback callback) {
-        Log.d("fire3", "request Url: " + request.urlString());
+        Log.d("fire3", "async request Url: " + request.urlString());
         SailorCast.getHttpClient().newCall(request).enqueue(callback);
 
     }
 
     public static void asyncGet(Request request, final Activity activity, final Callback callback) {
 
-        Log.d("fire3", "request Url: " + request.urlString());
+        Log.d("fire3", "async request Url: " + request.urlString());
 
         SailorCast.getHttpClient().newCall(request).enqueue(new Callback() {
             Handler mainHandler = new Handler(activity.getMainLooper());
@@ -110,5 +110,9 @@ public class HttpUtils {
         SailorCast.getHttpClient().cancel(REQUEST_TAG);
     }
 
+
+    public static void httpGet (String url)  {
+
+    }
 
 }

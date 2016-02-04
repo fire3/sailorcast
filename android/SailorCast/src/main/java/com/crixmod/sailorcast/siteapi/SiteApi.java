@@ -35,7 +35,7 @@ public class SiteApi {
     }
 
     public static void doSearchAll(String key, OnGetAlbumsListener listener) {
-        new SohuApi().doSearch(key,listener);
+       // new SohuApi().doSearch(key,listener);
         new YouKuApi().doSearch(key,listener);
         new LetvApi().doSearch(key,listener);
         new IqiyiApi().doSearch(key,listener);
@@ -76,7 +76,7 @@ public class SiteApi {
     }
 
     public static int getSupportSiteNumber() {
-        return 4;
+        return 3;
     }
 
     public static String getSiteName(int siteID, Context mContext) {

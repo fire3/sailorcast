@@ -11,6 +11,9 @@ import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.crixmod.sailorcast.controller.upnp.IUpnpServiceController;
 import com.crixmod.sailorcast.model.upnp.IFactory;
 import com.google.gson.Gson;
@@ -32,6 +35,15 @@ public class SailorCast extends Application {
 
     public static IUpnpServiceController upnpServiceController = null;
     public static IFactory factory = null;
+    /**
+     * Global request queue for Volley
+     */
+    private RequestQueue mRequestQueue;
+
+    /**
+     * A singleton instance of the application class for easy access in other places
+     */
+    private static SailorCast sInstance;
 
     @Override
     public void onCreate() {
@@ -40,7 +52,7 @@ public class SailorCast extends Application {
         mHttpClient = new OkHttpClient();
         mGson = new Gson();
         initHttpClient(mHttpClient,mContext);
-
+        sInstance = this;
 		// Use cling factory
 		if (factory == null)
 			factory = new com.crixmod.sailorcast.controller.cling.Factory();
@@ -52,6 +64,12 @@ public class SailorCast extends Application {
 
     }
 
+    /**
+     * @return ApplicationController singleton instance
+     */
+    public static synchronized SailorCast getInstance() {
+        return sInstance;
+    }
 
 
     private void initHttpClient(OkHttpClient client, Context context) {
@@ -173,6 +191,43 @@ public class SailorCast extends Application {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * @return The Volley Request queue, the queue will be created if it is null
+     */
+    public RequestQueue getRequestQueue() {
+        // lazy initialize the request queue, the queue instance will be
+        // created when it is accessed for the first time
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+        }
+
+        return mRequestQueue;
+    }
+
+    /**
+     * Adds the specified request to the global queue using the Default TAG.
+     *
+     * @param req
+     */
+    public <T> void addToRequestQueue(Request<T> req) {
+        // set the default tag if tag is empty
+        //req.setTag(TAG);
+
+        getRequestQueue().add(req);
+    }
+
+    /**
+     * Cancels all pending requests by the specified TAG, it is important
+     * to specify a TAG so that the pending/ongoing requests can be cancelled.
+     *
+     * @param tag
+     */
+    public void cancelPendingRequests(Object tag) {
+        if (mRequestQueue != null) {
+            mRequestQueue.cancelAll(tag);
+        }
     }
 
 }

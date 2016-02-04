@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     signingConfigs {
         config {
             keyAlias 'sailorcast'
@@ -12,6 +16,7 @@ android {
     compileSdkVersion 21
     buildToolsVersion "22.0.1"
     defaultConfig {
+        //multiDexEnabled = true
         applicationId "com.crixmod.sailorcast"
         minSdkVersion 15
         targetSdkVersion 21
@@ -49,9 +54,9 @@ repositories {
 }
 
 
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+   // compile 'com.android.support:multidex:1.0.0'
     // Cling
     compile 'org.fourthline.cling:cling-core:2.0.1'
     compile 'org.fourthline.cling:cling-support:2.0.1'
@@ -64,6 +69,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.+'
     compile 'com.umeng.analytics:analytics:latest.integration'

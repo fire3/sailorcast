@@ -697,6 +697,7 @@ public class LetvApi extends BaseSiteApi{
     }
 
     private void getAlbumsByUrl(final String url, final OnGetAlbumsListener listener) {
+        Log.i("fire3","Letv:" + url );
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -729,6 +730,7 @@ public class LetvApi extends BaseSiteApi{
     @Override
     public void doGetChannelAlbums(SCChannel channel, int pageNo, int pageSize, final OnGetAlbumsListener listener) {
         String url = getAlbumListUrl(channel,pageNo,pageSize);
+        Log.i("fire3","Letv: doGetChannelAlbums:" + url);
         getAlbumsByUrl(url,listener);
     }
 
@@ -1266,7 +1268,7 @@ public class LetvApi extends BaseSiteApi{
         localStringBuilder.append("1");
 
         final String url = localStringBuilder.toString();
-        Log.d("fire3","parseLiveStreamRealPlayUrl : " + streamJson.toString());
+        Log.i("fire3","parseLiveStreamRealPlayUrl : " + streamJson.toString());
 
         HttpUtils.asyncGet(url,new Callback() {
             @Override
@@ -1332,18 +1334,18 @@ public class LetvApi extends BaseSiteApi{
                     JSONObject bodyJson = retJson.optJSONObject("body");
                     JSONObject live720pJson = bodyJson.optJSONObject("live_url_720p");
                     if(live720pJson != null && live720pJson.has("liveUrl")) {
-                        Log.d("fire3", live720pJson.toString());
+                        Log.i("fire3", live720pJson.toString());
                         parseLiveStreamRealPlayUrl(stream,listener,live720pJson,0);
                     }
                     JSONObject live1300Json = bodyJson.optJSONObject("live_url_1300");
                     if(live1300Json != null && live1300Json.has("liveUrl")) {
-                        Log.d("fire3", live1300Json.toString());
+                        Log.i("fire3", live1300Json.toString());
                         parseLiveStreamRealPlayUrl(stream, listener, live1300Json, 1);
                     }
 
                     JSONObject live1000Json = bodyJson.optJSONObject("live_url_1000");
                     if(live1000Json != null && live1000Json.has("liveUrl")) {
-                        Log.d("fire3", live1000Json.toString());
+                        Log.i("fire3", live1000Json.toString());
                         parseLiveStreamRealPlayUrl(stream, listener, live1000Json, 2);
                     }
 
