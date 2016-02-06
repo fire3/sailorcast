@@ -689,8 +689,6 @@ public class LetvApi extends BaseSiteApi{
             return CID_VARIETY;
         if(channel.getChannelID() == SCChannel.MUSIC)
             return CID_MUSIC;
-        if(channel.getChannelID() == SCChannel.SPORT)
-            return CID_SPORT;
         if(channel.getChannelID() == SCChannel.UNKNOWN)
             return -1;
         return -1;

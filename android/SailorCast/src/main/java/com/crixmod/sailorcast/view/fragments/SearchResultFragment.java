@@ -26,7 +26,6 @@ import com.crixmod.sailorcast.siteapi.OnGetAlbumsListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.AlbumDetailActivity;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -150,8 +149,6 @@ implements OnGetAlbumsListener
                     public void run() {
                         mFailReason = getResources().getString(R.string.fail_reason_no_results);
                         mEmpty.setText(mFailReason);
-                        if (err.getType() == SCFailLog.TYPE_FATAL_ERR)
-                            MobclickAgent.reportError(getActivity(), err.toJson());
                     }
                 });
             }

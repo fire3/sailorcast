@@ -27,7 +27,6 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.AlbumFilterDialog;
 import com.crixmod.sailorcast.view.adapters.AlbumListAdapter;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,7 +85,7 @@ public class AlbumListFragment extends Fragment implements
                 mAdapter.setColumns(mColumns);
             }
 
-            if(mChannelID == SCChannel.SPORT || mChannelID == SCChannel.MUSIC) {
+            if(mChannelID == SCChannel.MUSIC) {
                 mColumns = 2;
                 mAdapter.setColumns(mColumns);
             }
@@ -198,7 +197,6 @@ public class AlbumListFragment extends Fragment implements
         try {
             if (getActivity() != null) {
                 if(err.getType() == SCFailLog.TYPE_FATAL_ERR)
-                    MobclickAgent.reportError(getActivity(),err.toJson());
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -237,7 +235,6 @@ public class AlbumListFragment extends Fragment implements
     public void onGetChannelFilterFailed(SCFailLog err) {
 
         if(getActivity() != null) {
-            MobclickAgent.reportError(getActivity(),err.toJson());
         }
     }
 
@@ -259,7 +256,7 @@ public class AlbumListFragment extends Fragment implements
             mAdapter.setColumns(mColumns);
         }
 
-        if(mChannelID == SCChannel.SPORT || mChannelID == SCChannel.MUSIC) {
+        if(mChannelID == SCChannel.MUSIC) {
             mColumns = 2;
             mAdapter.setColumns(mColumns);
         }

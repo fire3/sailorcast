@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import com.crixmod.sailorcast.R;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.view.fragments.HistoryFragment;
-import com.umeng.analytics.MobclickAgent;
 
 public class HistoryActivity extends BaseToolbarActivity  {
 
@@ -99,13 +98,11 @@ public class HistoryActivity extends BaseToolbarActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
     }
 
 

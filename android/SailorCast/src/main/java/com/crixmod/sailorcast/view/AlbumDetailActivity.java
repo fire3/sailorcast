@@ -33,7 +33,6 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.utils.ImageTools;
 import com.crixmod.sailorcast.view.fragments.AlbumPlayGridFragment;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -368,7 +367,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 
     @Override
     public void onGetAlbumDescFailed(SCFailLog err) {
-        MobclickAgent.reportError(this,err.toJson());
     }
 
     @Override
@@ -445,7 +443,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     @Override
     public void onGetVideoPlayUrlFailed(SCFailLog err) {
         hideAllPlayButton();
-        MobclickAgent.reportError(this,err.toJson());
     }
 
 
@@ -453,7 +450,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
     protected void onResume() {
         super.onResume();
         SailorCast.upnpServiceController.resume(this);
-        MobclickAgent.onResume(this);
     }
 
 	@Override
@@ -462,7 +458,6 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
 		super.onPause();
         SailorCast.upnpServiceController.pause();
         SailorCast.upnpServiceController.getServiceListener().getServiceConnexion().onServiceDisconnected(null);
-        MobclickAgent.onPause(this);
 	}
 
     @Override

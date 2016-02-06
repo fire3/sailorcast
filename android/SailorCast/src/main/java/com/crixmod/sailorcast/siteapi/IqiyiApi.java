@@ -2,11 +2,6 @@ package com.crixmod.sailorcast.siteapi;
 
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
@@ -110,9 +105,6 @@ public class IqiyiApi extends BaseSiteApi {
                 break;
             case SCChannel.MUSIC:
                 url = String.format(CHANNEL_ALBUMS_FORMAT,"5,0~0~0",pageNo,pageSize,genUUID());
-                break;
-            case SCChannel.SPORT:
-                url = String.format(CHANNEL_ALBUMS_FORMAT,"17,0~0",pageNo,pageSize,genUUID());
                 break;
         }
         return url;
@@ -761,8 +753,6 @@ public class IqiyiApi extends BaseSiteApi {
 
     private int channelToCateID(SCChannel channel) {
         switch (channel.getChannelID()) {
-            case SCChannel.SPORT:
-                return CID_SPORT;
             case SCChannel.MOVIE:
                 return CID_MOVIE;
             case SCChannel.MUSIC:

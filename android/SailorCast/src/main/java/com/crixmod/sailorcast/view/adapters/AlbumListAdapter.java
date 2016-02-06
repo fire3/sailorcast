@@ -129,7 +129,6 @@ public class AlbumListAdapter extends BaseAdapter {
                 if(mChannel.getChannelID() == SCChannel.VARIETY ||
                         mChannel.getChannelID() == SCChannel.DOCUMENTARY ||
                         mChannel.getChannelID() == SCChannel.MOVIE ||
-                        mChannel.getChannelID() == SCChannel.SPORT ||
                         mChannel.getChannelID() == SCChannel.MUSIC
                         )
                     AlbumDetailActivity.launch((Activity) mContext, album, 0,true);

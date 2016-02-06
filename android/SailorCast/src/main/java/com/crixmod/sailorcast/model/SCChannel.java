@@ -16,16 +16,11 @@ public class SCChannel {
     public static final int   MOVIE = 2;  //电影
     public static final int   COMIC = 3;  //动漫
     public static final int   DOCUMENTARY = 4;  //纪录片
-    public static final int   SPORT = 5;  //体育
-    public static final int   MUSIC = 6;  //音乐
-    public static final int   VARIETY = 7;  //综艺
-    //public static final int   ENT = 8;  //娱乐
-    public static final int LIVE = 8;
-    public static final int   LOCAL_BOOKMARK = 9;
-    public static final int   LOCAL_HISTORY = 10;
-    public static final int   LOCAL_FEEDBACK = 11;
-    public static final int   LOCAL_SHARE = 12;
-    private static final int  MAX_CHANNEL_ID = 12;  //如果增加频道，注意修改该值
+    public static final int   MUSIC = 5;  //音乐
+    public static final int   VARIETY = 6;  //综艺
+    public static final int   LOCAL_BOOKMARK = 7;
+    public static final int   LOCAL_HISTORY = 8;
+    private static final int  MAX_CHANNEL_ID = 8;  //如果增加频道，注意修改该值
 
     private String mChannelName = "unknown";
 
@@ -45,22 +40,14 @@ public class SCChannel {
         //    mChannelName = SailorCast.getResource().getString(R.string.channel_ent);
         else if(mChannelID == DOCUMENTARY)
             mChannelName = SailorCast.getResource().getString(R.string.channel_documentary);
-        else if(mChannelID == SPORT)
-            mChannelName = SailorCast.getResource().getString(R.string.channel_sport);
         else if(mChannelID == MUSIC)
             mChannelName = SailorCast.getResource().getString(R.string.channel_music);
         else if(mChannelID == VARIETY)
             mChannelName = SailorCast.getResource().getString(R.string.channel_variety);
-        else if(mChannelID == LIVE)
-            mChannelName = SailorCast.getResource().getString(R.string.channel_live);
         else if(mChannelID == LOCAL_BOOKMARK)
             mChannelName = SailorCast.getResource().getString(R.string.channel_bookmark);
         else if(mChannelID == LOCAL_HISTORY)
             mChannelName = SailorCast.getResource().getString(R.string.channel_history);
-        else if(mChannelID == LOCAL_SHARE)
-            mChannelName = SailorCast.getResource().getString(R.string.channel_share);
-        else if(mChannelID == LOCAL_FEEDBACK)
-            mChannelName = SailorCast.getResource().getString(R.string.channel_feedback);
         else
             mChannelName = "unknown";
 
@@ -90,9 +77,6 @@ public class SCChannel {
     public boolean isLocalChannel() {
         if(mChannelID == LOCAL_BOOKMARK
                 || mChannelID == LOCAL_HISTORY
-                || mChannelID == LOCAL_FEEDBACK
-                || mChannelID == LOCAL_SHARE
-                || mChannelID == LIVE
                 )
             return true;
         else

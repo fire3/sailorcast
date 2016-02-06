@@ -130,8 +130,6 @@ public class YouKuApi extends BaseSiteApi {
             return CID_VARIETY;
         if(channel.getChannelID() == SCChannel.MUSIC)
             return CID_MUSIC;
-        if(channel.getChannelID() == SCChannel.SPORT)
-            return CID_SPORT;
         if(channel.getChannelID() == SCChannel.UNKNOWN)
             return -1;
         return -1;
@@ -155,8 +153,6 @@ public class YouKuApi extends BaseSiteApi {
             return SUB_CHANNEL_ID_VARIETY;
         if(channel.getChannelID() == SCChannel.MUSIC)
             return SUB_CHANNEL_ID_MUSIC;
-        if(channel.getChannelID() == SCChannel.SPORT)
-            return SUB_CHANNEL_ID_SPORT;
         if(channel.getChannelID() == SCChannel.UNKNOWN)
             return -1;
         return -1;

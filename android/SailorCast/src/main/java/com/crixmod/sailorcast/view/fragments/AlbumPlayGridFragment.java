@@ -21,7 +21,6 @@ import com.crixmod.sailorcast.siteapi.OnGetVideosListener;
 import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.pagingridview.PagingGridView;
 import com.crixmod.sailorcast.view.adapters.AlbumPlayGridAdapter;
-import com.umeng.analytics.MobclickAgent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -320,14 +319,11 @@ public class AlbumPlayGridFragment extends Fragment implements
                             }
                         }
 
-                        if (mPageNo > 0 && mPageNo <= mPageTotal) {
-                            MobclickAgent.reportError(getActivity(), failReason.toJson());
-                        }
                     }
                 });
             }
         } catch (Exception e) {
-            MobclickAgent.reportError(SailorCast.getContext(),e.toString());
+            //Error
         }
     }
 

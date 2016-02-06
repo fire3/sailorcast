@@ -23,7 +23,6 @@ import com.crixmod.sailorcast.siteapi.SiteApi;
 import com.crixmod.sailorcast.uiutils.BaseToolbarActivity;
 import com.crixmod.sailorcast.uiutils.SlidingTabLayout;
 import com.crixmod.sailorcast.view.fragments.AlbumListFragment;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 
@@ -68,13 +67,11 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
     }
 
 
@@ -138,12 +135,10 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
         private int positionToSiteID(int position) {
             //音乐、体育频道里面，Youku的数据处理起来有些麻烦，这里屏蔽一下。
             int mSiteID = position;
-            if(mChannelID == SCChannel.MUSIC || mChannelID == SCChannel.SPORT) {
+            if(mChannelID == SCChannel.MUSIC) {
                 if(position == 0)
-                    mSiteID = SCSite.SOHU;
-                if(position == 1)
                     mSiteID = SCSite.LETV;
-                if(position == 2)
+                if(position == 1)
                     mSiteID = SCSite.IQIYI;
             }
             else
@@ -178,7 +173,7 @@ implements AlbumFilterDialog.OnAlbumFilterDialogAction
 
         @Override
         public int getCount() {
-            if(mChannelID == SCChannel.MUSIC || mChannelID == SCChannel.SPORT)
+            if(mChannelID == SCChannel.MUSIC)
                 return (SiteApi.getSupportSiteNumber() - 1);
             else
                 return SiteApi.getSupportSiteNumber();
