@@ -20,15 +20,15 @@ android {
         applicationId "com.crixmod.sailorcast"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 9
-        versionName "0.4.3"
+        versionCode 10
+        versionName "0.5.0"
         signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             //debuggable true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //minifyEnabled true
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
         debug{
