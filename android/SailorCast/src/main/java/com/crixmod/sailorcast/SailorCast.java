@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.crixmod.sailorcast.controller.upnp.IUpnpServiceController;
 import com.crixmod.sailorcast.model.upnp.IFactory;
+import com.crixmod.sailorcast.utils.M3UServer;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -32,7 +33,7 @@ public class SailorCast extends Application {
 
     public static IUpnpServiceController upnpServiceController = null;
     public static IFactory factory = null;
-
+    public static M3UServer m3userver;
 
     @Override
     public void onCreate() {
@@ -49,8 +50,15 @@ public class SailorCast extends Application {
 		if (upnpServiceController == null)
 			upnpServiceController = factory.createUpnpServiceController(this);
 
+        try {
+            m3userver = new M3UServer();
+            m3userver.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
+
 
 
 

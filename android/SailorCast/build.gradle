@@ -38,6 +38,7 @@ android {
         exclude 'META-INF/beans.xml'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'LICENSE.txt'
     }
     productFlavors {
     }
@@ -70,7 +71,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
     //compile 'com.mcxiaoke.volley:library:1.0.19'
-
+    compile 'com.nanohttpd:nanohttpd-webserver:2.1.1'
     compile 'com.android.support:support-v4:21.0.0'
     compile 'com.android.support:appcompat-v7:21.+'
     compile 'com.umeng.analytics:analytics:latest.integration'

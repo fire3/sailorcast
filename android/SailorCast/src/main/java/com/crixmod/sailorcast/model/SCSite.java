@@ -44,6 +44,6 @@ public class SCSite {
 
     //增加网站时需要增加该count
     public static int count() {
-        return 3;
+        return 4;
     }
 }

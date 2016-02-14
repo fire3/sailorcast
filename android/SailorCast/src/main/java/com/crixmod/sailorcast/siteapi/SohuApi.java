@@ -1,5 +1,7 @@
 package com.crixmod.sailorcast.siteapi;
 
+import android.util.Log;
+
 import com.crixmod.sailorcast.SailorCast;
 import com.crixmod.sailorcast.model.SCAlbum;
 import com.crixmod.sailorcast.model.SCAlbums;
@@ -9,6 +11,8 @@ import com.crixmod.sailorcast.model.SCChannelFilterItem;
 import com.crixmod.sailorcast.model.SCFailLog;
 import com.crixmod.sailorcast.model.SCSite;
 import com.crixmod.sailorcast.model.SCVideo;
+import com.crixmod.sailorcast.model.SCVideoClip;
+import com.crixmod.sailorcast.model.SCVideoClips;
 import com.crixmod.sailorcast.model.SCVideos;
 import com.crixmod.sailorcast.model.sohu.album.Album;
 import com.crixmod.sailorcast.model.sohu.searchresult.SearchResultAlbum;
@@ -16,18 +20,24 @@ import com.crixmod.sailorcast.model.sohu.searchresult.SearchResults;
 import com.crixmod.sailorcast.model.sohu.videos.Video;
 import com.crixmod.sailorcast.model.sohu.videos.Videos;
 import com.crixmod.sailorcast.utils.HttpUtils;
+import com.crixmod.sailorcast.utils.M3UServer;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.apache.http.protocol.HTTP;
+import org.eclipse.jetty.util.ajax.JSON;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by fire3 on 14-12-26.
@@ -271,9 +281,6 @@ public class SohuApi extends BaseSiteApi {
                             scVideo.setVerPic(v.getVerHighPic());
                             scVideo.setVideoID(v.getVid().toString());
                             scVideo.setVideoTitle(v.getVideoName());
-                            scVideo.setM3U8Nor(v.getUrlNor());
-                            scVideo.setM3U8High(v.getUrlHigh());
-                            scVideo.setM3U8Super(v.getUrlSuper());
                             scVideo.setAlbumID(album.getAlbumId());
                             scVideos.add(scVideo);
                         }
@@ -349,15 +356,124 @@ public class SohuApi extends BaseSiteApi {
         });
     }
 
+    private void doGetRealUrls(final SCVideo video, final String vid, final OnGetVideoPlayUrlListener listener, int VideoType) {
+        String url = "http://hot.vrs.sohu.com/vrs_flash.action?vid=" + vid;
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                try {
+                    JSONObject ret = new JSONObject(response.body().string());
+
+                    String host = ret.optString("allot");
+                    String prot = ret.optString("prot");
+                    String tvid = ret.optString("tvid");
+
+                    JSONObject retData = ret.optJSONObject("data");
+                    JSONArray su = retData.getJSONArray("su");
+                    JSONArray ck = retData.getJSONArray("ck");
+                    JSONArray clipsURL = retData.getJSONArray("clipsURL");
+                    JSONArray clipsDuration = retData.getJSONArray("clipsDuration");
+
+
+                    final SCVideoClips clips = new SCVideoClips();
+
+                    for (int i = 0; i < su.length(); i++) {
+
+                        String s_su = su.getString(i);
+                        String s_ck = ck.getString(i);
+                        String s_clipURL = clipsURL.getString(i);
+                        URL clipURL = new URL(s_clipURL);
+                        s_clipURL = clipURL.getPath();
+                        final String s_clipDuration = clipsDuration.getString(i);
+
+                        String url = "http://" +host+ "/?prot=9&prod=flash&pt=1&file=" + s_clipURL+
+                                "&new=" +s_su + "&key=" + s_ck+ "&vid=" +vid+ "&uid=" + (new Date().getTime() * 1000) +
+                                "&t=" + new Random().nextFloat()  + "&rb=1";
+
+                        String s = HttpUtils.syncGet(url);
+                        JSONObject rj = new JSONObject(s);
+                        String realUrl = rj.optString("url");
+
+                        Log.i("fire3",realUrl);
+                        SCVideoClip clip = new SCVideoClip(s_clipDuration,realUrl);
+                        clips.add(clip);
+                        //video.setM3U8High(realUrl);
+                        //listener.onGetVideoPlayUrlHigh(video, realUrl);
+                        /*
+
+                        HttpUtils.asyncGet(url, new Callback() {
+                            @Override
+                            public void onFailure(Request request, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Response response) throws IOException {
+                                try {
+                                    JSONObject ret = new JSONObject(response.body().string());
+                                    SCVideoClip clip = new SCVideoClip(s_clipDuration,ret.optString("url"));
+                                    Log.i("fire3",clip.toString());
+                                    clips.add(clip);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        });
+                        */
+                    }
+
+                    SailorCast.m3userver.addHighVideoClips(clips);
+
+                    listener.onGetVideoPlayUrlHigh(video, "http://localhost:8080/high");
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     @Override
-    public void doGetVideoPlayUrl(SCVideo video, OnGetVideoPlayUrlListener listener) {
-        if(video.getM3U8Nor() != null)
-            listener.onGetVideoPlayUrlNormal(video,video.getM3U8Nor());
-        if(video.getM3U8High() != null)
-            listener.onGetVideoPlayUrlHigh(video,video.getM3U8High());
-        if(video.getM3U8Super() != null)
-            listener.onGetVideoPlayUrlSuper(video,video.getM3U8Super());
+    public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
+        String url = "http://hot.vrs.sohu.com/vrs_flash.action?vid=" + video.getVideoID();
+        HttpUtils.asyncGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                try {
+                    JSONObject ret = new JSONObject(response.body().string());
+                    JSONObject retData = ret.optJSONObject("data");
+
+                    String superVid = retData.optString("superVid");
+                    String norVid = retData.optString("norVid");
+                    String highVid = retData.optString("highVid");
+
+                    if(!norVid.isEmpty())
+                        doGetRealUrls(video, norVid,listener,SCVideo.QUALITY_NORMAL);
+                    if(!highVid.isEmpty())
+                        doGetRealUrls(video, highVid,listener,SCVideo.QUALITY_HIGH);
+                    if(!superVid.isEmpty())
+                        doGetRealUrls(video, superVid,listener,SCVideo.QUALITY_SUPER);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
     }
 
     public void doGetChannelAlbumsByUrl(final String url, final OnGetAlbumsListener listener) {

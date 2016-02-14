@@ -525,7 +525,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		 *获取BVideoView对象
 		 */
 		mVV = (BVideoView) findViewById(R.id.video_view);
-		
+        mVV.setUserAgent("SailorCast");
 		/**
 		 * 注册listener
 		 */

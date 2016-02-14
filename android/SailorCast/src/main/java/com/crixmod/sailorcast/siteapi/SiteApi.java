@@ -76,7 +76,7 @@ public class SiteApi {
     }
 
     public static int getSupportSiteNumber() {
-        return 3;
+        return SCSite.count();
     }
 
     public static String getSiteName(int siteID, Context mContext) {
