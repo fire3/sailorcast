@@ -507,6 +507,7 @@ public class AlbumDetailActivity extends BaseToolbarActivity implements
                         mHistoryDb.addHistory(mAlbum, mCurrentVideo, 0);
                         pDialog.hide();
                         BaiduPlayerActivity.launch(from, v, url);
+                        //ExoPlayerActivity.launch(from, v, url);
                         //startThirdPartyVideoPlayer(url);
                     }
                 });

@@ -372,6 +372,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 				 * 设置播放url
 				 */
 				mVV.setVideoPath(mURL);
+                Log.i("fire3","playing: " + mURL);
 				
 				/**
 				 * 续播，如果需要如此
@@ -516,6 +517,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 
         String AK = "r8A8URv8tItyRpW64GEakxcf";
         String SK = "ekzuetBpzaofmh7z";
+        //String USER_AGENT = "Python-urllib/3.4";
 		/**
 		 * 设置ak及sk的前16位
 		 */
@@ -525,7 +527,7 @@ public class BaiduPlayerActivity extends Activity implements OnPreparedListener,
 		 *获取BVideoView对象
 		 */
 		mVV = (BVideoView) findViewById(R.id.video_view);
-        mVV.setUserAgent("SailorCast");
+        //mVV.setUserAgent(USER_AGENT);
 		/**
 		 * 注册listener
 		 */

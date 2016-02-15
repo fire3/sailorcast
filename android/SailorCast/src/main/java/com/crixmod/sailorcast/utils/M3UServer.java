@@ -21,13 +21,10 @@ public class M3UServer extends NanoHTTPD {
 
     public void addNormalVideoClips(SCVideoClips videoClips)
     {
-        if(m3u8_normal.isEmpty()) {
-            m3u8_normal = "#EXTM3U\n" +
-                    "#EXT-X-VERSION:1\n" +
+        m3u8_normal = "#EXTM3U\n" +
                     "#EXT-X-MEDIA-SEQUENCE:0\n";
-        }
         for (SCVideoClip clip: videoClips ) {
-            m3u8_normal += "#EXTINF:" + clip.getDuration() + "\n";
+            m3u8_normal += "#EXTINF:" + clip.getDuration() + ",\n";
             m3u8_normal += clip.getSource() + "\n";
         }
         m3u8_normal += "#EXT-X-ENDLIST\n";
@@ -36,13 +33,10 @@ public class M3UServer extends NanoHTTPD {
 
     public void addHighVideoClips(SCVideoClips videoClips)
     {
-        if(m3u8_high.isEmpty()) {
-            m3u8_high = "#EXTM3U\n" +
-                    "#EXT-X-VERSION:1\n" +
-                    "#EXT-X-MEDIA-SEQUENCE:0\n";
-        }
+        m3u8_high = "#EXTM3U\n" +
+                "#EXT-X-MEDIA-SEQUENCE:0\n";
         for (SCVideoClip clip: videoClips ) {
-            m3u8_high += "#EXTINF:" + clip.getDuration() + "\n";
+            m3u8_high += "#EXTINF:" + clip.getDuration() + ",\n";
             m3u8_high += clip.getSource() + "\n";
         }
         m3u8_high += "#EXT-X-ENDLIST\n";
@@ -51,13 +45,10 @@ public class M3UServer extends NanoHTTPD {
 
     public void addSuperVideoClips(SCVideoClips videoClips)
     {
-        if(m3u8_super.isEmpty()) {
-            m3u8_super = "#EXTM3U\n" +
-                    "#EXT-X-VERSION:1\n" +
-                    "#EXT-X-MEDIA-SEQUENCE:0\n";
-        }
+        m3u8_super = "#EXTM3U\n" +
+                "#EXT-X-MEDIA-SEQUENCE:0\n";
         for (SCVideoClip clip: videoClips ) {
-            m3u8_super += "#EXTINF:" + clip.getDuration() + "\n";
+            m3u8_super += "#EXTINF:" + clip.getDuration() + ",\n";
             m3u8_super += clip.getSource() + "\n";
         }
         m3u8_super += "#EXT-X-ENDLIST\n";

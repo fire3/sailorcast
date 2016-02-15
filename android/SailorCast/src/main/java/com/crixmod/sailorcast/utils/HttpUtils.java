@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.crixmod.sailorcast.SailorCast;
+import com.crixmod.sailorcast.model.SCVideo;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -17,6 +18,10 @@ import java.io.IOException;
 public class HttpUtils {
 
     private static final String REQUEST_TAG = "okhttp";
+    //private static final String USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) " +
+    //        "AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/37.0.2062.94 " +
+    //        "Chrome/37.0.2062.94 Safari/537.36";
+    private static final String USER_AGENT = "Python-urllib/3.4";
 
     public static Request buildRequest(String url) {
 
@@ -25,7 +30,7 @@ public class HttpUtils {
             Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
                     //.addHeader("Cache-Control", "public, max-age=" + maxAge)
-                    .header("User-Agent", "SailorCast")
+                    .header("User-agent", USER_AGENT)
                     //.addHeader("Cache-Control", "public, max-age=" + maxAge)
                     .url(url)
                     .build();
@@ -34,7 +39,7 @@ public class HttpUtils {
            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
              Request request = new Request.Builder()
                     .tag(REQUEST_TAG)
-                    .header("User-Agent", "SailorCast")
+                    .header("User-agent", USER_AGENT)
                     //.addHeader("Cache-Control","public, only-if-cached, max-stale=" + maxStale)
                     .url(url)
                     .build();
@@ -65,7 +70,6 @@ public class HttpUtils {
 
     public static void asyncGet(String url, Callback callback) {
         Request request = buildRequest(url);
-        Log.d("fire3", "async request Url: " + request.urlString());
         asyncGet(request, callback);
     }
 
