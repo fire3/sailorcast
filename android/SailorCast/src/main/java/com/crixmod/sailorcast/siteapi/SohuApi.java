@@ -32,12 +32,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by fire3 on 14-12-26.
@@ -60,6 +62,9 @@ public class SohuApi extends BaseSiteApi {
     private final static String API_CHANNEL_ALBUM_BY_FILTER_FORMAT = "http://api.tv.sohu.com/v4/search/channel.json" +
             "?cid=%s&%s&plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&" +
             "sver=4.5.0&sysver=4.4.2&partner=47&page=%s&page_size=%s";
+
+    private final static String API_VIDEO_INFO_FORMAT = "http://api.tv.sohu.com/v4/video/info/%s.json?" +
+            "site=1&plat=6&poid=1&api_key=9854b2afa779e1a6bff1962447a09dbd&sver=4.5.1&sysver=4.4.2&partner=47&aid=%s";
 
     private final static String API_HOME_URL = "http://api.tv.sohu.com/v4/mobile/channelPageData/" +
             "list.json?cate_code=0&plat=6&poid=1&" +
@@ -356,7 +361,8 @@ public class SohuApi extends BaseSiteApi {
         });
     }
 
-    private void doGetRealUrls(final SCVideo video, final String vid, final OnGetVideoPlayUrlListener listener, int VideoType) {
+    /*
+    private void doGetRealUrls(final SCVideo video, final String vid, final OnGetVideoPlayUrlListener listener, final int videoType) {
         String url = "http://hot.vrs.sohu.com/vrs_flash.action?vid=" + vid;
         HttpUtils.asyncGet(url, new Callback() {
             @Override
@@ -392,47 +398,34 @@ public class SohuApi extends BaseSiteApi {
                         final String s_clipDuration = clipsDuration.getString(i);
 
                         String url = "http://" +host+ "/?prot=9&prod=flash&pt=1&file=" + s_clipURL+
-                                "&new=" +s_su + "&key=" + s_ck+ "&vid=" +vid+ "&uid=" + (new Date().getTime() * 1000) +
-                                "&t=" + new Random().nextFloat()  + "&rb=1";
+                                "&new=" +s_su + "&key=" + s_ck+ "&vid=" +vid+ "&uid=" + (new Date().getTime()) +
+                                "&t=" + new Random().nextDouble()  + "&rb=1";
 
                         String s = HttpUtils.syncGet(url);
                         JSONObject rj = new JSONObject(s);
                         String realUrl = rj.optString("url");
 
                         Log.i("fire3",realUrl);
+
                         SCVideoClip clip = new SCVideoClip(s_clipDuration,realUrl);
                         clips.add(clip);
-                        //video.setM3U8High(realUrl);
-                        //listener.onGetVideoPlayUrlHigh(video, realUrl);
-                        /*
+                   }
 
-                        HttpUtils.asyncGet(url, new Callback() {
-                            @Override
-                            public void onFailure(Request request, IOException e) {
 
-                            }
-
-                            @Override
-                            public void onResponse(Response response) throws IOException {
-                                try {
-                                    JSONObject ret = new JSONObject(response.body().string());
-                                    SCVideoClip clip = new SCVideoClip(s_clipDuration,ret.optString("url"));
-                                    Log.i("fire3",clip.toString());
-                                    clips.add(clip);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-                        */
+                    if(videoType == SCVideo.QUALITY_HIGH) {
+                        SailorCast.m3userver.addHighVideoClips(clips);
+                        listener.onGetVideoPlayUrlHigh(video, "http://hot.vrs.sohu.com/ipad2885529_4666830478751_5096840.m3u8?plat=6&uid=42f25fed74b07c7ba5f98c262acd41db&pt=5&prod=app&pg=1");
+                        //listener.onGetVideoPlayUrlHigh(video, clips.get(0).getSource());
+                    }
+                    if(videoType == SCVideo.QUALITY_NORMAL) {
+                        SailorCast.m3userver.addNormalVideoClips(clips);
+                        listener.onGetVideoPlayUrlHigh(video, "http://localhost:8080/normal");
                     }
 
-                    SailorCast.m3userver.addHighVideoClips(clips);
-
-                    listener.onGetVideoPlayUrlHigh(video, "http://localhost:8080/high");
-
-
+                    if(videoType == SCVideo.QUALITY_SUPER) {
+                        SailorCast.m3userver.addSuperVideoClips(clips);
+                        listener.onGetVideoPlayUrlHigh(video, "http://localhost:8080/super");
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -440,10 +433,16 @@ public class SohuApi extends BaseSiteApi {
         });
     }
 
+    */
+
+    private String genUUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString().replaceAll("-","");
+    }
 
     @Override
     public void doGetVideoPlayUrl(final SCVideo video, final OnGetVideoPlayUrlListener listener) {
-        String url = "http://hot.vrs.sohu.com/vrs_flash.action?vid=" + video.getVideoID();
+        String url = String.format(API_VIDEO_INFO_FORMAT,video.getVideoID(),video.getAlbumID());
         HttpUtils.asyncGet(url, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -456,16 +455,26 @@ public class SohuApi extends BaseSiteApi {
                     JSONObject ret = new JSONObject(response.body().string());
                     JSONObject retData = ret.optJSONObject("data");
 
-                    String superVid = retData.optString("superVid");
-                    String norVid = retData.optString("norVid");
-                    String highVid = retData.optString("highVid");
+                    String url_nor = retData.optString("url_nor");
+                    if(!url_nor.isEmpty()) {
+                        url_nor += "uid=" + genUUID()  + "&pt=5&prod=app&pg=1";
+                        video.setM3U8Nor(url_nor);
+                        listener.onGetVideoPlayUrlNormal(video, url_nor);
+                    }
 
-                    if(!norVid.isEmpty())
-                        doGetRealUrls(video, norVid,listener,SCVideo.QUALITY_NORMAL);
-                    if(!highVid.isEmpty())
-                        doGetRealUrls(video, highVid,listener,SCVideo.QUALITY_HIGH);
-                    if(!superVid.isEmpty())
-                        doGetRealUrls(video, superVid,listener,SCVideo.QUALITY_SUPER);
+                    String url_high = retData.optString("url_high");
+                    if(!url_high.isEmpty()) {
+                        url_high += "uid=" + genUUID()  + "&pt=5&prod=app&pg=1";
+                        video.setM3U8High(url_high);
+                        listener.onGetVideoPlayUrlHigh(video, url_high);
+                    }
+
+                    String url_super = retData.optString("url_super");
+                    if(!url_super.isEmpty()) {
+                        url_super += "uid=" + genUUID() + "&pt=5&prod=app&pg=1";
+                        video.setM3U8Super(url_super);
+                        listener.onGetVideoPlayUrlSuper(video, url_super);
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -658,93 +667,4 @@ public class SohuApi extends BaseSiteApi {
         return null;
     }
 
-/*
-    public void  getBanners(final OnGetBannersListener listener) {
-        String url = API_HOME_URL;
-        HttpUtils.asyncGet(url,new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                String ret = response.body().string();
-                try {
-                    JSONObject retJson = new JSONObject(ret);
-                    JSONObject dataJson = retJson.optJSONObject("data");
-                    if(dataJson != null) {
-
-                        SCBanners banners = new SCBanners();
-                        JSONArray columnsJson = dataJson.optJSONArray("columns");
-
-                        for (int i = 0; i < columnsJson.length(); i++) {
-                            JSONObject columnJson = columnsJson.getJSONObject(i);
-                            int columnID = columnJson.optInt("column_id");
-                            int columnType = columnJson.optInt("column_type");
-                            String columnName = columnJson.optString("name");
-                            JSONArray listJson = columnJson.optJSONArray("video_list");
-
-                            if(columnID == 1 || columnID == 4 || columnID == 34 || columnID == 143 || columnID == 3 || columnID == 29) {
-                                if (listJson.length() > 0) {
-                                    SCAlbums albums = new SCAlbums();
-                                    for (int j = 0; j < listJson.length(); j++) {
-
-                                        JSONObject a = listJson.getJSONObject(j);
-
-                                        String horPic = a.optString("video_big_pic");
-                                        String horPic2 = a.optString("hor_common_pic");
-                                        String aid = a.optString("aid");
-                                        String title = a.optString("video_name");
-                                        String tip = a.optString("tip");
-                                        String aName = a.optString("album_name");
-                                        String subTitle = a.optString("album_sub_name");
-
-                                        int latest_video_count = a.optInt("latest_video_count", 0);
-                                        if (aName != null && !aName.equals("广告")) {
-                                            SCAlbum album = new SCAlbum(SCSite.SOHU);
-                                            if (title != null && !title.isEmpty())
-                                                album.setTitle(title);
-                                            else
-                                                album.setTitle(aName);
-                                            //album.setVideosCount(latest_video_count);
-                                            album.setVideosTotal(latest_video_count);
-                                            album.setTip(tip);
-                                            if (horPic != null && !horPic.isEmpty())
-                                                album.setHorImageUrl(horPic);
-                                            else if (horPic2 != null && !horPic2.isEmpty())
-                                                album.setHorImageUrl(horPic2);
-                                            album.setAlbumId(aid);
-                                            album.setSubTitle(subTitle);
-                                            albums.add(album);
-                                        }
-
-                                    }
-
-                                    if (columnID == 1 && columnType == 1) {
-                                        SCBanner banner = new SCBanner(SCBanner.TYPE_SLIDER, columnName, albums);
-                                        banners.add(banner);
-                                    } else  {
-                                        SCBanner banner = new SCBanner(SCBanner.TYPE_TABLE, columnName, albums);
-                                        banners.add(banner);
-                                    }
-                                }
-                            }
-                        }
-                        if(banners.size()> 0)
-                            listener.onGetBannersSuccess(banners);
-                        return;
-                    } else {
-                        listener.onGetBannersFailed("wrong data");
-                        return;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-    }
-    */
 }
