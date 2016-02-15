@@ -35,7 +35,7 @@ public class SiteApi {
     }
 
     public static void doSearchAll(String key, OnGetAlbumsListener listener) {
-       // new SohuApi().doSearch(key,listener);
+        new SohuApi().doSearch(key,listener);
         new YouKuApi().doSearch(key,listener);
         new LetvApi().doSearch(key,listener);
         new IqiyiApi().doSearch(key,listener);
