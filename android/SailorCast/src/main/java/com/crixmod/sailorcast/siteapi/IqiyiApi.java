@@ -66,7 +66,7 @@ public class IqiyiApi extends BaseSiteApi {
     private final static int CID_DOCUMENTARY = 3;
     private final static int CID_MUSIC = 5;
     private final static int CID_SPORT = 17;
-
+    private final static String IQIYI_SALT = "4a1caba4b4465345366f28da7c117d20" ;
 
     private final static String SEARCH_URL_FORMAT = "http://iface.iqiyi.com/api/searchIface?key=2019620214d1a82fc76d0b4b3c6fa685" +
             "&all_episode=-1&need_video_img=0" +
@@ -489,7 +489,7 @@ public class IqiyiApi extends BaseSiteApi {
         String uid = genUUID();
         Random r = new Random();
         String tm =String.format("%d",((r.nextInt(4000-2000))+2000));
-        String enc = md5("8ed797d224d043e7ac23d95b70227d32"+tm+video.getVideoID());
+        String enc = md5(IQIYI_SALT + tm + video.getVideoID());
         String tn = String.valueOf(r.nextDouble());
         String authkey = md5(""+tm+video.getVideoID());
         String tvid = video.getVideoID();
