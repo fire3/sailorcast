@@ -45,13 +45,8 @@ android {
 }
 
 repositories {
-    jcenter()
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url "http://4thline.org/m2"
-    }
-    maven { url "https://raw.githubusercontent.com/umeng/mvn-repo-umeng/master/repository" }
+    maven {url "http://4thline.org/m2"}
+    maven {url "https://raw.githubusercontent.com/umeng/mvn-repo-umeng/master/repository" }
 }
 
 
